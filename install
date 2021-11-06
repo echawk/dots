@@ -1,3 +1,5 @@
 #!/bin/sh -e
 mkdir -pv "$HOME/.config/emacs"
+mkdir -pv "$HOME/.config/nvim/autoload"
+mkdir -pv "$HOME/.config/nvim/plugged"
 stow */ -t $HOME
