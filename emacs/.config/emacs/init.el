@@ -6,6 +6,7 @@
 
 ;(load-theme 'leuven)
 (load-theme 'wombat)
+(set-face-attribute 'default nil :height 140)
 
 ; Cleanup the inital screen
 (setq inhibit-startup-message t)
