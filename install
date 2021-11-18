@@ -3,3 +3,6 @@ mkdir -pv "$HOME/.config/emacs"
 mkdir -pv "$HOME/.config/nvim/autoload"
 mkdir -pv "$HOME/.config/nvim/plugged"
 stow */ -t $HOME
+unlink $HOME/.config/picom.conf && {
+    cp X/.config/picom.conf $HOME/.config/picom.conf
+}
