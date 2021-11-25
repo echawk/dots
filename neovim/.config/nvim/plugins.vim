@@ -13,6 +13,7 @@ Plug 'lukesmithxyz/vimling' "Prose (able to write special characters easily)
 
 "QoL plugins
 Plug 'ap/vim-css-color'  "Makes colors their color (ie #00FF00)
+"Plug 'norcalli/nvim-colorizer.lua'
 Plug 'luochen1990/rainbow'
 Plug 'sheerun/vim-polyglot' "Syntax highlighting for basically every language
 "Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
