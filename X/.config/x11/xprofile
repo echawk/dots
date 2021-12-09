@@ -24,4 +24,3 @@ fi
 [ "$WM" = dwm ] && {
     which bbar && bbar &
 }
-which emacs && emacs --daemon &
