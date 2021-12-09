@@ -41,4 +41,5 @@ Plug 'hrsh7th/nvim-compe' "nvim completion (for lsp)
 "Plug 'mfussenegger/nvim-dap'
 "Plug 'mfussenegger/nvim-fzy'
 
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 call plug#end()
