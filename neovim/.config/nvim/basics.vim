@@ -21,6 +21,7 @@ set noswapfile
 	syntax on
 	set encoding=utf-8
 	set number relativenumber
+	set lazyredraw
 " Setup column coloring
 	set colorcolumn=80
 	highlight ColorColumn ctermbg=12
