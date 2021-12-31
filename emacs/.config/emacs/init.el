@@ -77,4 +77,5 @@
   (setq imaxima-use-maxima-mode-flag t)
   ; Sets the font for the LaTeX output.
   (setq imaxima-fnt-size "LARGE")
+  (setq imaxima-latex-preamble "\\usepackage{concrete}")
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
