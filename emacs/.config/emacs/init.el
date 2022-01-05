@@ -79,3 +79,8 @@
   (setq imaxima-fnt-size "LARGE")
   (setq imaxima-latex-preamble "\\usepackage{concrete}")
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
+
+(when (file-exists-p "/usr/share/emacs/site-lisp/slime")
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/slime")
+  (require 'slime-autoloads)
+  (setq inferior-lisp-program "sbcl"))
