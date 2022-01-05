@@ -67,6 +67,12 @@
   :config
   (evil-mode 1))
 
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
