@@ -2,7 +2,17 @@
 mkdir -pv "$HOME/.config/emacs"
 mkdir -pv "$HOME/.config/nvim/autoload"
 mkdir -pv "$HOME/.config/nvim/plugged"
-stow */ -t $HOME
-unlink $HOME/.config/picom.conf && {
-    cp X/.config/picom.conf $HOME/.config/picom.conf
-}
+for d in */; do
+    case $d in
+        X/)
+            if [ -e $HOME/.config/picom.conf ]; then
+                rm -- $HOME/.config/picom.conf
+            fi
+            stow $d -t $HOME
+            unlink $HOME/.config/picom.conf && {
+                cp X/.config/picom.conf $HOME/.config/picom.conf
+            }
+            ;;
+        *) stow $d -t $HOME ;;
+    esac
+done
