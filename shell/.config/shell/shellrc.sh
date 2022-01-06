@@ -3,15 +3,6 @@ case "$-" in
     *i*);;
     *) return ;;
 esac
-case "$SHELL" in
-    *bash)
-        completion="/usr/share/bash-completion/bash_completion"
-        [ -r "$completion" ] && . "$completion"
-
-        shopt -s autocd # cd into a directory when you type the directory name
-        shopt -s cdspell # try to guess what directory you meant if misspelled
-        ;;
-esac
 [ -f "$XDG_CONFIG_HOME/shell/alias.sh" ] && . "$XDG_CONFIG_HOME/shell/alias.sh"
 
 export PATH=/var/db/kiss/repos/kiss-personal/bin:/usr/lib/ccache/bin:$PATH
@@ -39,15 +30,24 @@ extra_ps1_info(){
     #fossil status >/dev/null 2>&1 && parse_fossil_branch
 }
 
-PS1="\[\033[01;32m\][\u\[\033[01;37m\] \W\[\033[01;32m\]] \[\033[01;34m\]\$(extra_ps1_info)\[\033[01;32m\]%\[\033[00m\] "
-#PS1="\u@\h \w \$(extra_ps1_info)-\$ "
-
-
 test_microphone() {
     arecord -vvv -f dat /dev/null
 }
 
 command -v opam >/dev/null 2>&1 && eval $(opam env)
+
+case "$0" in
+    *bash)
+        completion="/usr/share/bash-completion/bash_completion"
+        [ -r "$completion" ] && . "$completion"
+
+        shopt -s autocd # cd into a directory when you type the directory name
+        shopt -s cdspell # try to guess what directory you meant if misspelled
+        PS1="\[\033[01;32m\][\u\[\033[01;37m\] \W\[\033[01;32m\]] \[\033[01;34m\]\$(extra_ps1_info)\[\033[01;32m\]%\[\033[00m\] "
+        ;;
+    *)
+        PS1="$USER@$(hostname) $PWD \$(extra_ps1_info)-\$ "
+esac
 
 #vi mode for text input
 set -o vi
