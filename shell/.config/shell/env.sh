@@ -16,7 +16,21 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_RUNTIME_DIR="${HOME}/.cache/runtime"
 
-export CHROME_FLAGS=" --ignore-gpu-blocklist  --use-gl=desktop  --enable-gpu-rasterization  --enable-zero-copy  --ignore-gpu-blacklist  --disable-gpu-driver-bug-workarounds  --enable-accelerated-video-decode  --enable-features=VaapiVideoDecoder"
+export CHROME_FLAGS="
+--ignore-gpu-blocklist
+--use-gl=desktop
+--enable-zero-copy
+--disable-gpu-driver-bug-workarounds
+--disable-gpu-driver-workarounds
+--enable-accelerated-video-decode
+--enable-accelerated-mjpeg-decode
+--enable-features=VaapiVideoDecoder,CanvasOopRasterization
+--enable-gpu-compositing
+--enable-gpu-rasterization
+--enable-oop-rasterization
+--canvas-oop-rasterization
+--enable-raw-draw
+"
 
 # X
 #export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
