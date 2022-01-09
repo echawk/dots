@@ -16,6 +16,12 @@
 (menu-bar-mode -1)   ; Disable the menubar
 (tooltip-mode -1)    ; Disable tooltips
 
+; Be more like vim when scrolling
+(setq scroll-step 1
+      scroll-conservatively 10000)
+(setq next-screen-context-lines 5)
+(setq line-move-visual nil)
+
 ; basic functionality
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
