@@ -96,3 +96,7 @@
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/slime")
   (require 'slime-autoloads)
   (setq inferior-lisp-program "sbcl"))
+
+; Keep custom variables from polluting this file.
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file 'noerror)
