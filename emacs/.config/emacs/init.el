@@ -15,6 +15,16 @@
 (tool-bar-mode -1)   ; Disable the toolbar
 (menu-bar-mode -1)   ; Disable the menubar
 (tooltip-mode -1)    ; Disable tooltips
+(global-display-line-numbers-mode 1) ; Show line numbers
+(setq column-number-mode t) ; Show column number too
+(fset 'yes-or-no-p 'y-or-n-p) ; Don't ask to spell out 'yes'
+
+; utf-8
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 
 ; Be more like vim when scrolling
 (setq scroll-step 1
