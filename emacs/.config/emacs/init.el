@@ -89,6 +89,11 @@
   :config
   (evil-collection-init))
 
+; Better scheme editing.
+(use-package geiser)
+(use-package geiser-chez
+  :after geiser)
+
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
