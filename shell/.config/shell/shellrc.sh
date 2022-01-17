@@ -13,7 +13,6 @@ export KISS_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kiss-timer-hook"
 export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-tex/kiss-tex-hook"
 export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-mangz-hook"
 export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-window-title-hook"
-export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-rminfo-hook"
 
 # special funtion to make it obvious when you are inside of a git repo; print out the name of the branch
 parse_git_branch() {
