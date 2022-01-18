@@ -89,12 +89,14 @@
   (evil-collection-init))
 
 ; Better scheme editing.
-(use-package geiser)
+(use-package geiser
+  :defer)
 (use-package geiser-chez
   :after geiser)
 
 ; Simple LSP mode for emacs.
 (use-package eglot
+  :defer
   :hook ((tuareg-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
@@ -103,6 +105,7 @@
 
 ; In-buffer autocompletion.
 (use-package company
+  :defer
   ; First hook is for any time we enable eglot, we want company mode running too.
   :hook (eglot--managed-mode . company-mode)
   :bind (:map company-active-map
@@ -112,7 +115,8 @@
   (company-idle-delay 0.0))
 
 ; OCaml integration.
-(use-package tuareg)
+(use-package tuareg
+  :defer)
 
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
