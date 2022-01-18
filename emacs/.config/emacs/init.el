@@ -94,7 +94,12 @@
   :after geiser)
 
 ; Simple LSP mode for emacs.
-(use-package eglot)
+(use-package eglot
+  :hook ((tuareg-mode . eglot-ensure))
+  :config
+  (add-to-list 'eglot-server-programs
+    '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
+
 
 ; In-buffer autocompletion.
 (use-package company
