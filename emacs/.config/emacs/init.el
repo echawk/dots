@@ -94,6 +94,12 @@
 (use-package geiser-chez
   :after geiser)
 
+; Simple LSP mode for emacs.
+(use-package eglot)
+
+; OCaml integration.
+(use-package tuareg)
+
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
