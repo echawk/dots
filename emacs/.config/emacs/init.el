@@ -66,8 +66,8 @@
   :config
   (ivy-mode 1))
 
+
 (use-package doom-modeline
-  :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
@@ -85,7 +85,6 @@
 
 (use-package evil-collection
   :after evil
-  :ensure t
   :config
   (evil-collection-init))
 
@@ -96,6 +95,16 @@
 
 ; Simple LSP mode for emacs.
 (use-package eglot)
+
+; In-buffer autocompletion.
+(use-package company
+  ; First hook is for any time we enable eglot, we want company mode running too.
+  :hook (eglot--managed-mode . company-mode)
+  :bind (:map company-active-map
+          ("<tab>" . company-complete-selection))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
 
 ; OCaml integration.
 (use-package tuareg)
