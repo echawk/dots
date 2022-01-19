@@ -179,7 +179,7 @@
   "Init value for clean-buffer-list-kill-never-buffer-names")
 (setq clean-buffer-list-kill-never-buffer-names
       (append
-       '("*Messages*" "*cmd*" "*scratch*" "*w3m*" "*w3m-cache*" "*Inferior Octave*")
+       '("*Messages*" "*scratch*")
        clean-buffer-list-kill-never-buffer-names-init))
 
 ; Prevent append multiple times.
