@@ -35,6 +35,20 @@
 ; basic functionality
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+; Indentation
+(setq default-tab-width 4)
+(setq tab-width 4)
+(setq default-fill-column 80)
+(setq fill-column 80)
+(setq-default evil-indent-convert-tabs nil)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq-default evil-shift-round nil)
+
+; Don't use file backups.
+(setq backup-inhibited t)
+(setq auto-save-default nil)
+
 ; package stuff
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
