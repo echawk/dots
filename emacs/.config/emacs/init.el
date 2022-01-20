@@ -132,6 +132,10 @@
 (use-package tuareg
   :defer)
 
+(use-package ocamlformat
+  :custom (ocamlformat-enable 'enable-outside-detected-project)
+  :hook (before-save . ocamlformat-before-save))
+
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
