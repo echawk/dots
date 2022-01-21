@@ -88,6 +88,13 @@
 ;(use-package rainbow-delimiters
 ;  :hook (prog-mode . rainbow-delimiters-mode))
 
+(use-package hl-prog-extra
+  :hook ((prog-mode . hl-prog-extra-mode))
+  :commands (hl-prog-extra-mode))
+
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
 
 (use-package evil
   :init
@@ -135,6 +142,9 @@
 (use-package ocamlformat
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save))
+
+; Have <file>.P, be recognized as prolog source files.
+(add-to-list 'auto-mode-alist '("\\.P\\'" . prolog-mode))
 
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
