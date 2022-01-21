@@ -159,9 +159,10 @@
   (setq imaxima-latex-preamble "\\usepackage{concrete}")
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
 
-(when (file-exists-p "/usr/share/emacs/site-lisp/slime")
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/slime")
-  (require 'slime-autoloads)
+; Use sly instead of slime
+(use-package 'sly
+  :defer
+  (require 'sly-autoloads)
   (setq inferior-lisp-program "sbcl"))
 
 ; Keep custom variables from polluting this file.
