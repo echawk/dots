@@ -139,6 +139,7 @@
 (use-package tuareg
   :defer)
 
+; Autoformatting for OCaml.
 (use-package ocamlformat
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save))
@@ -185,7 +186,7 @@
 ; Run clean-buffer-list every 2 hours.
 (setq clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list))
 
-; Kill everythin, clean-buffer-list is intelligent & won't kill unsaved buffers.
+; Kill everything, clean-buffer-list is intelligent & won't kill unsaved buffers.
 (setq clean-buffer-list-kill-regexps '("^.*$"))
 
 ; Keep these buffers untouched & prevent append multiple times.
