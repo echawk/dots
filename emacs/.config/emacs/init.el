@@ -166,9 +166,8 @@
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
 
 ; Use sly instead of slime
-(use-package 'sly
-  :defer
-  (require 'sly-autoloads)
+(use-package sly
+  :init
   (setq inferior-lisp-program "sbcl"))
 
 ; Keep custom variables from polluting this file.
