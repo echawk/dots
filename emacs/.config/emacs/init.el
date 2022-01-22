@@ -118,7 +118,8 @@
 ; Simple LSP mode for emacs.
 (use-package eglot
   :defer
-  :hook ((tuareg-mode . eglot-ensure))
+  :hook ((tuareg-mode . eglot-ensure)
+         (go-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
     '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
@@ -143,6 +144,10 @@
 (use-package ocamlformat
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save))
+
+; Go integration.
+(use-package go-mode
+  :hook (before-save . gofmt-before-save))
 
 ; Have <file>.P, be recognized as prolog source files.
 (add-to-list 'auto-mode-alist '("\\.P\\'" . prolog-mode))
