@@ -151,6 +151,7 @@
 
 ; Have <file>.P, be recognized as prolog source files.
 (add-to-list 'auto-mode-alist '("\\.P\\'" . prolog-mode))
+(add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
