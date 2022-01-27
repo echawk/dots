@@ -16,7 +16,7 @@ alias icd="cd \$(shfm)"
 alias skiss="/usr/bin/sudo kiss"
 
 # git aliases
-alias gplog="git log --all --graph --decorate"
+alias gplog="git log --all --graph --decorate --stat"
 alias gc="git checkout"
 alias gap="git add --patch"
 alias grp="git reset --patch"
