@@ -166,6 +166,10 @@
   (setq imaxima-latex-preamble "\\usepackage{concrete}")
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
 
+; ESS for R & Data Sci.
+(use-package ess
+  :defer)
+
 ; Use sly instead of slime
 (use-package sly
   :init
