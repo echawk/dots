@@ -14,6 +14,9 @@ export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-tex/kiss-tex-hook"
 export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-mangz-hook"
 export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-window-title-hook"
 
+export KW_HOOK="/var/db/kiss/repo/kiss-personal/hooks/kw-lsp-hook"
+export KW_HOOK="$KW_HOOK:/var/db/kiss/repo/kiss-personal/hooks/kw-lang-hook"
+
 # special funtion to make it obvious when you are inside of a git repo; print out the name of the branch
 parse_git_branch() {
     printf "git:%s" "$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's~* \(.*\)~(\1)~')"
