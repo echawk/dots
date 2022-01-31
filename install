@@ -1,4 +1,5 @@
 #!/bin/sh -e
+[ $(basename $PWD) = dots ] || exit 1
 mkdir -pv "$HOME/.config/emacs"
 mkdir -pv "$HOME/.config/nvim/autoload"
 mkdir -pv "$HOME/.config/nvim/plugged"
