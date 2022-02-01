@@ -119,7 +119,8 @@
 (use-package eglot
   :defer
   :hook ((tuareg-mode . eglot-ensure)
-         (go-mode . eglot-ensure))
+         (go-mode . eglot-ensure)
+         (c-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
     '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
