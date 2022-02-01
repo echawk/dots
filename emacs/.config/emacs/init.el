@@ -138,7 +138,9 @@
 
 ; OCaml integration.
 (use-package tuareg
-  :defer)
+  :defer
+  :custom
+  (setq tuareg-in-indent 0))
 
 ; Autoformatting for OCaml.
 (use-package ocamlformat
