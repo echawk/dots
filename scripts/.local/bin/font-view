@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Deps: pango
+
+pango-view \
+    --font="$1 24" \
+    --text="The quick frown fox jumped over the lazy dog." \
+    --language=en

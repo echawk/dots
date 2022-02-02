@@ -1,0 +1,24 @@
+#!/bin/sh
+
+ssaver(){
+    case $1 in
+        e) xset s on +dpms;;
+        d) xset s off -dpms;;
+    esac
+}
+
+trap "ssaver e; exit" EXIT INT TERM
+
+ssaver d #disable screen saver
+
+# If we have an arg, sleep for that many seconds.
+if [ -n "$1" ]; then
+    sleep "$1"
+    ssaver e
+else
+    # otherwise, sleep forever
+    while true; do
+        sleep 86400 &
+        wait
+    done
+fi

@@ -1,0 +1,34 @@
+#! /bin/sh
+
+which sudo > /dev/null && SUDO=sudo
+#which doas > /dev/null && SUDO=doas
+
+[ -z "$2" ] && set -- "$1" "1"
+USAGE="Usage: bri [inc / dec / max / set / get]"
+BRIF="/sys/class/backlight/amdgpu_bl0/brightness"
+
+case "$1" in
+    i|inc)
+        echo $(( $(cat "$BRIF") + $2 )) | "$SUDO" tee "$BRIF" > /dev/null
+        ;;
+    d|dec)
+        echo $(( $(cat "$BRIF") - $2 )) | "$SUDO" tee "$BRIF" > /dev/null
+        ;;
+    m|max)
+        if [ -f "${BRIF%/*}/max_brightness" ]; then
+            "$SUDO" tee "$BRIF" < "${BRIF%/*}/max_brightness" > /dev/null
+        else
+            echo 100 | "$SUDO" tee "$BRIF" > /dev/null
+        fi
+        ;;
+    s|set)
+        echo "$2" | "$SUDO" tee "$BRIF" > /dev/null
+        ;;
+    g|get)
+        cat "$BRIF"
+        ;;
+    *)
+        echo "$USAGE"
+        exit 0
+        ;;
+esac

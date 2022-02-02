@@ -1,0 +1,14 @@
+#!/bin/sh
+[ -e $HOME/.urlview ] && URLRE="$(grep -v "^#" "$HOME/.urlview" | grep "REGEXP" | cut -d" " -f2-)"
+URLRE="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
+FUZZY="${FUZZY:-fzf}"
+OPENER="${PLUMBER:-${OPENER:-${BROWSER:-xdg-open}}}" # PLUMBER > OPENER > BROWSER > xdg-open ; default to xdg-open if neither OPENER or PLUMBER are set
+# First remove linebreaks and mutt sidebars:
+# grep only urls as defined above.
+# Ignore duplicates.
+# xdg-open will not detect url without http://
+URLS="$(sed 's/.*│//g' $* | grep -aEo "$URLRE" | sort -u | sed 's/^www./http:\/\/www\./g')"
+[ -z "$URLS" ] && exit 1                   # if there are none, exit
+SEL="$(echo $URLS | tr ' ' '\n' | $FUZZY)" # prompt the user for a selection
+[ -z "$SEL" ] && exit 1                    # if there was no selection, exit
+$OPENER "$SEL"                             # open with the OPENER

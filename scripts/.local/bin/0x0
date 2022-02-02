@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# POSIX Shell client for 0x0.st
+
+# Read either from stdin or a file provided on cmd line into a temp file.
+file="$(mktemp)"
+tee <"${1:-/dev/stdin}" "$file" 1>/dev/null
+
+# If the temp file has a size of zero, exit.
+[ -s "$file" ] || exit 1
+
+# If > 512MB, error out.
+[ $(($(du "$file" | cut -f1) / 1024)) -gt 512 ] && exit 1
+
+# Post the file and save the url.
+url="$(curl -s -F"file=@$file" https://0x0.st)"
+
+# Print the url to stdout & save in a cache file.
+echo "$url" | tee -a "${XDG_CACHE_HOME:-$HOME/.cache}/0x0-links"
+
+# If xclip is installed, copy the link to the clipboard.
+command -v xclip 1>/dev/null 2>&1 && {
+    printf "%s" "$url" | xclip -selection clipboard
+}
+
+# Remove the temporary file.
+rm -- "$file"

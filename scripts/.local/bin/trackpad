@@ -1,0 +1,11 @@
+#!/bin/sh
+# could be a case
+#[ $1 = e ] && xinput --enable 12
+#[ $1 = d ] && xinput --disable 12
+
+trackpad=$(xinput list | grep Synapt | cut -d'=' -f2 | cut -f1)
+case $1 in
+	e) xinput --enable "$trackpad";;
+	d) xinput --disable "$trackpad";;
+	*) echo "'e' to enable trackpad\n'd' to disable trackpad"; exit 0;;
+esac

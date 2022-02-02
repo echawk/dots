@@ -1,0 +1,529 @@
+#!/bin/sh
+# will *not* depend on wpa_cli or iwctl
+# work on making the script more standards conformant
+#  - replacing gnu options with posix ones, etc
+
+# Forked from here: https://github.com/depsterr/shutils/tree/master/wctl
+
+# This script is meant for those who want a minimal network configuration. The
+# script does everything the average user wants (or needs) for their wifi. Why
+# we have bloated pieces of software like NetworkManager is strange to me. This
+# script also supports those using software that they enjoy. ifconfig and
+# iwconfig support is *built in*. This script should work on the *BSD family
+# too, because I have worked to ensure that all calls are posix compliant, and
+# to use utilities found on all systems.
+
+# I plan on testing this script on FreeBSD, since by default they use
+# wpa_supplicant for wifi; openbsd will be more tricky
+
+# supports wpa_supplicant, iwd, and eiwd (as iwd)
+
+# confirmed working
+# - wpa_supplicant (artix, kiss)
+# - iwd (artix)
+
+# issues
+# - eiwd ; may be a compilation issue ; needs more testing.
+
+# TODO:
+# - add in a way to choose which network to connect to (priority setting)
+# - kill dhcpcd if started by wctl
+
+# COMPLETED:
+# - status; show what network wlan0 is connected to; done
+# - add in ability to add open networks
+#   - wpa_supplicant theres a config option, for iwd it's a diff filetype
+# - fix issue with killing iwd on disable; iwd doesn't get killed
+# - add in the ability to save the pid of iwd daemons
+#   - not needed; pid is found on the fly
+# - change awk commands to 'grep -E | cut'
+# - have the migration option automatically change your configuration file
+# - add in the ability to use iwconfig and ifconfig (not to rely on iw and ip)
+# - start dhpcd if not already started
+
+# Dependencies:
+# - iwd or wpa_supplicant
+# - iw  or iwconfig
+# - ip  or ifconfig
+# - coreutils (grep, sed, cut, sort, tr, tee, stat)
+# - findutils (find) (optionally; provides a speed improvement)
+# - wpa_passphrase (should come with wpa_supplicant) or wpa_psk FIXME: add support for this
+# - procps-ng (pgrep) FIXME: make this an opt depend
+
+[ "$USER" = root ] && exit 1
+
+# First source the confiuration file if it exists.
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+[ -f "$XDG_CONFIG_HOME"/wctl.conf ] && . "$XDG_CONFIG_HOME"/wctl.conf
+
+# Now move on to user configurable variables, all of these are configurable in the
+# aformentioned config file. NOTE - WLAN_DEVICE has no default; you *will* have to
+# set this
+#WLAN_DEVICE="wlp3s0" # could be autodetected
+# Default to wpa_supplicant and sudo, since most users will have those programs
+# installed
+WLAN_DAEMON="${WLAN_DAEMON:-wpa_supplicant}"
+SUDO="${SUDO:-sudo}"
+
+IS_ACTIVE_FILE=/run/wctl/stat
+VALID_DAEMONS="wpa_supplicant iwd"
+
+# wpa_supplicant variables; used to store the location of the wpa_supplicant
+# conf as well as a default configuration for wpa_supplicant.
+WPA_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+# default wpa configuration
+DEF_WPA_CONF="
+ctrl_interface=DIR=/run/wpa_supplicant GROUP=wheel
+update_config=1
+"
+WPA_PID_FILE=/run/wpa_supplicant/pid
+
+# iwd variables; same idea as the wpa_supplicant variables
+IWD_CONF="/etc/iwd/main.conf"
+# default iwd configuration
+DEF_IWD_CONF="
+[Scan]
+DisablePeriodicScan=true
+"
+IWD_NET_DIR="/var/lib/iwd/"
+
+USAGE_S="Usage: wctl [ (en|dis)able / restart / status / list / (add|changepass) <ssid> [psk] / remove <ssid> / find / migrate / sys-purge ]"
+
+# this is a relatively hacky function, but I don't know of a different way to reliably kill iwd
+get_daemon_pid() {
+    case $WLAN_DAEMON in
+        wpa_supplicant)
+            ps -ef |
+                grep -E "^root .* -i $WLAN_DEVICE" |
+                cut -f2
+            ;;
+        iwd)
+            ps -ef |
+                grep -E "^root .* -i $WLAN_DEVICE" |
+                cut -f2 |
+                tr '\n' ' '
+            ;;
+    esac
+    #pgrep "$WLAN_DAEMON" | tr '\n' ' '
+}
+
+enable_wifi() {
+    # If wpa isn't currently active
+    [ -f "$IS_ACTIVE_FILE" ] || {
+        # Make our directories, and create the IS_ACTIVE_FILE
+        "$SUDO" mkdir -p "${IS_ACTIVE_FILE%/*}"
+        "$SUDO" touch "$IS_ACTIVE_FILE"
+        # if dhcpcd is not running, start it (as it's a dependency of the wlan daemons)
+        # TODO: see how portable pgrep is; may need to change.
+        [ -z "$(pgrep dhcpcd)" ] && {
+            "$SUDO" dhcpcd
+        }
+        case $WLAN_DAEMON in
+            wpa_supplicant)
+                # if the configuration file doesn't exit, create it
+                [ -f "$WPA_CONF" ] || {
+                    echo "$DEF_WPA_CONF" |
+                        "$SUDO" tee "$WPA_CONF" 1> /dev/null
+                }
+                "$SUDO" mkdir -p "${WPA_PID_FILE%/*}"
+                "$SUDO" touch "$WPA_PID_FILE" || exit
+                "$SUDO" wpa_supplicant -B -i "$WLAN_DEVICE" -c "$WPA_CONF" -P "$WPA_PID_FILE"
+                ;;
+            iwd)
+                # if the configuration file doesn't exit, create it
+                [ -f "$IWD_CONF" ] || {
+                    echo "$DEF_IWD_CONF" |
+                        "$SUDO" tee "$IWD_CONF" 1> /dev/null
+                }
+                "$SUDO" mkdir -p $IWD_NET_DIR
+                "$SUDO" /usr/lib/iwd/iwd -i "$WLAN_DEVICE" &
+                ;;
+            *)
+                exit 1
+                ;;
+        esac
+    }
+}
+
+disable_wifi() {
+    # Only enter the case statement if the IS_ACTIVE_FILE exists
+    [ -f "$IS_ACTIVE_FILE" ] && {
+        case $WLAN_DAEMON in
+            wpa_supplicant)
+                "$SUDO" kill -s 15 "$(cat $WPA_PID_FILE)" # kill wpa_supplicant
+                "$SUDO" rm -rvf "${WPA_PID_FILE%/*}" # remove /run/wpa_supplicant
+                ;;
+            iwd)
+                # Run through every pid and send a SIGTERM to it
+                #for pid in $(get_daemon_pid)
+                #do
+                #	"$SUDO" kill -s 15 "$pid"
+                #done
+                get_daemon_pid | "$SUDO" xargs -I{} kill -s 15 {}
+                ;;
+        esac
+        "$SUDO" rm -rvf "${IS_ACTIVE_FILE%/*}" # remove /run/wctl/stat
+    }
+}
+
+add() {
+    # in: <ssid> <pswd>
+    [ -z "$1" ] && {
+        echo 'No SSID given.'
+        exit 1
+    }
+    case $WLAN_DAEMON in
+        wpa_supplicant)
+            # if the password field is not empty
+            if [ -n "$2" ]; then
+                {
+                    if which wpa_passphrase 1> /dev/null; then
+                        # use wpa_passphrase and get rid of the plaintext password
+                        wpa_passphrase "$1" "$2" |
+                            grep -v '#psk=' |
+                            "$SUDO" tee -a "$WPA_CONF" > /dev/null
+                    else
+                        # if wpa_passphrase is not available, use plaintext
+                        printf 'network={\n\tssid="%s"\n\tpsk="%s"\n}\n' "$2" "$3" |
+                            "$SUDO" tee -a "$WPA_CONF" > /dev/null
+                    fi
+                }
+            else
+                {
+                    printf "network={\n\tssid=\"%s\"\n\tkey_mgmt=NONE\n}" "$1" |
+                        "$SUDO" tee -a "$WPA_CONF" > /dev/null
+                }
+            fi
+            ;;
+        iwd)
+            # if the password field is not empty
+            if [ -n "$2" ]; then
+                {
+                    echo "[Security]" |
+                        "$SUDO" tee "${IWD_NET_DIR}$1.psk" 1> /dev/null # Create the psk file
+                    # same as above, but replace psk with PreSharedKey
+                    if which wpa_passphrase 1> /dev/null; then
+                        wpa_passphrase "$1" "$2" |
+                            grep -E "^([[:space:]])psk=" |
+                            sed "s~psk=~PreSharedKey=~" |
+                            "$SUDO" tee -a "${IWD_NET_DIR}$1.psk" > /dev/null
+                    else
+                        # TODO: check to make sure this works
+                        echo "PreSharedKey=$2" |
+                            "$SUDO" tee -a "${IWD_NET_DIR}$1.psk" > /dev/null
+                    fi
+                }
+            else
+                {
+                    # if there is no password, save it as an open network
+                    "$SUDO" touch "${IWD_NET_DIR}$1.open"
+                }
+            fi
+            ;;
+    esac
+}
+
+list() {
+    case $WLAN_DAEMON in
+        wpa_supplicant)
+            grep "ssid=" "$WPA_CONF" | cut -d'"' -f2
+            ;;
+        iwd)
+            "$SUDO" find "$IWD_NET_DIR" -type f | xargs -I{} basename {} | cut -d'.' -f1
+            ;;
+    esac
+}
+
+remove() {
+    [ -z "$1" ] && {
+        echo "$USAGE_S"
+        exit
+    }
+    case $WLAN_DAEMON in
+        wpa_supplicant)
+            grep -q "^\s*ssid=\"$1\"\s*$" "$WPA_CONF" || {
+                echo "No net with ssid '$1' could be found."
+                exit
+            }
+            SSIDR="$(sed -n "/^\s*ssid=\"$1\"\s*$/=" "$WPA_CONF")"
+            sed "$((SSIDR - 1)),$((SSIDR + 2))d" "$WPA_CONF" |
+                "$SUDO" tee "$WPA_CONF" > /dev/null
+            ;;
+        iwd)
+            # TODO: make sure this works.
+            # asterisk isn't the best choice here, could replace with (psk|open|wep|8021x)
+            "$SUDO" rm -vf "$IWD_NET_DIR/$1.(psk|open|wep|8021x)"
+            #"$SUDO" rm -vf "$IWD_NET_DIR/$1.*"
+            ;;
+    esac
+}
+
+changepass() {
+    #		grep "ssid=\"$ssid" $WPA_CONF 1> /dev/null || exit 1
+    #if user didn't provide an ssid
+    if [ -z "$1" ]; then
+        {
+            list
+            printf "Which SSID? "
+            read -r ssid
+        }
+    else
+        ssid="$1"
+    fi
+
+    # if the user didn't provide a password
+    if [ -z "$2" ]; then
+        {
+            printf "New Passowrd: "
+            read -r pass
+        }
+    else
+        {
+            pass="$2"
+        }
+    fi
+    remove "$ssid" # remove the old entry
+    add "$ssid" "$pass" # add a new entry
+    # unset the variables
+    unset pass
+    unset ssid
+}
+
+migrate() {
+    # wpa_supplicant -> iwd ; read conf, split each network into it's own file dependent on the type of network
+    # iwd -> wpa_supplicant ; read all of the files in the net dir, get the passwords and append it to wpa_conf
+    echo "Current daemon is: $WLAN_DAEMON"
+    echo "Possible daemons: $VALID_DAEMONS"
+    printf "New daemon: "
+    read -r newdaemon
+    echo "$newdaemon"
+    # wpa_supplicant -> iwd
+    [ "$newdaemon" = "iwd" ] && [ "$WLAN_DAEMON" = "wpa_supplicant" ] && {
+        echo "Migrating from wpa_supplicant to iwd..."
+        # get a list of all known networks, and iterate through them
+        ssid_list=$(list)
+        for ssid in $ssid_list; do
+            # get the line number for the SSID
+            SSIDR="$(sed -n "/^\s*ssid=\"$ssid\"\s*$/=" "$WPA_CONF")"
+
+            # using the line number from above, get the useful info and save it in netstr
+            netstr="$(sed -n "$((SSIDR - 1)),$((SSIDR + 2))p" "$WPA_CONF" | tr '\n' '~')"
+
+            # now that we have netstr, we can get the ssidname by running it through sed
+            ssidname="$(echo "$netstr" | sed -E "s~^.*ssid=\"([^\"]*)\".*$~\1~")"
+
+            # check if the network has a password, if so it's a psk file
+            if echo "$netstr" | grep "psk" 1> /dev/null; then
+                # set the net type to be psk, and also get the password
+                nettype="psk"
+                ssidpass="$(echo "$netstr" | sed -E "s|^.*psk=([^~]*)~.*$|\1|")"
+
+                # if the iwd net dir doesn't exit, create it
+                ! [ -d "$IWD_NET_DIR" ] && "$SUDO" mkdir -pv "$IWD_NET_DIR"
+
+                # properly formatted string to be put into the .psk file
+                printf "[Security]\nPreSharedKey=%s\n" "$ssidpass" |
+                    "$SUDO" tee "${IWD_NET_DIR}${ssidname}.${nettype}" 1> /dev/null
+            else
+                nettype="open"
+                ! [ -d "$IWD_NET_DIR" ] && "$SUDO" mkdir -pv "$IWD_NET_DIR"
+                "$SUDO" touch "${IWD_NET_DIR}${ssidname}.${nettype}"
+            fi
+        done
+        #echo "Finished! Make sure to change your default WLAN_DAEMON..."
+    }
+    # iwd -> wpa_supplicant
+    [ "$newdaemon" = "wpa_supplicant" ] && [ "$WLAN_DAEMON" = "iwd" ] && {
+        echo "Migrating from iwd to wpa_supplicant..."
+        # need to use the find command instead of 'list' because we need to know
+        # what the extension is of each network.
+        ssidfiles="$("$SUDO" find $IWD_NET_DIR -type f)"
+
+        for ssidf in $ssidfiles; do
+            echo "$ssidf" | grep -E "open$" && nettype="open"
+            echo "$ssidf" | grep -E "psk$" && nettype="psk"
+            ssid="$(echo "${ssidf##*/}" | cut -d'.' -f1)"
+            if [ $nettype = "psk" ]; then
+                ssidpass="$("$SUDO" grep "PreSharedKey" "$ssidf" | cut -d'=' -f2)"
+            fi
+            # if ssidpass is defined
+            if [ -n "$ssidpass" ]; then
+                {
+                    printf "network={\n\tssid=\"%s\"\n\tpsk=%s\n}" "$ssid" "$ssidpass" |
+                        "$SUDO" tee -a "$WPA_CONF" > /dev/null
+                    # otherwise it's an open network
+                }
+            else
+                {
+                    printf "network={\n\tssid=\"%s\"\n\tkey_mgmt=NONE\n}" "$ssid" |
+                        "$SUDO" tee -a "$WPA_CONF" > /dev/null
+                }
+            fi
+        done
+    }
+    # nothing to migrate cases
+    [ "$newdaemon" = "wpa_supplicant" ] && [ "$WLAN_DAEMON" = "wpa_supplicant" ] && {
+        echo "Nothing to migrate. Exiting..."
+        exit 0
+    }
+    [ "$newdaemon" = "iwd" ] && [ "$WLAN_DAEMON" = "iwd" ] && {
+        echo "Nothing to migrate. Exiting..."
+        exit 0
+    }
+    # if the conf file exists, automatically edit it
+    [ -f "$XDG_CONFIG_HOME"/wctl.conf ] && {
+        # if the backup file doesn't exist create it (test to make sure we don't overwrite a working conf)
+        ! [ -f "$XDG_CONFIG_HOME"/wctl.conf.backup ] && {
+            cp "$XDG_CONFIG_HOME"/wctl.conf "$XDG_CONFIG_HOME"/wctl.conf.backup
+            echo "Created $XDG_CONFIG_HOME/wctl.conf.backup"
+        }
+        echo "Editing $XDG_CONFIG_HOME/wctl.conf to use $newdaemon..."
+        sed "s~$WLAN_DAEMON~$newdaemon~" "$XDG_CONFIG_HOME"/wctl.conf > _
+        mv -f _ "$XDG_CONFIG_HOME"/wctl.conf
+        echo "Done! The new daemon is: $newdaemon"
+    }
+}
+
+purge() {
+    # completely clean the sytem of any wireless configuration that is handled by this script
+    # remove both configuration files, as well as any networks that were saved for iwd
+    echo "
+$SUDO rm -rvf $WPA_CONF
+$SUDO rm -rvf $IWD_CONF
+$SUDO rm -rvf $IWD_NET_DIR*"
+    printf "Are you sure that you want to run these commands? Type 'Yes' if yes: "
+    read -r ans1
+    [ "$ans1" = "Yes" ] && {
+        "$SUDO" rm -rvf "$WPA_CONF"
+        "$SUDO" rm -rvf "$IWD_CONF"
+        "$SUDO" rm -rvf ${IWD_NET_DIR}*
+    }
+}
+
+make_config() {
+    if which ip 1> /dev/null 2> /dev/null; then
+        {
+            dev=$(ip addr show |
+                grep -E "^[1-9]+:" |
+                cut -d':' -f2 |
+                grep -i "w" |
+                sed 's/^ //' |
+                tr '\n' ' ')
+        }
+    else
+        {
+            dev=$(ifconfig |
+                grep -E "^wlp" |
+                cut -d' ' -f1)
+            #echo "FIXME: implement ifconfig"
+        }
+    fi
+    # prefer wpa_supplicant over iwd
+    command -v iwd 1> /dev/null && daemon=iwd
+    command -v wpa_supplicant 1> /dev/null && daemon=wpa_supplicant
+    # prefer doas over sudo
+    command -v sudo 1> /dev/null && sudo=sudo
+    command -v doas 1> /dev/null && sudo=doas
+
+    printf "WLAN_DEVICE=%s\nWLAN_DAEMON=%s\nSUDO=%s\n" "$dev" "$daemon" "$sudo"
+}
+
+get_status() {
+    if which ip 1> /dev/null 2> /dev/null; then
+        {
+            ip addr | sed "1,/$WLAN_DEVICE/ d"
+        }
+    else
+        {
+            ifconfig | sed "1,/$WLAN_DEVICE/ d"
+            echo "FIXME: implement ifconfig"
+        }
+    fi
+    # show what ssid, channel, and type are used
+    if which iw 1> /dev/null 2> /dev/null; then
+        {
+            iw dev "$WLAN_DEVICE" info | grep -E "(ssid|channel|type)"
+        }
+    else
+        {
+            iwconfig
+            echo "FIXME: implement iwconfig"
+        }
+    fi
+}
+
+find_networks() {
+    # if iw is installed, use iw, otherwise fallback to iwlist
+    if which iw 1> /dev/null 2> /dev/null; then
+        {
+            "$SUDO" iw dev "$WLAN_DEVICE" scan |
+                grep "SSID:" |
+                cut -d':' -f2 |
+                grep -E '[^[:blank:]*$]' |
+                sort -u |
+                sed "s/^/* /"
+        }
+    else
+        {
+            "$SUDO" iwlist "$WLAN_DEVICE" scanning |
+                grep "SSID:" |
+                cut -d':' -f2 |
+                tr -d '"' |
+                grep -E '[^[:blank:]*$]' |
+                grep -v '^\\' |
+                sed "s/^/* /" |
+                sort -u
+            echo "FIXME: implement iwconfig"
+        }
+    fi
+}
+
+case "$1" in
+    e | enable)  enable_wifi  ;;
+    d | disable) disable_wifi ;;
+    restart)     disable_wifi && enable_wifi;;
+    config)      make_config  ;;
+    s | status)  get_status   ;;
+    f | find)    find_networks;;
+    l | list)    list         ;;
+    a | add)     add "$2" "$3";;
+    remove)      remove "$2"  ;;
+    changepass)  changepass "$2" "$3";;
+    migrate)     migrate      ;;
+    sys-purge)   purge        ;;
+    *)
+        echo "$USAGE_S"
+        echo "
+ * enable     - enable your wifi daemon
+ * disable    - disable your wifi daemon
+ * restart    - kill your wifi daemon, then start it
+ * status     - print out wifi connection information
+ * list       - list all known networks
+ * add        - add an ssid with a given password (assumed to be an open network if no password)
+ * changepass - change the password for a given ssid
+ * remove     - remove an ssid from the known networks
+ * find       - search for wifi networks near you
+ * migrate    - migrate from one wifi daemon to different one (supported: wpa_supplicant <-> iwd)
+ * sys-purge  - remove all configuration that wctl handles
+"
+        ;;
+esac
+
+# Current list of features:
+# * add a network
+# * remove a network
+# * enable wifi daemon
+# * disable wifi daemon
+# * restart wifi daemon
+# * list all added networks
+# * change a network's password
+# * find nearby networks
+# * get the current status of your wifi connection
+# * get wifi related information about your machine
+# * ability to migrate from wpa_supplicant to iwd, preserving all known networks
+# * generate a compatible configuration file
+
+# links
+# https://wiki.archlinux.org/index.php/Wpa_supplicant
+# https://wiki.archlinux.org/index.php/Iwd
+# https://wiki.archlinux.org/index.php/Network_configuration/Wireless

@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+case $1 in
+    e)xset s on +dpms;;
+    d)xset s off -dpms;;
+    *) echo "Usage:
+e - enable
+d - disable" && exit 1;;
+esac
