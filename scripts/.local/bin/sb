@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# sb - simple bar
+
+# sb is meant to be a simple bar for dwm.
+
+# Configuration is done via commandline:
+# sb -d '|' -cmds "disk ~:internet | tr '\n' ' ':battery:volume:clock"
+
+# -d specifies the character for the delimiter.
+# -cmds follows the same convention as PATH, items are separated by a colon.
+# -s specifies the amount of seconds to sleep.
+# -pad specifies a string to use between the output of commands and the delim.
+
+command -v xset 1>/dev/null 2>&1 || exit 1
+
+for arg in "$@"; do
+    case "$arg" in
+        -s) shift
+            sleeptime="$1"
+            ;;
+        -pad) shift
+            padchar="$1"
+            ;;
+        -d) shift
+            delim="$1"
+            ;;
+        -cmds) shift
+            cmds="$1"
+            ;;
+        *) shift ;;
+    esac
+done
+
+sb_file=$(mktemp) # The file that contains the commands and their files.
+sb_should_run=$(mktemp) # File to determine if we should continue running.
+
+trap 'rm -v -- $sb_should_run' INT USR1 TERM
+
+# Set IFS to colon for the loop
+IFS=':'
+for cmd in $cmds; do
+    echo "${cmd}:$(mktemp)" >> "$sb_file"
+done
+
+# Reset IFS
+IFS=' '
+
+sb_should_run() { [ -e "$sb_should_run" ] && [ -n "$DISPLAY" ] && xset q 1>/dev/null 2>&1 ; }
+
+# Setup the commands.
+get_bar_str() {
+    if sb_should_run; then
+        {
+        echo "$delim"
+        while read -r cmd_line; do
+            cmd="${cmd_line%%:*}"
+            cmd_file="${cmd_line##*:}"
+            $cmd > "$cmd_file" 2>/dev/null
+            printf "${padchar:-}%s${padchar:-}" "$(cat "$cmd_file")"
+            echo "$delim"
+        done < "$sb_file"
+        } | tr -d '\n'
+    fi
+}
+
+# Until the should run file is gone, we continue running.
+until ! (sb_should_run); do
+    # Make sure to fork so we can trap signals.
+    xsetroot -name "$(get_bar_str)" &
+    sleep "${sleeptime:-3}"
+done
+wait
+
+cut -d':' -f2 < "$sb_file" | xargs rm -v 2>/dev/null # Cleanup when we die.
+rm -v -- "$sb_file" 2>/dev/null

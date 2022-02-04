@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Since I'm super lazy and I find myself typing this command multiple times.
+
+find . -type f | xargs -P0 grep $@ 2>/dev/null
