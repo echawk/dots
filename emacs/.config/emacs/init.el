@@ -178,6 +178,12 @@
   :init
   (setq inferior-lisp-program "sbcl"))
 
+; Markdown support.
+(use-package markdown-mode)
+(use-package markdown-preview-mode
+  :config
+  (setq markdown-command "lowdown -s -Thtml"))
+
 ; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
