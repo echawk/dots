@@ -1,0 +1,2 @@
+#!/bin/sh
+fc-list | cut -d':' -f2 | cut -d',' -f1 | sed "s/^ //" | sort -u
