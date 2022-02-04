@@ -56,7 +56,9 @@ get_bar_str() {
         while read -r cmd_line; do
             cmd="${cmd_line%%:*}"
             cmd_file="${cmd_line##*:}"
-            $cmd > "$cmd_file" 2>/dev/null
+            if command -v $cmd 1>/dev/null 2>&1; then
+                $cmd > "$cmd_file" 2>/dev/null
+            fi
             printf "${padchar:-}%s${padchar:-}" "$(cat "$cmd_file")"
             echo "$delim"
         done < "$sb_file"
