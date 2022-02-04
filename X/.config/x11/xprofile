@@ -22,5 +22,6 @@ else
     fi
 fi
 [ "$WM" = dwm ] && {
-    which bbar && bbar &
+    #which bbar && bbar &
+    which sb && sb -pad ' ' -s 3 -d '|' -cmds "disk $HOME:internet:battery:volume:clock" &
 }
