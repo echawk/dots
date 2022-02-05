@@ -28,6 +28,10 @@
 # TODO:
 # - add in a way to choose which network to connect to (priority setting)
 # - kill dhcpcd if started by wctl
+# - add support for wpa enterprise
+#   - https://gist.github.com/aspyct/994b603aaefe5996ca331f107d6abb67
+#   - https://bbs.archlinux.org/viewtopic.php?id=183766
+#   - https://wiki.archlinux.org/title/Iwd#WPA_Enterprise
 
 # COMPLETED:
 # - status; show what network wlan0 is connected to; done
