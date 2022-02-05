@@ -220,8 +220,3 @@
 (defvar clean-buffer-list-kill-never-regexps-init
   clean-buffer-list-kill-never-regexps
   "Init value for clean-buffer-list-kill-never-regexps")
-
-; Append to *-init instead of itself
-(setq clean-buffer-list-kill-never-regexps
-      (append '("^\\*EMMS Playlist\\*.*$")
-      clean-buffer-list-kill-never-regexps-init))
