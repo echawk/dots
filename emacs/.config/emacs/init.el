@@ -148,6 +148,11 @@
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save))
 
+; tuareg's default indentation behavior is pretty bad. See:
+; https://github.com/ocaml/tuareg/issues/179
+(use-package ocp-indent
+  :hook (tuareg-mode-hook . ocp-setup-indent))
+
 ; Go integration.
 (use-package go-mode
   :hook (before-save . gofmt-before-save))
