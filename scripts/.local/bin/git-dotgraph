@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Produces a dotgraph for a git repo. Logs some basic info for each commit:
+# SHA, WHO, DATE, & SHORT (headline for a commit)
+
+# At the top of the generated image is the most recent commit.
+
+# Inspiration from: https://git.wiki.kernel.org/index.php/Aliases#Use_graphviz_for_display
+# And: https://github.com/rpmiskin/git-graphviz
+
+echo 'digraph git {'
+echo '  node [fontname = courier, shape = box, colorscheme = paired6]'
+echo '  edge [fontname = courier]'
+git log --pretty="format: \"%h\" [label=\"SHA:%h\\n\lWHO:%an\\n\lDATE:%aD\\n\lSHORT:%f\"] ; %h -> { %p }" "$@" \
+    | sed -E "s/; ([0-9a-f][0-9a-f]*)/\n \1/" \
+    | sed -E "/^ ([0-9a-f][0-9a-f]*)/s/([0-9a-f][0-9a-f]*)/\"\1\"/g"
+echo '}'
