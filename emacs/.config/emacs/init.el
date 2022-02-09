@@ -120,7 +120,8 @@
   :defer
   :hook ((tuareg-mode . eglot-ensure)
          (go-mode . eglot-ensure)
-         (c-mode . eglot-ensure))
+         (c-mode . eglot-ensure)
+         (LaTeX-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
     '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
@@ -173,6 +174,15 @@
   (setq imaxima-fnt-size "LARGE")
   (setq imaxima-latex-preamble "\\usepackage{concrete}")
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
+
+; Better LaTeX editing.
+(use-package auctex
+  :hook ((LaTeX-mode-hook . visual-line-mode)
+         (LaTeX-mode-hook . LaTeX-math-mode))
+  :config
+  (setq TeX-auto-save nil)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil))
 
 ; ESS for R & Data Sci.
 (use-package ess
