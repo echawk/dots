@@ -109,6 +109,9 @@
   :config
   (evil-collection-init))
 
+; Git frontend.
+(use-package magit) 
+
 ; Better scheme editing.
 (use-package geiser
   :defer)
