@@ -110,7 +110,8 @@
   (evil-collection-init))
 
 ; Git frontend.
-(use-package magit) 
+(use-package magit)
+(use-package forge)
 
 ; Better scheme editing.
 (use-package geiser
