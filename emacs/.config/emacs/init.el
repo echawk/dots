@@ -49,6 +49,9 @@
 (setq backup-inhibited t)
 (setq auto-save-default nil)
 
+; Native Compilation.
+(setq package-native-compile (if (>= emacs-major-version 28) t nil))
+
 ; package stuff
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
