@@ -138,7 +138,8 @@
 (use-package company
   :defer
   ; First hook is for any time we enable eglot, we want company mode running too.
-  :hook (eglot--managed-mode . company-mode)
+  :hook ((eglot--managed-mode . company-mode)
+         (lisp-interaction-mode . company-mode))
   :bind (:map company-active-map
           ("<tab>" . company-complete-selection))
   :custom
