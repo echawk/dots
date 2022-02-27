@@ -85,8 +85,9 @@
 
 
 (use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+  :custom ((doom-modeline-height 15))
+  :config
+  (doom-modeline-mode 1))
 
 ;(use-package rainbow-delimiters
 ;  :hook (prog-mode . rainbow-delimiters-mode))
@@ -113,12 +114,11 @@
   (evil-collection-init))
 
 ; Git frontend.
-(use-package magit)
-(use-package forge)
+(use-package magit :defer)
+(use-package forge :defer)
 
 ; Better scheme editing.
-(use-package geiser
-  :defer)
+(use-package geiser :defer)
 (use-package geiser-chez
   :after geiser)
 
@@ -193,17 +193,18 @@
   (setq-default TeX-master nil))
 
 ; ESS for R & Data Sci.
-(use-package ess
-  :defer)
+(use-package ess :defer)
 
 ; Use sly instead of slime
 (use-package sly
-  :init
+  :defer
+  :config
   (setq inferior-lisp-program "sbcl"))
 
 ; Markdown support.
-(use-package markdown-mode)
+(use-package markdown-mode :defer)
 (use-package markdown-preview-mode
+  :defer
   :config
   (setq markdown-command "lowdown -s -Thtml"))
 
@@ -243,3 +244,12 @@
 (defvar clean-buffer-list-kill-never-regexps-init
   clean-buffer-list-kill-never-regexps
   "Init value for clean-buffer-list-kill-never-regexps")
+
+; Print startup time on emacs startup.
+(defun display-startup-time ()
+      (message "Emacs loaded in %s with %d garbage collections."
+        (format "%.2f seconds"
+          (float-time
+            (time-subtract after-init-time before-init-time))) gcs-done))
+
+(add-hook 'emacs-startup-hook #'display-startup-time)
