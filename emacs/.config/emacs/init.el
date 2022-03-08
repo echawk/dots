@@ -117,14 +117,6 @@
 (use-package magit :defer)
 (use-package forge :defer)
 
-; Better scheme editing.
-(use-package geiser :defer)
-(use-package geiser-chez
-  :after geiser)
-(use-package macrostep :defer)
-(use-package macrostep-geiser :defer)
-(use-package srfi :defer)
-
 ; Simple LSP mode for emacs.
 (use-package eglot
   :defer
@@ -157,17 +149,23 @@
 
 ; Autoformatting for OCaml.
 (use-package ocamlformat
+  :defer
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save))
 
 ; tuareg's default indentation behavior is pretty bad. See:
 ; https://github.com/ocaml/tuareg/issues/179
 (use-package ocp-indent
+  :defer
   :hook (tuareg-mode-hook . ocp-setup-indent))
 
 ; Go integration.
 (use-package go-mode
+  :defer
   :hook (before-save . gofmt-before-save))
+
+; ESS for R & Data Sci.
+(use-package ess :defer)
 
 ; Have <file>.P, be recognized as prolog source files.
 (add-to-list 'auto-mode-alist '("\\.P\\'" . prolog-mode))
@@ -195,21 +193,26 @@
   (setq TeX-parse-self t)
   (setq-default TeX-master nil))
 
-; ESS for R & Data Sci.
-(use-package ess :defer)
-
-; Use sly instead of slime
-(use-package sly
-  :defer
-  :config
-  (setq inferior-lisp-program "sbcl"))
-
 ; Markdown support.
 (use-package markdown-mode :defer)
 (use-package markdown-preview-mode
   :defer
   :config
   (setq markdown-command "lowdown -s -Thtml"))
+
+; Better scheme editing.
+(use-package geiser :defer)
+(use-package geiser-chez
+  :after geiser)
+(use-package macrostep :defer)
+(use-package macrostep-geiser :defer)
+(use-package srfi :defer)
+
+; Use sly instead of slime
+(use-package sly
+  :defer
+  :config
+  (setq inferior-lisp-program "sbcl"))
 
 ; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
