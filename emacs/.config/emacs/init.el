@@ -121,6 +121,9 @@
 (use-package geiser :defer)
 (use-package geiser-chez
   :after geiser)
+(use-package macrostep :defer)
+(use-package macrostep-geiser :defer)
+(use-package srfi :defer)
 
 ; Simple LSP mode for emacs.
 (use-package eglot
