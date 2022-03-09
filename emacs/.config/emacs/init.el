@@ -205,6 +205,8 @@
 (use-package geiser :defer)
 (use-package geiser-chez
   :after geiser)
+(use-package geiser-chicken
+  :after geiser)
 (use-package macrostep :defer)
 (use-package macrostep-geiser :defer)
 (use-package srfi :defer)
