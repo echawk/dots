@@ -121,6 +121,7 @@
 (use-package eglot
   :defer
   :hook ((tuareg-mode . eglot-ensure)
+         (caml-mode . eglot-ensure)
          (go-mode . eglot-ensure)
          (c-mode . eglot-ensure)
          (erlang-mode . eglot-ensure)
@@ -143,14 +144,23 @@
   (company-idle-delay 0.0))
 
 ; OCaml integration.
-(use-package tuareg
-  :defer
-  :custom
-  (setq tuareg-in-indent 0))
+;(use-package tuareg
+;  :defer
+;  :custom
+;  (setq tuareg-in-indent 0))
 ;  (setq tuareg-default-indent 0)
 ;  (setq tuareg-with-indent 0)
 ;  (setq tuareg-match-clause-indent 0)
 ;  (setq tuareg-match-when-indent 0)
+
+(use-package caml :defer
+  :init
+  (add-to-list 'auto-mode-alist '("\\.ml[iylp]?$" . caml-mode))
+  (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
+  (autoload 'run-caml "inf-caml" "Run an inferior OCaml process." t)
+  (autoload 'camldebug "camldebug" "Run ocamldebug on program." t)
+  (add-to-list 'interpreter-mode-alist '("ocamlrun" . caml-mode))
+  (add-to-list 'interpreter-mode-alist '("ocaml" . caml-mode)))
 
 ; Autoformatting for OCaml.
 (use-package ocamlformat
@@ -162,7 +172,8 @@
 ; https://github.com/ocaml/tuareg/issues/179
 (use-package ocp-indent
   :defer
-  :hook (tuareg-mode-hook . ocp-setup-indent))
+  :hook ((tuareg-mode-hook . ocp-setup-indent)
+         (caml-mode . ocp-setup-indent)))
 
 ; Go integration.
 (use-package go-mode
