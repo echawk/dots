@@ -153,7 +153,15 @@
 ;  (setq tuareg-match-clause-indent 0)
 ;  (setq tuareg-match-when-indent 0)
 
+; tuareg's default indentation behavior is pretty bad. See:
+; https://github.com/ocaml/tuareg/issues/179
+;(use-package ocp-indent
+;  :defer
+;  :hook ((tuareg-mode-hook . ocp-setup-indent)
+;         (caml-mode . ocp-setup-indent)))
+
 (use-package caml :defer
+  :hook (before-save . ocamlformat)
   :init
   (add-to-list 'auto-mode-alist '("\\.ml[iylp]?$" . caml-mode))
   (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
@@ -167,13 +175,6 @@
   :defer
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save))
-
-; tuareg's default indentation behavior is pretty bad. See:
-; https://github.com/ocaml/tuareg/issues/179
-(use-package ocp-indent
-  :defer
-  :hook ((tuareg-mode-hook . ocp-setup-indent)
-         (caml-mode . ocp-setup-indent)))
 
 ; Go integration.
 (use-package go-mode
