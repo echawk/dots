@@ -123,6 +123,7 @@
   :hook ((tuareg-mode . eglot-ensure)
          (go-mode . eglot-ensure)
          (c-mode . eglot-ensure)
+         (erlang-mode . eglot-ensure)
          (LaTeX-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
@@ -213,6 +214,11 @@
   :defer
   :config
   (setq inferior-lisp-program "sbcl"))
+
+; Erlang editing.
+(use-package edts
+  :defer
+  :hook (erlang-mode . edts-mode))
 
 ; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
