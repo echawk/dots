@@ -147,6 +147,10 @@
   :defer
   :custom
   (setq tuareg-in-indent 0))
+;  (setq tuareg-default-indent 0)
+;  (setq tuareg-with-indent 0)
+;  (setq tuareg-match-clause-indent 0)
+;  (setq tuareg-match-when-indent 0)
 
 ; Autoformatting for OCaml.
 (use-package ocamlformat
