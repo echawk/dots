@@ -143,6 +143,13 @@
   (company-minimum-prefix-length 3)
   (company-idle-delay 0.0))
 
+; Language independent syntax highlighting via tree-sitter.
+(use-package tree-sitter
+  :defer
+  :hook ((go-mode . tree-sitter-hl-mode)
+         (caml-mode . tree-sitter-hl-mode)))
+(use-package tree-sitter-langs :after tree-sitter)
+
 ; OCaml integration.
 ;(use-package tuareg
 ;  :defer
