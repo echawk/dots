@@ -162,6 +162,8 @@
 
 (use-package caml :defer
   :hook (before-save . ocamlformat)
+  :bind (:map caml-mode-map
+         ("C-c C-b" . caml-eval-buffer))
   :init
   (add-to-list 'auto-mode-alist '("\\.ml[iylp]?$" . caml-mode))
   (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
