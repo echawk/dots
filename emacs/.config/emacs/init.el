@@ -132,8 +132,7 @@
   (add-to-list 'eglot-server-programs
     '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab")))
   (add-to-list 'eglot-server-programs
-    '(elixir-mode . ("elixir-ls")))
-  )
+    '(elixir-mode . ("elixir-ls"))))
 
 
 ; In-buffer autocompletion.
