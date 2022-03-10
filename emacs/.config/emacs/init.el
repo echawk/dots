@@ -184,8 +184,7 @@
 ; Autoformatting for OCaml.
 (use-package ocamlformat
   :defer
-  :custom (ocamlformat-enable 'enable-outside-detected-project)
-  :hook (before-save . ocamlformat-before-save))
+  :custom (ocamlformat-enable 'enable-outside-detected-project))
 
 ; Go integration.
 (use-package go-mode
