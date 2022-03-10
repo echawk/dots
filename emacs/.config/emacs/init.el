@@ -125,11 +125,15 @@
          (caml-mode . eglot-ensure)
          (go-mode . eglot-ensure)
          (c-mode . eglot-ensure)
+         (elixir-mode . eglot-ensure)
          (erlang-mode . eglot-ensure)
          (LaTeX-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
-    '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
+    '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab")))
+  (add-to-list 'eglot-server-programs
+    '(elixir-mode . ("elixir-ls")))
+  )
 
 
 ; In-buffer autocompletion.
