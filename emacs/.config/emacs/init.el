@@ -36,8 +36,9 @@
 (setq auto-save-default nil)
 
 ; Native Compilation.
-(setq package-native-compile (>= emacs-major-version 28))
-;(setq comp-async-report-warnings-errors nil)
+(setq is-emacs-28 (>= emacs-major-version 28))
+(setq package-native-compile is-emacs-28)
+(setq native-comp-async-report-warnings-errors (not is-emacs-28))
 
 ; package stuff
 (require 'package)
@@ -73,9 +74,7 @@
   (setq straight-use-package-by-default t))
 
 (setq use-straight nil)
-(if use-straight
-  (straight-bootstrap)
-  (package-bootstrap))
+(if use-straight (straight-bootstrap) (package-bootstrap))
 
 (use-package ivy
   :diminish
@@ -95,7 +94,8 @@
   :config
   (ivy-mode 1))
 
-
+(use-package doom-themes :defer)
+;(use-package all-the-icons :defer)
 (use-package doom-modeline
   :custom ((doom-modeline-height 15))
   :config
@@ -226,6 +226,10 @@
   :defer
   :custom (ocamlformat-enable 'enable-outside-detected-project))
 
+; SML
+(use-package sml-mode  :defer)
+(use-package sml-basis :defer)
+
 ; Go integration.
 (use-package go-mode
   :defer
@@ -269,13 +273,13 @@
 
 ; Better scheme editing.
 (use-package geiser :defer)
-(use-package geiser-chez
-  :after geiser)
-(use-package geiser-chicken
-  :after geiser)
-(use-package macrostep :defer)
+(use-package geiser-chez    :after geiser)
+(use-package geiser-chicken :after geiser)
+(use-package macrostep        :defer)
 (use-package macrostep-geiser :defer)
 (use-package srfi :defer)
+;(load (concat user-emacs-directory "quack"))
+;(setq quack-default-program "csi")
 
 ; Use sly instead of slime
 (use-package sly
