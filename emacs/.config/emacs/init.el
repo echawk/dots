@@ -50,7 +50,7 @@
 (setq auto-save-default nil)
 
 ; Native Compilation.
-(setq package-native-compile (if (>= emacs-major-version 28) t nil))
+(setq package-native-compile (>= emacs-major-version 28))
 ;(setq comp-async-report-warnings-errors nil)
 
 ; package stuff
