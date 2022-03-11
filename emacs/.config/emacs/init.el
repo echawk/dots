@@ -184,19 +184,42 @@
 ;  :hook ((tuareg-mode-hook . ocp-setup-indent)
 ;         (caml-mode . ocp-setup-indent)))
 
+(defun buffer-as-string ()
+  "Returns the current buffer as a string."
+  (buffer-substring-no-properties (point-min) (point-max)))
+
 (use-package caml
   :defer
   :hook (before-save . ocamlformat)
   :interpreter (("ocaml" . caml-mode)
                 ("ocamlrun" . caml-mode))
   :bind (:map caml-mode-map
-         ("C-c C-b" . caml-eval-buffer)
+         ("C-c C-b" . 'custom-caml-eval-buffer)
          ("C-c C-r" . caml-eval-region))
   :init
   (add-to-list 'auto-mode-alist '("\\.ml[iylp]?$" . caml-mode))
+  :config
   (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
   (autoload 'run-caml "inf-caml" "Run an inferior OCaml process." t)
-  (autoload 'camldebug "camldebug" "Run ocamldebug on program." t))
+  (autoload 'camldebug "camldebug" "Run ocamldebug on program." t)
+  (defun custom-caml-eval-buffer ()
+    "Send the current buffer to OCaml and evaluate it."
+    (interactive)
+    (let ((buff (concat
+                  (replace-regexp-in-string
+                    "[ \t\n]*\\(;;[ \t\n]*\\)?\\'"
+                    ""
+                    (buffer-as-string))
+                  ";;")))
+      (with-current-buffer "*inferior-caml*"
+        (goto-char (point-max))
+        (comint-send-string "*inferior-caml*" buff)
+        (let ((pos (point)))
+          (comint-send-input)
+          (save-excursion
+            (goto-char pos)
+            (insert buff))))
+      (display-buffer "*inferior-caml*"))))
 
 ; Autoformatting for OCaml.
 (use-package ocamlformat
