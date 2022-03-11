@@ -184,12 +184,14 @@
 ;  :hook ((tuareg-mode-hook . ocp-setup-indent)
 ;         (caml-mode . ocp-setup-indent)))
 
-(use-package caml :defer
+(use-package caml
+  :defer
   :hook (before-save . ocamlformat)
   :interpreter (("ocaml" . caml-mode)
                 ("ocamlrun" . caml-mode))
   :bind (:map caml-mode-map
-         ("C-c C-b" . caml-eval-buffer))
+         ("C-c C-b" . caml-eval-buffer)
+         ("C-c C-r" . caml-eval-region))
   :init
   (add-to-list 'auto-mode-alist '("\\.ml[iylp]?$" . caml-mode))
   (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
