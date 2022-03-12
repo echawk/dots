@@ -11,7 +11,10 @@
 (tool-bar-mode -1)   ; Disable the toolbar
 (menu-bar-mode -1)   ; Disable the menubar
 (tooltip-mode -1)    ; Disable tooltips
-(global-display-line-numbers-mode 1) ; Show line numbers
+(global-display-line-numbers-mode 1)  ; Show line numbers
+(setq frame-inhibit-implied-resize t) 
+(setq desktop-resore-forces-onscreen nil)
+(advice-add #'x-apply-session-resources :override #'ignore) ; Ignore Xresources
 
 ; https://reddit.com/r/emacs/comments/np6ey4/how_packageel_works_with_use_package/
 (setq package-enable-at-startup nil)
