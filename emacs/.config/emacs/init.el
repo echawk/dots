@@ -167,6 +167,13 @@
          (caml-mode . tree-sitter-hl-mode)))
 (use-package tree-sitter-langs :after tree-sitter)
 
+(use-package apheleia
+  :defer
+  :init
+  (apheleia-global-mode +1)
+  :config
+  (add-to-list 'apheleia-mode-alist '(caml-mode . ocamlformat)))
+
 ; OCaml integration.
 ;(use-package tuareg
 ;  :defer
@@ -177,20 +184,12 @@
 ;  (setq tuareg-match-clause-indent 0)
 ;  (setq tuareg-match-when-indent 0)
 
-; tuareg's default indentation behavior is pretty bad. See:
-; https://github.com/ocaml/tuareg/issues/179
-;(use-package ocp-indent
-;  :defer
-;  :hook ((tuareg-mode-hook . ocp-setup-indent)
-;         (caml-mode . ocp-setup-indent)))
-
 (defun buffer-as-string ()
   "Returns the current buffer as a string."
   (buffer-substring-no-properties (point-min) (point-max)))
 
 (use-package caml
   :defer
-  :hook (before-save . ocamlformat)
   :interpreter (("ocaml" . caml-mode)
                 ("ocamlrun" . caml-mode))
   :bind (:map caml-mode-map
@@ -220,11 +219,6 @@
             (goto-char pos)
             (insert buff))))
       (display-buffer "*inferior-caml*"))))
-
-; Autoformatting for OCaml.
-(use-package ocamlformat
-  :defer
-  :custom (ocamlformat-enable 'enable-outside-detected-project))
 
 ; SML
 (use-package sml-mode  :defer)
