@@ -174,16 +174,6 @@
   :config
   (add-to-list 'apheleia-mode-alist '(caml-mode . ocamlformat)))
 
-; OCaml integration.
-;(use-package tuareg
-;  :defer
-;  :custom
-;  (setq tuareg-in-indent 0))
-;  (setq tuareg-default-indent 0)
-;  (setq tuareg-with-indent 0)
-;  (setq tuareg-match-clause-indent 0)
-;  (setq tuareg-match-when-indent 0)
-
 (defun buffer-as-string ()
   "Returns the current buffer as a string."
   (buffer-substring-no-properties (point-min) (point-max)))
