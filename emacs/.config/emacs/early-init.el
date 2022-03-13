@@ -15,6 +15,7 @@
 (setq frame-inhibit-implied-resize t) 
 (setq desktop-resore-forces-onscreen nil)
 (advice-add #'x-apply-session-resources :override #'ignore) ; Ignore Xresources
+(setq straight-check-for-modifications nil)
 
 ; https://reddit.com/r/emacs/comments/np6ey4/how_packageel_works_with_use_package/
 (setq package-enable-at-startup nil)
