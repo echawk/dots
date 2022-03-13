@@ -270,9 +270,9 @@
   (setq inferior-lisp-program "sbcl"))
 
 ; Erlang editing.
-(use-package edts
-  :defer
-  :hook (erlang-mode . edts-mode))
+;(use-package edts
+;  :defer
+;  :hook (erlang-mode . edts-mode))
 
 ; Elixir editing.
 (use-package elixir-mode :defer)
