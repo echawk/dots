@@ -220,9 +220,9 @@
 ; ESS for R & Data Sci.
 (use-package ess :defer)
 
-; Have <file>.P, be recognized as prolog source files.
-(add-to-list 'auto-mode-alist '("\\.P\\'" . prolog-mode))
-(add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
+; Have <file>.(P|pl), be recognized as prolog source files.
+(dolist (item '("\\.P\\'" "\\.pl\\'") nil)
+  (add-to-list 'auto-mode-alist (cons item 'prolog-mode)))
 
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
