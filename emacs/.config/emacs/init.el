@@ -225,9 +225,7 @@
 (use-package sml-basis :defer)
 
 ; Go integration.
-(use-package go-mode
-  :defer
-  :hook (before-save . gofmt-before-save))
+(use-package go-mode :defer)
 
 ; ESS for R & Data Sci.
 (use-package ess :defer)
