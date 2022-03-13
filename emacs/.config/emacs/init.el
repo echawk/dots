@@ -94,6 +94,11 @@
   :config
   (ivy-mode 1))
 
+(use-package which-key
+  :defer
+  :config
+  (which-key-mode))
+
 (use-package doom-themes :defer)
 ;(use-package all-the-icons :defer)
 (use-package doom-modeline
