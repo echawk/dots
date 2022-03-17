@@ -110,10 +110,12 @@
 ;  :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package hl-prog-extra
+  :defer
   :hook ((prog-mode . hl-prog-extra-mode))
   :commands (hl-prog-extra-mode))
 
 (use-package editorconfig
+  :defer
   :config
   (editorconfig-mode 1))
 
