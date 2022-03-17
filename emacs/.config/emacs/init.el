@@ -302,35 +302,6 @@
 (with-current-buffer "*scratch*"
   (emacs-lock-mode 'kill))
 
-; Auto kill dead buffers.
-; See: https://www.emacswiki.org/emacs/KillingBuffers#h5o-14
-(require 'midnight)
-
-(setq clean-buffer-list-delay-special 900)
-
-(defvar clean-buffer-list-timer nil
-  "Stores clean-buffer-list timer if there is one. You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
-
-; Run clean-buffer-list every 2 hours.
-(setq clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list))
-
-; Kill everything, clean-buffer-list is intelligent & won't kill unsaved buffers.
-(setq clean-buffer-list-kill-regexps '("^.*$"))
-
-; Keep these buffers untouched & prevent append multiple times.
-(defvar clean-buffer-list-kill-never-buffer-names-init
-  clean-buffer-list-kill-never-buffer-names
-  "Init value for clean-buffer-list-kill-never-buffer-names")
-(setq clean-buffer-list-kill-never-buffer-names
-      (append
-       '("*Messages*" "*scratch*")
-       clean-buffer-list-kill-never-buffer-names-init))
-
-; Prevent append multiple times.
-(defvar clean-buffer-list-kill-never-regexps-init
-  clean-buffer-list-kill-never-regexps
-  "Init value for clean-buffer-list-kill-never-regexps")
-
 ; Print startup time on emacs startup.
 (defun display-startup-time ()
       (message "Emacs loaded in %s with %d garbage collections."
