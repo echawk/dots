@@ -218,7 +218,10 @@
       (display-buffer "*inferior-caml*"))))
 
 ; SML
-(use-package sml-mode  :defer)
+(use-package sml-mode
+  :defer
+  :init
+  (setq sml-program-name "hamlet"))
 (use-package sml-basis :defer)
 
 ; Go integration.
