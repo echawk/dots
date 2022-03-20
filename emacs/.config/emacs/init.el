@@ -292,10 +292,10 @@
 ; https://github.com/haskell/haskell-mode#fb0168b346465479d7af48eb5edbb246c0c9f6a7
 ; To remove warnings about (require 'cl), run:
 ; $ sed -i "s/require 'cl)/require 'cl-lib)/" *.el
-(let ((haskell-mode-d (concat user-emacs-directory "haskell-mode")))
-  (when (file-exists-p haskell-mode-d)
-    (add-to-list 'load-path haskell-mode-d)
-    (require 'haskell-mode-autoloads)))
+;(let ((haskell-mode-d (concat user-emacs-directory "haskell-mode")))
+;  (when (file-exists-p haskell-mode-d)
+;    (add-to-list 'load-path haskell-mode-d)
+;    (require 'haskell-mode-autoloads)))
 
 ; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
