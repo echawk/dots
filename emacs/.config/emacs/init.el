@@ -169,10 +169,10 @@
 ; Language independent syntax highlighting via tree-sitter.
 (use-package tree-sitter
   :defer
-  :hook ((go-mode . tree-sitter-hl-mode)
-         (shell-mode . tree-sitter-hl-mode)
+  :hook ((go-mode     . tree-sitter-hl-mode)
+         (shell-mode  . tree-sitter-hl-mode)
          (python-mode . tree-sitter-hl-mode)
-         (caml-mode . tree-sitter-hl-mode)))
+         (caml-mode   . tree-sitter-hl-mode)))
 (use-package tree-sitter-langs :after tree-sitter)
 
 (use-package apheleia
