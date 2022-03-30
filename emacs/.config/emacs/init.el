@@ -140,12 +140,13 @@
 (use-package eglot
   :defer
   :hook ((tuareg-mode . eglot-ensure)
-         (caml-mode . eglot-ensure)
-         (go-mode . eglot-ensure)
-         (c-mode . eglot-ensure)
+         (caml-mode   . eglot-ensure)
+         (go-mode     . eglot-ensure)
+         (c-mode      . eglot-ensure)
+         (zig-mode    . eglot-ensure)
          (elixir-mode . eglot-ensure)
          (erlang-mode . eglot-ensure)
-         (LaTeX-mode . eglot-ensure))
+         (LaTeX-mode  . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
     '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab")))
@@ -179,7 +180,9 @@
   :init
   (apheleia-global-mode +1)
   :config
-  (add-to-list 'apheleia-mode-alist '(caml-mode . ocamlformat)))
+  (add-to-list 'apheleia-formatters '(zigfmt    . ("zig" "fmt" filepath)))
+  (add-to-list 'apheleia-mode-alist '(caml-mode . ocamlformat))
+  (add-to-list 'apheleia-mode-alist '(zig-mode  . zigfmt)))
 
 (defun buffer-as-string ()
   "Returns the current buffer as a string."
@@ -226,6 +229,9 @@
 
 ; Go integration.
 (use-package go-mode :defer)
+
+; Zig integration.
+(use-package zig-mode :defer)
 
 ; ESS for R & Data Sci.
 (use-package ess :defer)
