@@ -43,6 +43,7 @@ export MAKEFLAGS=-j16
 export SAMUFLAGS=-j16
 export CFLAGS="-O3 -march=native -mtune=native "
 export CXXFLAGS="$CFLAGS"
+export CMAKE_GENERATOR="Ninja"
 
 # Programming Langs
 export GOPATH="$XDG_DATA_HOME/go"
