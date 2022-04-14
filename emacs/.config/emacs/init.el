@@ -74,6 +74,13 @@
 (setq use-straight nil)
 (if use-straight (straight-bootstrap) (package-bootstrap))
 
+(use-package try :defer)
+; Better 'M-x package-list-packages'
+(use-package paradox
+  :defer
+  :config
+  (paradox-enable))
+
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
