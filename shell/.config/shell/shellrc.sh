@@ -16,6 +16,7 @@ export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-window-
 
 export KW_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kw-lsp-hook"
 export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-lang-hook"
+export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-llvm"
 
 KISS_PATH="$HOME/.cache/kiss/hold:$KISS_PATH"
 
