@@ -1,6 +1,4 @@
-;(load-theme 'leuven)
 (load-theme 'wombat)
-(set-face-attribute 'default nil :height 140)
 
 (setq column-number-mode t) ; Show column number too
 (fset 'yes-or-no-p 'y-or-n-p) ; Don't ask to spell out 'yes'
@@ -289,6 +287,7 @@
 ;(use-package edts
 ;  :defer
 ;  :hook (erlang-mode . edts-mode))
+(use-package erlang :defer)
 
 ; Elixir editing.
 (use-package elixir-mode :defer)
