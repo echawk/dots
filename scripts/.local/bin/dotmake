@@ -1,0 +1,169 @@
+#!/bin/sh
+
+# Create a dot graph for a makefile.
+
+# Rules in the make file have the following forms:
+# | <rule>: <dep>
+# | <rule>: <dep> <dep>
+# | <rule>:
+
+# Variables are of the following form:
+# | <var> = <value>
+# | <var> := <value>
+# | <var> += <value>
+
+# Currently my initial goal is to support all rule types and only the
+# first type of variables, as that will make my life a bit easier.
+# What is more dificult though, is the subsitutions.
+
+# BUGS:
+# if you have a rule like so
+# OBJ = file.o
+# $(OBJ): config.h file.c
+# then it will print $(OBJ) in the graph? (see the ST from suckless makefile)
+
+#TODO:
+# fix bugs
+# remove sed -i
+#   - Done
+# Eventually refactor so that we can grap escaped newlines and their content
+# Add support for variables like this: ${VAR}, currently only support $(VAR)
+#   - Added support -> just convert the { to ( and } to ).
+# Refactor for loops (cat <somefile>) into while read loops.
+# ^ This should also clean up the IFS stuff.
+# Add support for `$(wildcard *.ext)`
+#   - This will make many makefiles easier to parse.
+
+F=Makefile
+[ -e "$1" ] && F="$1"
+if command -v b3sum 1>/dev/null 2>&1; then
+    HASH=b3sum
+else
+    HASH=sha256sum
+fi
+
+RULES_AND_VARS=$(mktemp)
+# The sed command below removes all lines that start with a tab.
+# It then removes all lines that start with 1 or more spaces.
+# Remove lines that start with a period or a octophore.
+# Finally remove lines that contain a ?=
+sed -E "/^\t/d;/^ +/d;/^$/d;/^(\.|#)/d;/\?=/d;" "$F" \
+    | sed -E \
+    -e "s; *= *;=;g" \
+    -e "s;\{;(;g" \
+    -e "s;\};);g" > "$RULES_AND_VARS"
+
+#cat $RULES_AND_VARS
+#echo ----
+
+VARS=$(mktemp)
+grep -E "^[A-Za-z0-9_-]+ *=" "$RULES_AND_VARS" > "$VARS"
+
+RULES=$(mktemp)
+# The rules are naturally the inverse
+grep -vE "^[A-Za-z0-9_-]+ *=" "$RULES_AND_VARS" \
+    | grep -v "=" \
+    > "$RULES"
+
+IFS='
+'
+# Since variables can have subsets of their names, we instead replace the
+# the variable name with a chekcsum of the name (by default this is b3sum)
+# the hashing algorithm isn't important; it's more so to keep false dependencies
+# from arising
+VAR_DICT="$(mktemp)"
+# The really complicated code below does this:
+# We iterate over the variables, but in a way where there is unlikely to be
+# any collisions.
+# First we only get the variable name, then we have awk print the string length
+# of the variable. We then sort this from smallest to largest, then run it
+# through tac, so we instead get largest to smallest, then we get rid of the
+# extra number at the beginning with cut. Then we perform our substitutions
+for var in $(cut -d'=' -f1 < "$VARS" \
+    | awk '{print length, $0 }' \
+    | sort -n -s \
+    | tac \
+    | cut -d" " -f2- ); do
+    checksum="$(echo "$var" | $HASH | cut -d' ' -f1)"
+    echo "$var=$checksum" >> "$VAR_DICT"
+    sed "s~$var~$checksum~g" "$VARS" > _
+    mv -f _ "$VARS"
+    sed "s~$var~$checksum~g" "$RULES" > _
+    mv -f _ "$RULES"
+done
+
+for var_line in $(cat "$VARS"); do
+    var="$(echo "$var_line" | cut -d'=' -f1)"
+    val="$(echo "$var_line" | cut -d'=' -f2)"
+    if grep -v "$var_line" "$VARS" | grep -F "$var" | grep -v "$var:" 1>/dev/null; then
+        #grep "^$var" "$VARS" #| cut -d'=' -f2-
+        sed -E "s!\\\$\($var\)!$val!g" "$VARS" > _
+        mv -f _ "$VARS"
+    fi
+done
+
+# At this point any shared variables should have been moved into each other
+# so we can now work on the vairbales that are defined as a subsitutions of
+# another variable
+# EX: OBJS=$(SRCS:.c=.o)
+
+# FIXME: below regex in grep should be fixed up to support rules like so:
+# $(OBJS:.o=)
+for var_line in $(grep -E ":.+=.+\)" "$VARS"); do
+    var="$(echo "$var_line" | cut -d'=' -f1)"
+    dep_var="$(echo "$var_line" | cut -d'(' -f2 | cut -d':' -f1)"
+    transform="$(echo "$var_line" | cut -d')' -f1 | cut -d':' -f2)"
+
+    from_str="$(echo "$transform" | cut -d'=' -f1)"
+    to_str="$(echo "$transform" | cut -d'=' -f2)"
+
+    val="$(grep -E "^$dep_var" "$VARS" | cut -d'=' -f2- | sed -E -e "s/$/ /" -e "s/$from_str /$to_str /g")"
+    sed "s!^$var=.*!$var=$val!" "$VARS" > _
+    mv -f _ "$VARS"
+done
+
+# VARS is done (for now... until I have to add more), now we need to
+# substitute all of the appropriate values into the rules.
+
+for var_line in $(cat "$VARS"); do
+    var="$(echo "$var_line" | cut -d'=' -f1)"
+    val="$(echo "$var_line" | cut -d'=' -f2-)"
+    sed -E "s!\\\$\($var\)!$val!g" "$RULES" > _
+    mv -f _ "$RULES"
+done
+
+#cat $RULES
+#echo ----
+
+printf "strict digraph \"all\" {\n"
+for rule_line in $(cat "$RULES"); do
+    target="$(echo "$rule_line" | cut -d':' -f1)"
+    deps="$(echo "$rule_line" | cut -d':' -f2-)"
+
+    IFS=' '
+    # If it's not a 'meta' target
+    if echo "$target" | grep -vq '^%'; then
+        for dep in $deps; do
+            printf "  \"%s\" -> \"%s\";\n" "$target" "$dep"
+        done
+    else
+        # That means we are dealing with a 'meta' taget. ie one that covers
+        # an extremely general case.
+        # EX:  %.o: %.c
+        target_ext="$(echo "$target" | tr -d '%')"
+        dep_ext="$(echo "$deps" | tr -d '%' | sed -E "s/ //")"
+        for t in $(grep "$target_ext" "$RULES" \
+            | grep -v "%" \
+            | cut -d':' -f2- \
+            | tr ' ' '\n' \
+            | sed "/^$/d;"\
+            | tr '\n' ' '); do
+                    d="$(echo "$t" | sed "s/$target_ext/$dep_ext/")"
+                    printf "  \"%s\" -> \"%s\";\n" "$t" "$d"
+        done
+    fi
+done
+printf "  \"all\";\n"
+printf "}\n"
+
+rm -- "$RULES_AND_VARS" "$VARS" "$RULES" "$VAR_DICT" 1>&2
