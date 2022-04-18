@@ -10,7 +10,7 @@ which xhost && xhost +local: &     # allow chroots to connect to the X server
 
 # One Time Run
 which bri && bri set 35
-which hsetroot && hsetroot -full "$HOME/Pictures/Wallpapers/rockycoast.jpg"
+which hsetroot && hsetroot -full "$HOME/Pictures/jpgs/housewallpaper.jpg"
 
 # Unleash the daemons!!!
 which sxhkd && sxhkd -c "$sxhkdrc" &
