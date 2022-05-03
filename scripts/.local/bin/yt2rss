@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Youtube Link -> RSS feed for the Channel
+
+html_file="$(mktemp)"
+curl -s "$1" > "$html_file"
+channelid=$(sed -e "s~<~\n<~g" "$html_file" | grep -E "^<meta" | grep channelId | cut -d'"' -f4)
+echo "https://www.youtube.com/feeds/videos.xml?channel_id=$channelid"
+rm "$html_file"
