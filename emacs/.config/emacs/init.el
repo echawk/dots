@@ -81,6 +81,8 @@
   :config
   (paradox-enable))
 
+(use-package async :defer)
+
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
@@ -195,7 +197,7 @@
 
 (use-package caml
   :defer
-  :interpreter (("ocaml" . caml-mode)
+  :interpreter (("ocaml"    . caml-mode)
                 ("ocamlrun" . caml-mode))
   :bind (:map caml-mode-map
          ("C-c C-b" . 'custom-caml-eval-buffer)
