@@ -262,8 +262,8 @@
 
 ; Better LaTeX editing.
 (use-package auctex
-  :hook ((LaTeX-mode-hook . visual-line-mode)
-         (LaTeX-mode-hook . LaTeX-math-mode))
+  :hook ((LaTeX-mode . visual-line-mode)
+         (LaTeX-mode . LaTeX-math-mode))
   :config
   (setq TeX-auto-save nil)
   (setq TeX-parse-self t)
