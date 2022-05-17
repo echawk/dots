@@ -305,11 +305,16 @@
 (use-package elixir-mode :defer)
 (use-package inf-elixir :defer)
 
-(use-package lua-mode :defer)
+(use-package lua-mode
+  :defer
+  :config
+  (setq lua-default-application "luajit"))
+
 (use-package haskell-mode
   :defer
   :hook ((haskell-mode . haskell-indent-mode)
          (haskell-mode . interactive-haskell-mode)))
+
 ; Use an ancient haskell mode since it has support for hugs.
 ; https://github.com/haskell/haskell-mode#fb0168b346465479d7af48eb5edbb246c0c9f6a7
 ; To remove warnings about (require 'cl), run:
