@@ -33,6 +33,9 @@
 (setq backup-inhibited t)
 (setq auto-save-default nil)
 
+; Don't ask for confirmation when opening large files.
+(setq large-file-warning-threshold nil)
+
 ; Native Compilation.
 (setq is-emacs-28 (>= emacs-major-version 28))
 (setq package-native-compile is-emacs-28)
