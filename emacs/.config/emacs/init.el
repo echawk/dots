@@ -250,6 +250,12 @@
 (dolist (item '("\\.P\\'" "\\.pl\\'") nil)
   (add-to-list 'auto-mode-alist (cons item 'prolog-mode)))
 
+; Read EPUBs in Emacs!
+(use-package nov
+  :defer
+  :mode ("\\.epub\\'" . nov-mode)
+  :hook (nov-mode . visual-line-mode))
+
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
