@@ -200,13 +200,12 @@
 
 (use-package caml
   :defer
+  :mode ("\\.ml[iylp]?$" . caml-mode)
   :interpreter (("ocaml"    . caml-mode)
                 ("ocamlrun" . caml-mode))
   :bind (:map caml-mode-map
          ("C-c C-b" . 'custom-caml-eval-buffer)
          ("C-c C-r" . caml-eval-region))
-  :init
-  (add-to-list 'auto-mode-alist '("\\.ml[iylp]?$" . caml-mode))
   :config
   (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
   (autoload 'run-caml "inf-caml" "Run an inferior OCaml process." t)
