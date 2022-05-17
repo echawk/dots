@@ -324,6 +324,11 @@
 ;    (add-to-list 'load-path haskell-mode-d)
 ;    (require 'haskell-mode-autoloads)))
 
+(use-package idris-mode
+  :defer
+  :config
+  (setq idris-interpreter-path "idris2"))
+
 ; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
