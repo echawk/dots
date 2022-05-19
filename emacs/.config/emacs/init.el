@@ -142,6 +142,16 @@
   :config
   (evil-collection-init))
 
+(use-package evil-commentary
+  :after evil
+  :config
+  (evil-commentary-mode))
+
+(use-package evil-lion
+  :after evil
+  :config
+  (evil-lion-mode))
+
 ; Git frontend.
 (use-package magit :defer)
 (use-package forge :defer)
