@@ -129,11 +129,14 @@
   :config
   (editorconfig-mode 1))
 
+(use-package undo-fu :defer)
+
 (use-package evil
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-want-C-u-scroll t)
+  (setq evil-undo-system 'undo-fu)
   :config
   (evil-mode 1))
 
