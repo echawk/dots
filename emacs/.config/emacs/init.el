@@ -337,6 +337,7 @@
   :defer
   :config
   (setq lua-default-application "luajit"))
+(use-package fennel-mode :defer)
 
 (use-package haskell-mode
   :defer
