@@ -321,6 +321,7 @@
   :defer
   :config
   (setq inferior-lisp-program "sbcl"))
+(use-package sly-macrostep :after sly)
 
 ; Erlang editing.
 ;(use-package edts
