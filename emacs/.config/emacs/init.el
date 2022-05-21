@@ -253,6 +253,9 @@
 ; Go integration.
 (use-package go-mode :defer)
 
+; D integration.
+(use-package d-mode :defer)
+
 ; Zig integration.
 (use-package zig-mode :defer)
 
