@@ -268,6 +268,12 @@
   :mode ("\\.epub\\'" . nov-mode)
   :hook (nov-mode . visual-line-mode))
 
+(use-package eww
+  :defer
+  :init
+  (setq browse-url-browser-function 'eww-browse-url)
+  :hook (eww-mode . visual-line-mode))
+
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
