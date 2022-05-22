@@ -322,7 +322,9 @@
 ; Use sly instead of slime
 (use-package sly
   :defer
-  :config
+  :hook ((sly-mode . (lambda ()
+                       (unless (sly-connected-p) (save-excursion (sly))))))
+  :init
   (setq inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
 
