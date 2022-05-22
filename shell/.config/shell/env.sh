@@ -48,7 +48,7 @@ export CMAKE_GENERATOR="Ninja"
 # Programming Langs
 export GOPATH="$XDG_DATA_HOME/go"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
-export RUSTC_WRAPPER=sccache
+#export RUSTC_WRAPPER=sccache
 
 # ruby gem env
 export GEM_HOME="$XDG_DATA_HOME/ruby/gem"
