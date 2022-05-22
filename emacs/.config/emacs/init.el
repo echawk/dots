@@ -110,6 +110,7 @@
   (which-key-mode))
 
 (use-package doom-themes :defer)
+(use-package all-the-icons :defer)
 (use-package doom-modeline
   :custom ((doom-modeline-height 15))
   :config
@@ -179,7 +180,6 @@
 ; In-buffer autocompletion.
 (use-package company
   :defer
-  ; First hook is for any time we enable eglot, we want company mode running too.
   :hook ((eglot--managed-mode   . company-mode)
          (lisp-interaction-mode . company-mode)
          (sly-mode              . company-mode))
