@@ -110,7 +110,6 @@
   (which-key-mode))
 
 (use-package doom-themes :defer)
-;(use-package all-the-icons :defer)
 (use-package doom-modeline
   :custom ((doom-modeline-height 15))
   :config
@@ -316,8 +315,6 @@
 (use-package macrostep        :defer)
 (use-package macrostep-geiser :defer)
 (use-package srfi :defer)
-;(load (concat user-emacs-directory "quack"))
-;(setq quack-default-program "csi")
 
 ; Use sly instead of slime
 (use-package sly
@@ -329,9 +326,6 @@
 (use-package sly-macrostep :after sly)
 
 ; Erlang editing.
-;(use-package edts
-;  :defer
-;  :hook (erlang-mode . edts-mode))
 (use-package erlang :defer)
 
 ; Elixir editing.
@@ -348,15 +342,6 @@
   :defer
   :hook ((haskell-mode . haskell-indent-mode)
          (haskell-mode . interactive-haskell-mode)))
-
-; Use an ancient haskell mode since it has support for hugs.
-; https://github.com/haskell/haskell-mode#fb0168b346465479d7af48eb5edbb246c0c9f6a7
-; To remove warnings about (require 'cl), run:
-; $ sed -i "s/require 'cl)/require 'cl-lib)/" *.el
-;(let ((haskell-mode-d (concat user-emacs-directory "haskell-mode")))
-;  (when (file-exists-p haskell-mode-d)
-;    (add-to-list 'load-path haskell-mode-d)
-;    (require 'haskell-mode-autoloads)))
 
 (use-package idris-mode
   :defer
