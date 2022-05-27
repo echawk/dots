@@ -199,7 +199,7 @@
   (apheleia-global-mode +1)
   :config
 
-  (add-to-list 'apheleia-formatters '(dfmt      . ("dfmt" "--indent_size" "4"
+  (add-to-list 'apheleia-formatters '(dfmt      . ("dfmt" "--indent_size" "2"
                                                    "--soft_max_line_length" "80"
                                                    "--indent_style" "space"
                                                    "--brace_style" "otbs"
