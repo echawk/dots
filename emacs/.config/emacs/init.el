@@ -1,4 +1,4 @@
-(load-theme 'wombat)
+(load-theme 'leuven)
 
 (setq column-number-mode t) ; Show column number too
 (fset 'yes-or-no-p 'y-or-n-p) ; Don't ask to spell out 'yes'
@@ -198,7 +198,14 @@
   :init
   (apheleia-global-mode +1)
   :config
+
+  (add-to-list 'apheleia-formatters '(dfmt      . ("dfmt" "--indent_size" "4"
+                                                   "--soft_max_line_length" "80"
+                                                   "--indent_style" "space"
+                                                   "--brace_style" "otbs"
+                                                   filepath)))
   (add-to-list 'apheleia-formatters '(zigfmt    . ("zig" "fmt" filepath)))
+  (add-to-list 'apheleia-mode-alist '(d-mode    . dfmt))
   (add-to-list 'apheleia-mode-alist '(caml-mode . ocamlformat))
   (add-to-list 'apheleia-mode-alist '(zig-mode  . zigfmt)))
 
