@@ -47,6 +47,7 @@ export CMAKE_GENERATOR="Ninja"
 
 # Programming Langs
 export GOPATH="$XDG_DATA_HOME/go"
+export GOPROXY=direct
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 #export RUSTC_WRAPPER=sccache
 
