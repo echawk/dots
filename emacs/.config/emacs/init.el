@@ -352,6 +352,8 @@
   :config
   (setq idris-interpreter-path "idris2"))
 
+(use-package shen-elisp :defer)
+
 ; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
