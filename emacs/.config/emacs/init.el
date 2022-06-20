@@ -353,6 +353,11 @@
   (setq idris-interpreter-path "idris2"))
 
 (use-package shen-elisp :defer)
+(use-package shen-mode
+  :defer
+  :mode ("\\.shen$" . shen-mode)
+  :config
+  (setq inferior-shen-program "shen-sbcl"))
 
 ; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
