@@ -261,13 +261,18 @@
 ; D integration.
 (use-package d-mode :defer)
 
+; Crystal integration.
+(use-package crystal-mode :defer)
+
+; Vala integration.
+(use-package vala-mode :defer)
+
 ; Zig integration.
 (use-package zig-mode :defer)
 
 ; ESS for R, Julia & Data Sci.
 (use-package ess :defer)
 (use-package julia-mode :defer)
-(use-package julia-repl :defer)
 
 ; Have <file>.(P|pl), be recognized as prolog source files.
 (dolist (item '("\\.P\\'" "\\.pl\\'") nil)
