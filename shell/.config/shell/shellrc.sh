@@ -50,8 +50,9 @@ case "$0" in
         shopt -s cdspell # try to guess what directory you meant if misspelled
         PS1="\[\033[01;32m\][\u\[\033[01;37m\] \W\[\033[01;32m\]] \[\033[01;34m\]\$(extra_ps1_info)\[\033[01;32m\]%\[\033[00m\] "
         ;;
-    *)
-        PS1="$USER@$(hostname) $PWD \$(extra_ps1_info)-\$ "
+    *yash)
+        PS1="\fo\fg[$USER\fw \$(basename \$PWD)\fg]\fb \$(extra_ps1_info)\fg% "
+        ;;
 esac
 
 #vi mode for text input
