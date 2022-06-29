@@ -353,8 +353,14 @@
 
 (use-package haskell-mode
   :defer
-  :hook ((haskell-mode . haskell-indent-mode)
+  :hook ((haskell-mode . haskell-indentation-mode)
          (haskell-mode . interactive-haskell-mode)))
+(use-package dante
+  :after haskell-mode
+  :commands 'dante-mode
+  :hook ((haskell-mode . flycheck-mode)
+         (haskell-mode . dante-mode)
+         (dante-mode   . company-mode)))
 
 (use-package idris-mode
   :defer
