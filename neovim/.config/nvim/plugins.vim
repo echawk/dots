@@ -34,9 +34,9 @@ Plug 'airblade/vim-gitgutter'
 "Plug 'vimwiki/vimwiki'
 
 " official neovim completion plugins
-Plug 'neovim/nvim-lspconfig' "lsp configuration for default neovim
-Plug 'glepnir/lspsaga.nvim' "Provides some nice helper functions for lsp
-Plug 'hrsh7th/nvim-compe' "nvim completion (for lsp)
+"Plug 'neovim/nvim-lspconfig' "lsp configuration for default neovim
+"Plug 'glepnir/lspsaga.nvim' "Provides some nice helper functions for lsp
+"Plug 'hrsh7th/nvim-compe' "nvim completion (for lsp)
 
 "Plug 'mfussenegger/nvim-dap'
 "Plug 'mfussenegger/nvim-fzy'
