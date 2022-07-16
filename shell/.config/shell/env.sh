@@ -4,7 +4,7 @@ export PATH="$(find "$HOME/.local/bin/" -type d | tr '\n' ':' | sed 's/:*$//'):$
 export EDITOR="nvim" # emacs, vis
 export PAGER="less"
 export MANPAGER="nvim +Man!"
-export BROWSER="vimb" # firefox brave luakit chromium
+export BROWSER="chromium" # firefox brave luakit chromium
 export READER="zathura" # mupdf
 export FUZZY="fzf"
 export WM="dwm" # bspwm i3 herbstluftwm
@@ -50,6 +50,7 @@ export GOPATH="$XDG_DATA_HOME/go"
 export GOPROXY=direct
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 #export RUSTC_WRAPPER=sccache
+export RUSTFLAGS="-C opt-level=3"
 
 # ruby gem env
 export GEM_HOME="$XDG_DATA_HOME/ruby/gem"
