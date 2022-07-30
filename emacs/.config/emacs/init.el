@@ -172,6 +172,8 @@
   (add-to-list 'eglot-server-programs
     '(vala-mode . ("vala-language-server")))
   (add-to-list 'eglot-server-programs
+    '(crystal-mode . ("crystalline")))
+  (add-to-list 'eglot-server-programs
     '(elixir-mode . ("elixir-ls"))))
 
 
