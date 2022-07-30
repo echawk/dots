@@ -257,23 +257,17 @@
   (setq sml-program-name "hamlet"))
 (use-package sml-basis :defer)
 
-; Go integration.
 (use-package go-mode :defer)
-
-; D integration.
 (use-package d-mode :defer)
-
-; Crystal integration.
 (use-package crystal-mode :defer)
-
-; Vala integration.
 (use-package vala-mode :defer)
-
-; Zig integration.
 (use-package zig-mode :defer)
 
-; ESS for R, Julia & Data Sci.
-(use-package ess :defer)
+(use-package ess
+  :defer
+  :init
+  ;; Make sure ess-julia-mode is used for julia files.
+  (add-to-list 'auto-mode-alist '("\\.jl\\'" . ess-julia-mode)))
 (use-package julia-mode :defer)
 
 ; Have <file>.(P|pl), be recognized as prolog source files.
