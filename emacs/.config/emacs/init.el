@@ -110,8 +110,12 @@
   :config
   (doom-modeline-mode 1))
 
-;(use-package rainbow-delimiters
-;  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-mode :defer)
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode))
 
 (use-package hl-prog-extra
   :defer
@@ -206,7 +210,6 @@
   :init
   (apheleia-global-mode +1)
   :config
-
   (add-to-list 'apheleia-formatters '(dfmt      . ("dfmt" "--indent_size" "2"
                                                    "--soft_max_line_length" "80"
                                                    "--indent_style" "space"
