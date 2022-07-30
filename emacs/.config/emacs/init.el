@@ -334,10 +334,11 @@
   (setq inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
 
-; Erlang editing.
-(use-package erlang :defer)
+(use-package clojure-mode :defer)
 
-; Elixir editing.
+(use-package erlang :defer)
+(use-package lfe-mode :defer)
+
 (use-package elixir-mode :defer)
 (use-package inf-elixir :defer)
 
