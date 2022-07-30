@@ -285,11 +285,19 @@
   :mode ("\\.epub\\'" . nov-mode)
   :hook (nov-mode . visual-line-mode))
 
+(use-package pdf-tools
+  :defer
+  :config
+  (pdf-tools-install))
+
 (use-package eww
   :defer
-  :init
-  (setq browse-url-browser-function 'eww-browse-url)
+  ;; Uncomment below for emacs to behave as the default web browser.
+  ;; :init
+  ;; (setq browse-url-browser-function 'eww-browse-url)
   :hook (eww-mode . visual-line-mode))
+
+(use-package define-word :defer)
 
 ; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
