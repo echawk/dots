@@ -182,6 +182,7 @@
   :defer
   :hook ((eglot--managed-mode   . company-mode)
          (emacs-lisp-mode       . company-mode)
+         (ess-mode              . company-mode)
          (lisp-interaction-mode . company-mode)
          (sly-mode              . company-mode))
   :bind (:map company-active-map
