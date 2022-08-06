@@ -275,9 +275,20 @@
   (add-to-list 'auto-mode-alist '("\\.jl\\'" . ess-julia-mode)))
 (use-package julia-mode :defer)
 
+; Prolog configuration.
+(let ((pl (concat user-emacs-directory "prolog.el")))
+  (unless (file-exists-p pl)
+    (url-copy-file "https://bruda.ca/_media/emacs/prolog.el" pl))
+  (load pl))
+(setq prolog-system 'swi
+      prolog-program-name "swipl")
 ; Have <file>.(P|pl), be recognized as prolog source files.
 (dolist (item '("\\.P\\'" "\\.pl\\'") nil)
   (add-to-list 'auto-mode-alist (cons item 'prolog-mode)))
+; Have <file>.m be recognized as mercury source file.
+(add-to-list 'auto-mode-alist '("\\.m$" . mercury-mode))
+
+(use-package org :defer)
 
 ; Read EPUBs in Emacs!
 (use-package nov
