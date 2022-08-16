@@ -12,11 +12,11 @@ export KISS_STRIP=0
 export KISS_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kiss-timer-hook"
 export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-tex/kiss-tex-hook"
 export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-mangz-hook"
-export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-window-title-hook"
 
 export KW_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kw-lsp-hook"
 export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-lang-hook"
 export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-llvm"
+export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-emacs"
 
 KISS_PATH="$HOME/.cache/kiss/hold:$KISS_PATH"
 
