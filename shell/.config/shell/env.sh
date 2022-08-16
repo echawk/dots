@@ -51,6 +51,19 @@ export GOPROXY=direct
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 #export RUSTC_WRAPPER=sccache
 export RUSTFLAGS="-C opt-level=3"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export NODE_REPL_HSTORY="$XDG_DATA_HOME/node_repl_history"
+
+export STACK_ROOT="$XDG_DATA_HOME/stack"
+export CABAL_CONFIG="$XDG_CONFIG_HOME/cabal/config"
+export CABAL_DIR="$XDG_DATA_HOME/cabal"
+export PATH="$CABAL_DIR/bin:$PATH"
+
+
+export JULIA_DEPOT_PATH="$XDG_DATA_HOME/julia:$JULIA_DEPOT_PATH"
+export DISTCC_DIR="$XDG_CONFIG_HOME/distcc"
+
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
 
 # ruby gem env
 export GEM_HOME="$XDG_DATA_HOME/ruby/gem"
