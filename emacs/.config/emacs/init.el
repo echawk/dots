@@ -217,9 +217,12 @@
                                                    "--brace_style" "otbs"
                                                    filepath)))
   (add-to-list 'apheleia-formatters '(zigfmt    . ("zig" "fmt" filepath)))
-  (add-to-list 'apheleia-mode-alist '(d-mode    . dfmt))
-  (add-to-list 'apheleia-mode-alist '(caml-mode . ocamlformat))
-  (add-to-list 'apheleia-mode-alist '(zig-mode  . zigfmt)))
+  (add-to-list 'apheleia-formatters '(hindent   . ("hindent")))
+  ;; Set custom formatters for various modes.
+  (add-to-list 'apheleia-mode-alist '(caml-mode    . ocamlformat))
+  (add-to-list 'apheleia-mode-alist '(d-mode       . dfmt))
+  (add-to-list 'apheleia-mode-alist '(haskell-mode . hindent))
+  (add-to-list 'apheleia-mode-alist '(zig-mode     . zigfmt)))
 
 (defun buffer-as-string ()
   "Returns the current buffer as a string."
