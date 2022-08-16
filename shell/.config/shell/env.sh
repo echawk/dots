@@ -5,9 +5,9 @@ export EDITOR="nvim" # emacs, vis
 export PAGER="less"
 export MANPAGER="nvim +Man!"
 export BROWSER="chromium" # firefox brave luakit chromium
-export READER="zathura" # mupdf
+export READER="zathura"   # mupdf
 export FUZZY="fzf"
-export WM="dwm" # bspwm i3 herbstluftwm
+export WM="dwm"     # bspwm i3 herbstluftwm
 export AUDIO="alsa" # pulseaudio pipewire
 export FILE="fff"
 export DISTRO="$(cat /etc/os-release | grep "ID" | cut -d'=' -f2)" #arch, void, kiss/carbs
@@ -35,7 +35,7 @@ export CHROME_FLAGS="
 # X
 #export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
 export _JAVA_AWT_WM_NONREPARENTING=1 # Fix for Java applications in dwm
-export MOZ_USE_XINPUT2="1" # Mozilla smooth scrolling/touchpads.
+export MOZ_USE_XINPUT2="1"           # Mozilla smooth scrolling/touchpads.
 
 # Build Flags
 export KISS_TMPDIR="/tmp/kiss"
