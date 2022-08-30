@@ -75,4 +75,4 @@ done
 wait
 
 cut -d':' -f2 < "$sb_file" | xargs rm -v 2>/dev/null # Cleanup when we die.
-rm -v -- "$sb_file" 2>/dev/null
+rm -- "$sb_file" 2>/dev/null
