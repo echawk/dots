@@ -275,9 +275,7 @@
 
 (use-package ess
   :defer
-  :init
-  ;; Make sure ess-julia-mode is used for julia files.
-  (add-to-list 'auto-mode-alist '("\\.jl\\'" . ess-julia-mode)))
+  :mode ("\\.jl$" . ess-julia-mode))
 (use-package julia-mode :defer)
 
 ; Prolog configuration.
