@@ -170,6 +170,7 @@
          (elixir-mode  . eglot-ensure)
          (erlang-mode  . eglot-ensure)
          (LaTeX-mode   . eglot-ensure)
+         (futhark-mode . eglot-ensure)
          (sh-mode      . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
@@ -398,6 +399,8 @@
   :defer
   :config
   (setq idris-interpreter-path "idris2"))
+
+(use-package futhark-mode :defer)
 
 (use-package shen-elisp :defer)
 (use-package shen-mode
