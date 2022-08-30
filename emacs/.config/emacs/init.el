@@ -327,6 +327,13 @@
   (setq imaxima-latex-preamble "\\usepackage{concrete}")
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
 
+; Init singular if files exist.
+(when (file-exists-p "/usr/share/singular/emacs")
+  (add-to-list 'load-path "/usr/share/singular/emacs/")
+  (autoload 'singular "singular" "Singular mode" t))
+
+(use-package frimacs :defer)
+
 ; Better LaTeX editing.
 (use-package auctex
   :hook ((LaTeX-mode . visual-line-mode)
