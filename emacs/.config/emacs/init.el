@@ -285,26 +285,28 @@
   :mode ("\\.jl$" . ess-julia-mode))
 (use-package julia-mode :defer)
 
-; Prolog configuration.
+;; Prolog configuration.
 (let ((pl (concat user-emacs-directory "prolog.el")))
   (unless (file-exists-p pl)
     (url-copy-file "https://bruda.ca/_media/emacs/prolog.el" pl))
   (load pl))
 (setq prolog-system 'swi
       prolog-program-name "swipl")
-; Have <file>.(P|pl), be recognized as prolog source files.
+;; Have <file>.(P|pl), be recognized as prolog source files.
 (dolist (item '("\\.P\\'" "\\.pl\\'") nil)
   (add-to-list 'auto-mode-alist (cons item 'prolog-mode)))
-; Have <file>.m be recognized as mercury source file.
+;; Have <file>.m be recognized as mercury source file.
 (add-to-list 'auto-mode-alist '("\\.m$" . mercury-mode))
 
 (use-package org :defer)
 
-; Read EPUBs in Emacs!
+;; Read EPUBs in Emacs!
 (use-package nov
   :defer
   :mode ("\\.epub\\'" . nov-mode)
   :hook (nov-mode . visual-line-mode))
+
+(use-package vterm :defer)
 
 (use-package pdf-tools
   :defer
@@ -318,45 +320,47 @@
   ;; (setq browse-url-browser-function 'eww-browse-url)
   :hook (eww-mode . visual-line-mode))
 
+(use-package ement :defer)
+
 (use-package define-word :defer)
 
-; Only init imaxima if the elisp files exist.
+;; Only init imaxima if the elisp files exist.
 (when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
   (autoload 'maxima-mode "maxima" "Maxima mode" t)
   (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
   (autoload 'maxima "maxima" "Maxima interaction" t)
   (autoload 'imath-mode "imath" "Imath mode for math formula input" t)
-  (setq imaxima-use-maxima-mode-flag t)
-  ; Sets the font for the LaTeX output.
-  (setq imaxima-fnt-size "LARGE")
-  (setq imaxima-latex-preamble "\\usepackage{concrete}")
+  ;; Sets the font for the LaTeX output.
+  (setq imaxima-use-maxima-mode-flag t
+        imaxima-fnt-size "LARGE"
+        imaxima-latex-preamble "\\usepackage{concrete}")
   (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
 
-; Init singular if files exist.
+;; Init singular if files exist.
 (when (file-exists-p "/usr/share/singular/emacs")
   (add-to-list 'load-path "/usr/share/singular/emacs/")
   (autoload 'singular "singular" "Singular mode" t))
 
 (use-package frimacs :defer)
 
-; Better LaTeX editing.
+;; Better LaTeX editing.
 (use-package auctex
   :hook ((LaTeX-mode . visual-line-mode)
          (LaTeX-mode . LaTeX-math-mode))
   :config
-  (setq TeX-auto-save nil)
-  (setq TeX-parse-self t)
+  (setq TeX-auto-save nil
+        TeX-parse-self t)
   (setq-default TeX-master nil))
 
-; Markdown support.
+;; Markdown support.
 (use-package markdown-mode :defer)
 (use-package markdown-preview-mode
   :defer
   :config
   (setq markdown-command "lowdown -s -Thtml"))
 
-; Better scheme editing.
+;; Better scheme editing.
 (use-package geiser
   :defer
   :init
