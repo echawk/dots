@@ -103,6 +103,13 @@
   :config
   (which-key-mode))
 
+(use-package helpful
+  :config
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key)
+  (global-set-key (kbd "C-h C-d") #'helpful-at-point))
+
 (use-package doom-themes :defer)
 (use-package all-the-icons :defer)
 (use-package doom-modeline
