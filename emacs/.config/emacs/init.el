@@ -61,13 +61,13 @@
   "Bootstrap straight.el"
   (defvar bootstrap-version)
   (let ((bootstrap-file
-          (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
         (bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
-        (url-retrieve-synchronously
-          "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-          'slient 'inhibit-cookies)
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'slient 'inhibit-cookies)
         (goto-char (point-max))
         (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
@@ -78,7 +78,7 @@
 (if use-straight (straight-bootstrap) (package-bootstrap))
 
 (use-package try :defer)
-; Better 'M-x package-list-packages'
+;; Better 'M-x package-list-packages'
 (use-package paradox
   :defer
   :config
@@ -138,10 +138,10 @@
 
 (use-package evil
   :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-undo-system 'undo-fu)
+  (setq evil-want-integration t
+        evil-want-keybinding nil
+        evil-want-C-u-scroll t
+        evil-undo-system 'undo-fu)
   :config
   (evil-mode 1))
 
@@ -160,11 +160,11 @@
   :config
   (evil-lion-mode))
 
-; Git frontend.
+;; Git frontend.
 (use-package magit :defer)
 (use-package forge :defer)
 
-; Simple LSP mode for emacs.
+;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
   :hook ((tuareg-mode  . eglot-ensure)
@@ -181,16 +181,19 @@
          (sh-mode      . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
-    '((latex-mode tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab")))
+               '((latex-mode
+                  tex-mode
+                  context-mode
+                  texinfo-mode
+                  bibtex-mode) . ("texlab")))
   (add-to-list 'eglot-server-programs
-    '(vala-mode . ("vala-language-server")))
+               '(vala-mode . ("vala-language-server")))
   (add-to-list 'eglot-server-programs
-    '(crystal-mode . ("crystalline")))
+               '(crystal-mode . ("crystalline")))
   (add-to-list 'eglot-server-programs
-    '(elixir-mode . ("elixir-ls"))))
+               '(elixir-mode . ("elixir-ls"))))
 
-
-; In-buffer autocompletion.
+;; In-buffer autocompletion.
 (use-package company
   :defer
   :hook ((eglot--managed-mode   . company-mode)
@@ -199,12 +202,12 @@
          (lisp-interaction-mode . company-mode)
          (sly-mode              . company-mode))
   :bind (:map company-active-map
-          ("<tab>" . company-complete-selection))
+              ("<tab>" . company-complete-selection))
   :custom
   (company-minimum-prefix-length 3)
   (company-idle-delay 0.0))
 
-; Language independent syntax highlighting via tree-sitter.
+;; Language independent syntax highlighting via tree-sitter.
 (use-package tree-sitter
   :defer
   :hook ((go-mode     . tree-sitter-hl-mode)
@@ -242,8 +245,8 @@
   :interpreter (("ocaml"    . caml-mode)
                 ("ocamlrun" . caml-mode))
   :bind (:map caml-mode-map
-         ("C-c C-b" . 'custom-caml-eval-buffer)
-         ("C-c C-r" . caml-eval-region))
+              ("C-c C-b" . 'custom-caml-eval-buffer)
+              ("C-c C-r" . caml-eval-region))
   :config
   (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
   (autoload 'run-caml "inf-caml" "Run an inferior OCaml process." t)
@@ -252,11 +255,11 @@
     "Send the current buffer to OCaml and evaluate it."
     (interactive)
     (let ((buff (concat
-                  (replace-regexp-in-string
-                    "[ \t\n]*\\(;;[ \t\n]*\\)?\\'"
-                    ""
-                    (buffer-as-string))
-                  ";;")))
+                 (replace-regexp-in-string
+                  "[ \t\n]*\\(;;[ \t\n]*\\)?\\'"
+                  ""
+                  (buffer-as-string))
+                 ";;")))
       (with-current-buffer "*inferior-caml*"
         (goto-char (point-max))
         (comint-send-string "*inferior-caml*" buff)
@@ -267,7 +270,7 @@
             (insert buff))))
       (display-buffer "*inferior-caml*"))))
 
-; SML
+;; SML
 (use-package sml-mode
   :defer
   :init
@@ -370,7 +373,7 @@
 (use-package macrostep-geiser :defer)
 (use-package srfi :defer)
 
-; Use sly instead of slime
+;; Use sly instead of slime
 (use-package sly
   :defer
   :hook ((sly-mode . (lambda ()
