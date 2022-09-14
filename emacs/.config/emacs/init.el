@@ -422,19 +422,28 @@
   :config
   (setq inferior-shen-program "shen-sbcl"))
 
-; Keep custom variables from polluting this file.
+;; Enable prettify-symbols-mode in some languages
+(dolist (hook '(sly-mode-hook
+                emacs-lisp-mode-hook
+                geiser-mode-hook
+                shen-mode-hook
+                clojure-mode-hook)
+              nil)
+  (add-hook hook #'prettify-symbols-mode))
+
+;; Keep custom variables from polluting this file.
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
-; Prevent the scratch buffer from being killed.
+;; Prevent the scratch buffer from being killed.
 (with-current-buffer "*scratch*"
   (emacs-lock-mode 'kill))
 
-; Print startup time on emacs startup.
+;; Print startup time on emacs startup.
 (defun display-startup-time ()
-      (message "Emacs loaded in %s with %d garbage collections."
-        (format "%.2f seconds"
-          (float-time
-            (time-subtract after-init-time before-init-time))) gcs-done))
+  (message "Emacs loaded in %s with %d garbage collections."
+           (format "%.2f seconds"
+                   (float-time
+                    (time-subtract after-init-time before-init-time))) gcs-done))
 
 (add-hook 'emacs-startup-hook #'display-startup-time)
