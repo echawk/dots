@@ -1,47 +1,47 @@
-(load-theme 'tango)
+;; (load-theme 'tango)
 
 (setq column-number-mode t) ; Show column number too
 (fset 'yes-or-no-p 'y-or-n-p) ; Don't ask to spell out 'yes'
 
-; utf-8
+;; utf-8
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (setq default-buffer-file-coding-system 'utf-8)
 
-; Be more like vim when scrolling
+;; Be more like vim when scrolling
 (setq scroll-step 1
-      scroll-conservatively 10000)
-(setq next-screen-context-lines 5)
-(setq line-move-visual nil)
+      scroll-conservatively 10000
+      next-screen-context-lines 5
+      line-move-visual nil)
 
-; basic functionality
+;; basic functionality
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-; Indentation
-(setq default-tab-width 4)
-(setq tab-width 4)
-(setq default-fill-column 80)
-(setq fill-column 80)
-(setq-default evil-indent-convert-tabs nil)
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-(setq-default evil-shift-round nil)
+;; Indentation
+(setq default-tab-width 4
+      tab-width 4
+      default-fill-column 80
+      fill-column 80)
+(setq-default evil-indent-convert-tabs nil
+              indent-tabs-mode nil
+              tab-width 4
+              evil-shift-round nil)
 
-; Don't use file backups.
-(setq backup-inhibited t)
-(setq auto-save-default nil)
+;; Don't use file backups.
+(setq backup-inhibited t
+      auto-save-default nil)
 
-; Don't ask for confirmation when opening large files.
+;; Don't ask for confirmation when opening large files.
 (setq large-file-warning-threshold nil)
 
-; Native Compilation.
+;; Native Compilation.
 (setq is-emacs-28 (>= emacs-major-version 28))
 (setq package-native-compile is-emacs-28)
 (setq native-comp-async-report-warnings-errors (not is-emacs-28))
 
-; package stuff
+;; package stuff
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
