@@ -383,6 +383,7 @@
 (use-package sly-macrostep :after sly)
 
 (use-package clojure-mode :defer)
+(use-package inf-clojure :defer)
 
 (use-package erlang :defer)
 (use-package lfe-mode :defer)
