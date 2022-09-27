@@ -119,9 +119,11 @@
   (doom-modeline-mode 1))
 
 (use-package rainbow-delimiters
+  :defer
   :hook (prog-mode . rainbow-delimiters-mode))
 (use-package rainbow-mode :defer)
 (use-package diff-hl
+  :defer
   :config
   (global-diff-hl-mode))
 
@@ -350,6 +352,7 @@
 
 ;; Better LaTeX editing.
 (use-package auctex
+  :defer
   :hook ((LaTeX-mode . visual-line-mode)
          (LaTeX-mode . LaTeX-math-mode))
   :config
