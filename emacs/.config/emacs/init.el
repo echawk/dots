@@ -123,7 +123,6 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 (use-package rainbow-mode :defer)
 (use-package diff-hl
-  :defer
   :config
   (global-diff-hl-mode))
 
