@@ -355,14 +355,17 @@
 (use-package auctex
   :defer
   :hook ((LaTeX-mode . visual-line-mode)
-         (LaTeX-mode . LaTeX-math-mode))
+         (LaTeX-mode . LaTeX-math-mode)
+         (LaTeX-mode . flyspell-mode))
   :config
   (setq TeX-auto-save nil
         TeX-parse-self t)
   (setq-default TeX-master nil))
 
 ;; Markdown support.
-(use-package markdown-mode :defer)
+(use-package markdown-mode
+  :defer
+  :hook (markdown-mode . flyspell-mode))
 (use-package markdown-preview-mode
   :defer
   :config
