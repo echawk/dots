@@ -232,6 +232,8 @@
                                                    filepath)))
   (add-to-list 'apheleia-formatters '(zigfmt    . ("zig" "fmt" filepath)))
   (add-to-list 'apheleia-formatters '(hindent   . ("hindent")))
+  (add-to-list 'apheleia-formatters '(shfmt     . ("shfmt" "-i" "4"
+                                                   "-ci" "-kp" "-sr")))
   ;; Set custom formatters for various modes.
   (add-to-list 'apheleia-mode-alist '(caml-mode    . ocamlformat))
   (add-to-list 'apheleia-mode-alist '(d-mode       . dfmt))
