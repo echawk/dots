@@ -198,7 +198,7 @@
 ;; In-buffer autocompletion.
 (use-package company
   :defer
-  :hook ((eglot--managed-mode   . company-mode)
+  :hook ((eglot-managed-mode    . company-mode)
          (emacs-lisp-mode       . company-mode)
          (ess-mode              . company-mode)
          (lisp-interaction-mode . company-mode)
