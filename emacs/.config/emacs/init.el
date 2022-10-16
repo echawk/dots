@@ -201,7 +201,9 @@
   :hook ((eglot-managed-mode    . company-mode)
          (emacs-lisp-mode       . company-mode)
          (ess-mode              . company-mode)
+         (dante-mode            . company-mode)
          (lisp-interaction-mode . company-mode)
+         (org-mode              . company-mode)
          (sly-mode              . company-mode))
   :bind (:map company-active-map
               ("<tab>" . company-complete-selection))
@@ -414,8 +416,7 @@
   :after haskell-mode
   :commands 'dante-mode
   :hook ((haskell-mode . flycheck-mode)
-         (haskell-mode . dante-mode)
-         (dante-mode   . company-mode)))
+         (haskell-mode . dante-mode)))
 
 (use-package idris-mode
   :defer
