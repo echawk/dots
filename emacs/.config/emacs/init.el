@@ -321,7 +321,7 @@
 
 (use-package pdf-tools
   :defer
-  :config
+  :init
   (pdf-tools-install))
 
 (use-package eww
@@ -361,6 +361,12 @@
   :hook ((LaTeX-mode . visual-line-mode)
          (LaTeX-mode . LaTeX-math-mode)
          (LaTeX-mode . flyspell-mode))
+  :init
+  ;; Make pdf-tools the default viewer for auctex.
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+        TeX-source-correlate-start-server t)
+  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
   :config
   (setq TeX-auto-save nil
         TeX-parse-self t)
