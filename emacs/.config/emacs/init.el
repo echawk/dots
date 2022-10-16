@@ -429,7 +429,7 @@
   :defer
   :mode ("\\.shen$" . shen-mode)
   :config
-  (setq inferior-shen-program "shen-sbcl"))
+  (setq inferior-shen-program "shen-ccl"))
 
 ;; Enable prettify-symbols-mode in some languages
 (dolist (hook '(sly-mode-hook
