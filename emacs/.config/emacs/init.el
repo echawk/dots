@@ -237,10 +237,11 @@
   (add-to-list 'apheleia-formatters '(shfmt     . ("shfmt" "-i" "4"
                                                    "-ci" "-kp" "-sr")))
   ;; Set custom formatters for various modes.
-  (add-to-list 'apheleia-mode-alist '(caml-mode    . ocamlformat))
-  (add-to-list 'apheleia-mode-alist '(d-mode       . dfmt))
-  (add-to-list 'apheleia-mode-alist '(haskell-mode . hindent))
-  (add-to-list 'apheleia-mode-alist '(zig-mode     . zigfmt)))
+  (add-to-list 'apheleia-mode-alist '(caml-mode       . ocamlformat))
+  (add-to-list 'apheleia-mode-alist '(d-mode          . dfmt))
+  (add-to-list 'apheleia-mode-alist '(haskell-mode    . hindent))
+  (add-to-list 'apheleia-mode-alist '(emacs-lisp-mode . lisp-indent))
+  (add-to-list 'apheleia-mode-alist '(zig-mode        . zigfmt)))
 
 (defun buffer-as-string ()
   "Returns the current buffer as a string."
