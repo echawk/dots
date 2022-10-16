@@ -49,7 +49,7 @@
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (defun package-bootstrap ()
-  "Bootstrap package.el"
+  "Function to bootstrap package.el."
   (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents))
@@ -59,7 +59,7 @@
   (setq use-package-always-ensure t))
 
 (defun straight-bootstrap ()
-  "Bootstrap straight.el"
+  "Function to bootstrap straight.el."
   (defvar bootstrap-version)
   (let ((bootstrap-file
          (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
