@@ -309,7 +309,29 @@
 ;; Have <file>.m be recognized as mercury source file.
 (add-to-list 'auto-mode-alist '("\\.m$" . mercury-mode))
 
-(use-package org :defer)
+(use-package org
+  :defer
+  :hook (org-mode . flyspell-mode)
+  :config
+  ;; Add in shortcuts for code blocks and whatnot.
+  (require 'org-tempo)
+
+  ;; Will automatically load a language if it is needed when in org-mode.
+  ;; While somewhat cryptic, it beats having to explicitly enable every language.
+  ;; NOTE: This isn't my own function, its from stackexchange.
+  (defadvice org-babel-execute-src-block (around load-language nil activate)
+    "Load a language if needed"
+    (let ((language (org-element-property :language (org-element-at-point))))
+      (unless (cdr (assoc (intern language) org-babel-load-languages))
+        (add-to-list 'org-babel-load-languages
+                     (cons (intern language) t))
+        (org-babel-do-load-languages 'org-babel-load-languages
+                                     org-babel-load-languages))
+      ad-do-it)))
+
+;; Fix weird tab behavior in default org-mode. Preferable to "C-c '".
+(use-package poly-org
+  :after org)
 
 ;; Read EPUBs in Emacs!
 (use-package nov
