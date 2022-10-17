@@ -42,6 +42,9 @@
 (setq package-native-compile is-emacs-28)
 (setq native-comp-async-report-warnings-errors (not is-emacs-28))
 
+;; Enable flyspell in all programming modes.
+(add-hook 'prog-mode-hook #'flyspell-prog-mode)
+
 ;; package stuff
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
