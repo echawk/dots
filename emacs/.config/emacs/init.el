@@ -199,20 +199,26 @@
                '(elixir-mode . ("elixir-ls"))))
 
 ;; In-buffer autocompletion.
-(use-package company
-  :defer
-  :hook ((eglot-managed-mode    . company-mode)
-         (emacs-lisp-mode       . company-mode)
-         (ess-mode              . company-mode)
-         (dante-mode            . company-mode)
-         (lisp-interaction-mode . company-mode)
-         (org-mode              . company-mode)
-         (sly-mode              . company-mode))
-  :bind (:map company-active-map
-              ("<tab>" . company-complete-selection))
+(use-package corfu
   :custom
-  (company-minimum-prefix-length 3)
-  (company-idle-delay 0.0))
+  (corfu-auto t)  ;; Enable auto-completion.
+  (corfu-cycle t) ;; Enable cycling.
+
+  (corfu-auto-prefix 2)  ;; Set the minimum prefix for completion.
+  (corfu-auto-delay 0.0) ;; Disable delay for completions.
+  (corfu-quit-at-boundary 'separator)
+  (corfu-echo-documentation 0.25) ;; Echo documentation.
+
+  ;; https://github.com/minad/corfu#tab-and-go-completion
+  :bind
+  (:map corfu-map
+        ("TAB"     . corfu-next)
+        ([tab]     . corfu-next)
+        ("S-TAB"   . corfu-previous)
+        ([backtab] . corfu-previous))
+
+  :init
+  (global-corfu-mode))
 
 ;; Language independent syntax highlighting via tree-sitter.
 (use-package tree-sitter
