@@ -198,7 +198,7 @@
   (add-to-list 'eglot-server-programs
                '(elixir-mode . ("elixir-ls"))))
 
-;; In-buffer autocompletion.
+;; In-buffer auto-completion.
 (use-package corfu
   :custom
   (corfu-auto t)  ;; Enable auto-completion.
