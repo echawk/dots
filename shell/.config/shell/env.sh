@@ -70,6 +70,10 @@ export GEM_HOME="$XDG_DATA_HOME/ruby/gem"
 export GEM_PATH="$XDG_DATA_HOME/ruby/gem"
 export GEM_SPEC_CACHE="$XDG_DATA_HOME/ruby/specs"
 
+export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
+export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
+export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
+
 # ~/ cleanup
 export LESS=-R
 export LESSHISTFILE="-"
@@ -86,3 +90,4 @@ export ANDROID_SDK_HOME="$XDG_DATA_HOME/android"
 export WEECHAT_HOME="$XDG_CONFIG_HOME/weechat"
 export TMUX_TMPDIR="$XDG_RUNTIME_DIR"
 export QT_QPA_PLATFORMTHEME="gtk2" # Have QT use gtk2 theme.
+export MPLAYER_HOME="$XDG_CONFIG_HOME"/mplayer
