@@ -342,6 +342,9 @@
 (use-package poly-org
   :after org)
 
+(use-package focus :defer)
+(use-package darkroom :defer)
+
 ;; Read EPUBs in Emacs!
 (use-package nov
   :defer
