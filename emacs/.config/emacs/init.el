@@ -1,5 +1,5 @@
 ;; (load-theme 'tango)
-(load-theme 'leuven)
+(load-theme 'modus-operandi)
 
 (setq column-number-mode t) ; Show column number too
 (fset 'yes-or-no-p 'y-or-n-p) ; Don't ask to spell out 'yes'
