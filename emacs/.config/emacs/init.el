@@ -1,41 +1,12 @@
 ;; (load-theme 'tango)
 (load-theme 'modus-operandi)
 
-(setq column-number-mode t) ; Show column number too
-(fset 'yes-or-no-p 'y-or-n-p) ; Don't ask to spell out 'yes'
-
 ;; utf-8
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (setq default-buffer-file-coding-system 'utf-8)
-
-;; Be more like vim when scrolling
-(setq scroll-step 1
-      scroll-conservatively 10000
-      next-screen-context-lines 5
-      line-move-visual nil)
-
-;; basic functionality
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;; Indentation
-(setq default-tab-width 4
-      tab-width 4
-      default-fill-column 80
-      fill-column 80)
-(setq-default evil-indent-convert-tabs nil
-              indent-tabs-mode nil
-              tab-width 4
-              evil-shift-round nil)
-
-;; Don't use file backups.
-(setq backup-inhibited t
-      auto-save-default nil)
-
-;; Don't ask for confirmation when opening large files.
-(setq large-file-warning-threshold nil)
 
 ;; Native Compilation.
 (setq is-emacs-28 (>= emacs-major-version 28))
@@ -80,6 +51,35 @@
 
 (setq use-straight nil)
 (if use-straight (straight-bootstrap) (package-bootstrap))
+
+(use-package emacs
+  :config
+  ;; Show column number too
+  (setq column-number-mode t)
+  ;; Don't ask to spell out 'yes'
+  (fset 'yes-or-no-p 'y-or-n-p)
+  ;; Indentation
+  (setq default-tab-width 4
+        tab-width 4
+        default-fill-column 80
+        fill-column 80)
+  (setq-default evil-indent-convert-tabs nil
+                indent-tabs-mode nil
+                tab-width 4
+                evil-shift-round nil)
+  ;; Be more like vim when scrolling
+  (setq scroll-step 1
+        scroll-conservatively 10000
+        next-screen-context-lines 5
+        line-move-visual nil)
+  ;; Don't use file backups.
+  ;; Don't ask for confirmation when opening large files.
+  (setq backup-inhibited t
+        auto-save-default nil
+        large-file-warning-threshold nil)
+  :bind
+  (("<escape>" . keyboard-escape-quit)))
+
 
 (use-package try :defer)
 ;; Better 'M-x package-list-packages'
