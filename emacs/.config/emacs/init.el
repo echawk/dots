@@ -409,11 +409,10 @@
 ;; Markdown support.
 (use-package markdown-mode
   :defer
-  :hook (markdown-mode . flyspell-mode))
-(use-package markdown-preview-mode
-  :defer
+  :hook (markdown-mode . flyspell-mode)
   :config
   (setq markdown-command "lowdown -s -Thtml"))
+(use-package markdown-preview-mode :defer)
 
 ;; Better scheme editing.
 (use-package geiser
