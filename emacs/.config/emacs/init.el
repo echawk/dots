@@ -62,21 +62,29 @@
   (setq default-tab-width 4
         tab-width 4
         default-fill-column 80
-        fill-column 80)
+        fill-column 80
+
+        ;; Be more like vim when scrolling
+        scroll-step 1
+        scroll-conservatively 10000
+        next-screen-context-lines 5
+        line-move-visual nil
+
+        ;; Don't use file backups.
+        ;; Don't ask for confirmation when opening large files.
+        backup-inhibited t
+        auto-save-default nil
+        large-file-warning-threshold nil
+
+        ;; Don't prompt when trying to kill a buffer with a live process.
+        kill-buffer-query-functions
+        (remq 'process-kill-buffer-query-function
+              kill-buffer-query-functions))
+
   (setq-default evil-indent-convert-tabs nil
                 indent-tabs-mode nil
                 tab-width 4
                 evil-shift-round nil)
-  ;; Be more like vim when scrolling
-  (setq scroll-step 1
-        scroll-conservatively 10000
-        next-screen-context-lines 5
-        line-move-visual nil)
-  ;; Don't use file backups.
-  ;; Don't ask for confirmation when opening large files.
-  (setq backup-inhibited t
-        auto-save-default nil
-        large-file-warning-threshold nil)
   :bind
   (("<escape>" . keyboard-escape-quit)))
 
