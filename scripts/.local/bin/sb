@@ -12,20 +12,24 @@
 # -s specifies the amount of seconds to sleep.
 # -pad specifies a string to use between the output of commands and the delim.
 
-command -v xset 1>/dev/null 2>&1 || exit 1
+command -v xset 1> /dev/null 2>&1 || exit 1
 
 for arg in "$@"; do
     case "$arg" in
-        -s) shift
+        -s)
+            shift
             sleeptime="$1"
             ;;
-        -pad) shift
+        -pad)
+              shift
             padchar="$1"
             ;;
-        -d) shift
+        -d)
+            shift
             delim="$1"
             ;;
-        -cmds) shift
+        -cmds)
+            shift
             cmds="$1"
             ;;
         *) shift ;;
@@ -44,26 +48,24 @@ for cmd in $cmds; do
 done
 
 # Reset IFS
-IFS=' '
+IFS=
 
-sb_should_run() { [ -e "$sb_should_run" ] && [ -n "$DISPLAY" ] && xset q 1>/dev/null 2>&1 ; }
+sb_should_run() { [ -e "$sb_should_run" ] && [ -n "$DISPLAY" ] && xset q 1> /dev/null 2>&1; }
 
 # Setup the commands.
 get_bar_str() {
-    if sb_should_run; then
-        {
+    {
         echo "$delim"
         while read -r cmd_line; do
             cmd="${cmd_line%%:*}"
             cmd_file="${cmd_line##*:}"
-            if command -v $cmd 1>/dev/null 2>&1; then
-                $cmd > "$cmd_file" 2>/dev/null
+            if command -v "$cmd" 1> /dev/null 2>&1; then
+                $cmd > "$cmd_file" 2> /dev/null
             fi
             printf "${padchar:-}%s${padchar:-}" "$(cat "$cmd_file")"
             echo "$delim"
         done < "$sb_file"
-        } | tr -d '\n'
-    fi
+    } | tr -d '\n'
 }
 
 # Until the should run file is gone, we continue running.
@@ -74,5 +76,5 @@ until ! (sb_should_run); do
 done
 wait
 
-cut -d':' -f2 < "$sb_file" | xargs rm -v 2>/dev/null # Cleanup when we die.
-rm -- "$sb_file" 2>/dev/null
+cut -d':' -f2 < "$sb_file" | xargs rm -v 2> /dev/null # Cleanup when we die.
+rm -- "$sb_file" 2> /dev/null
