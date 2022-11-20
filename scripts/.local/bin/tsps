@@ -1,0 +1,32 @@
+#!/bin/sh -e
+
+# Simple script to get TOTP codes.
+# Expects your account tokens to be in ~/.config/totp/
+# ex. echo "mysecrettoken" > ~/.config/totp/github_personal
+
+# Yes I know that you should use a 2fa on a different device, but I hate
+# the level of inconvenience.
+
+for arg in "$@"; do
+    case $arg in
+        -t) TERM="Y" ;;
+        -p) PRINT="Y" ;;
+    esac
+done
+
+if [ "$TERM" = Y ]; then
+    alias menu=fzf
+else
+    alias menu="dmenu -p \"Choose Site:\" -l 10"
+fi
+
+TOKEN="$(find "${XDG_CONFIG_HOME:-$HOME/.config}/totp/" \
+      -type f -exec basename "{}" \; |
+      menu |
+      xargs -I{} cat "${XDG_CONFIG_HOME:-$HOME/.config}/totp/{}")"
+
+if [ "$PRINT" = Y ]; then
+    oathtool --totp -b "$TOKEN"
+else
+    oathtool --totp -b "$TOKEN" | xclip -r -selection "clipboard"
+fi
