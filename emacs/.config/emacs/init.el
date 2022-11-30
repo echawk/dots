@@ -1,20 +1,4 @@
-;; (load-theme 'tango)
 (load-theme 'modus-operandi)
-
-;; utf-8
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
-
-;; Native Compilation.
-(setq is-emacs-28 (>= emacs-major-version 28))
-(setq package-native-compile is-emacs-28)
-(setq native-comp-async-report-warnings-errors (not is-emacs-28))
-
-;; Enable flyspell in all programming modes.
-(add-hook 'prog-mode-hook #'flyspell-prog-mode)
 
 ;; package stuff
 (require 'package)
@@ -54,8 +38,8 @@
 
 (use-package emacs
   :config
-  ;; Show column number too
-  (setq column-number-mode t)
+  ;; Enable flyspell in all programming modes.
+  (add-hook 'prog-mode-hook #'flyspell-prog-mode)
   ;; Don't ask to spell out 'yes'
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; Indentation
@@ -63,6 +47,9 @@
         tab-width 4
         default-fill-column 80
         fill-column 80
+
+        ;; Show column number too
+        column-number-mode t
 
         ;; Be more like vim when scrolling
         scroll-step 1
@@ -76,11 +63,32 @@
         auto-save-default nil
         large-file-warning-threshold nil
 
+        ;; Native Compilation.
+        package-native-compile (>= emacs-major-version 28)
+        native-comp-async-report-warnings-errors (not (>= emacs-major-version 28))
+
+        ;; utf-8
+        default-buffer-file-coding-system 'utf-8
+
+        ;; Keep custom variables from polluting this file.
+        custom-file (concat user-emacs-directory "custom.el")
         ;; Don't prompt when trying to kill a buffer with a live process.
         kill-buffer-query-functions
         (remq 'process-kill-buffer-query-function
               kill-buffer-query-functions))
 
+  ;; utf-8
+  (prefer-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+
+  ;; Prevent the scratch buffer from being killed.
+  (with-current-buffer "*scratch*"
+    (emacs-lock-mode 'kill))
+
+  ;; Don't error if we can't load the custom file
+  (load custom-file 'noerror)
   (setq-default evil-indent-convert-tabs nil
                 indent-tabs-mode nil
                 tab-width 4
@@ -488,14 +496,6 @@
                 clojure-mode-hook)
               nil)
   (add-hook hook #'prettify-symbols-mode))
-
-;; Keep custom variables from polluting this file.
-(setq custom-file (concat user-emacs-directory "custom.el"))
-(load custom-file 'noerror)
-
-;; Prevent the scratch buffer from being killed.
-(with-current-buffer "*scratch*"
-  (emacs-lock-mode 'kill))
 
 ;; Print startup time on emacs startup.
 (defun display-startup-time ()
