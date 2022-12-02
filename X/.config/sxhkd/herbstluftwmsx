@@ -1,0 +1,23 @@
+
+alt + shift + q
+	herbstclient close
+
+alt + shift + r
+	herbstclient reload
+
+alt + {h, j, k, l}
+	herbstclient focus {left, down, up, right}
+
+alt + shift + {h, j, k, l}
+	herbstclient shift {left, down, up, right}
+
+alt + t
+	herbstclient pseudotile toggle
+
+alt + f
+	herbstclient fullscreen toggle
+
+alt + shift + space
+	herbstclient floating toggle
+
+# vim: ft=sxhkdrc

@@ -1,0 +1,34 @@
+alt + {k,j}
+	dwmc focusstack {-,+}1
+
+alt + shift + {k,j}
+	dwmc movestack {-,+}1
+
+alt + {h,l}
+	dwmc setmfact {-,+}0.05
+
+alt + shift + space
+	dwmc togglefloating
+
+alt + shift + q
+	dwmc killclient
+
+alt + f
+	dwmc togglefullscr
+
+alt + {_,ctrl +}{_,shift +} {1-9}
+	dwmc {_,toggle}{viewex,tagex} {0-8}
+
+alt + 0
+	dwmc viewall
+
+alt + {_,shift} + c
+	dwmc cyclelayout {-,+}1
+
+#alt + {_,shift} + g
+#	dwmc setgaps {+,-}1
+
+alt + s
+	dwmc togglesticky
+
+# vim: ft=sxhkdrc

@@ -1,0 +1,36 @@
+
+alt + shift + q
+	i3 kill
+
+alt + shift + r
+	i3 restart
+
+alt + {h, j, k, l}
+	i3 focus {left, down, up, right}
+
+alt + shift + {h, j, k, l}
+	i3 move {left, down, up, right}
+
+alt + t
+	i3 split toggle
+
+alt + f
+	i3 fullscreen toggle
+
+alt + shift + space
+	i3 floating toggle
+
+#alt + {1-8}
+#	i3 workspace {1-8}
+
+#alt + shift + {1-8}
+#	i3 move container to workspace {1-8}
+
+#alt + shift + {1-8}
+#	i3 move instance to workspace {1-8}
+
+#toggle gaps on or off, need to find out how to toggle
+#alt + shift + g
+#	i3 gaps inner set plus 5
+
+# vim: ft=sxhkdrc

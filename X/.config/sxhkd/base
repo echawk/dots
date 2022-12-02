@@ -1,0 +1,76 @@
+
+shift + Up
+	volctrl i
+
+shift + Down
+	volctrl d
+
+ctrl + shift + Up
+	volctrl i 1
+
+ctrl + shift + Down
+	volctrl d 1
+
+XF86AudioRaiseVolume
+	volctrl i
+
+XF86AudioLowerVolume
+	volctrl d
+
+XF86AudioMute
+	volctrl m
+
+XF86MonBrightnessDown
+	bri d
+
+XF86MonBrightnessUp
+	bri i
+
+alt + Return
+	terminal
+
+# Start Applications
+alt + d
+	launcher
+
+alt + e
+	em
+
+alt + shift + e
+	emacs
+
+alt + ctrl + x
+	xkill
+
+alt + z
+	lockscreen
+
+alt + shift + z
+	dmenuexit.sh
+
+#MISC
+alt + b
+	$BROWSER
+
+Print
+	maim pic-full-"$(date '+%y%m%d-%H%M-%S').png"
+
+shift + Print
+	maimpick
+
+alt + u
+	pkill -USR1 redshift
+
+alt + m
+	terminal -e neomutt
+
+alt + shift + m
+	mbsync -a
+
+alt + semicolon
+	expose
+
+alt + p
+	shopen "$(xclip -o)"
+
+# vim: ft=sxhkdrc

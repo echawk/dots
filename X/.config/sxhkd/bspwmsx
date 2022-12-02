@@ -1,0 +1,37 @@
+
+alt + shift + q
+	bspc node -c
+
+alt + shift + r
+	bspc wm -r
+
+alt + {h, j, k, l}
+	bspc node -f {west, south, north, east}
+
+alt + shift + {h, j, k, l}
+	bspc node -s {west, south, north, east}
+
+alt + t
+	togglespawnmode
+
+alt + f
+	bspc node -t fullscreen
+
+alt + shift + space
+	bspc node -t floating
+
+alt + {1-9}
+	bspc desktop -f {1-9}
+
+alt + shift + {1-9}
+	bspc node -d {1-9}
+
+# set the window state
+# super + {t,shift + t,s,f}
+# bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+#
+# focus or send to the given desktop
+# super + {_,shift + }{1-9,0}
+# bspc {desktop -f,node -d} '^{1-9,10}'
+
+# vim: ft=sxhkdrc
