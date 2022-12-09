@@ -96,8 +96,6 @@
   :bind
   (("<escape>" . keyboard-escape-quit)))
 
-
-(use-package try :defer)
 ;; Better 'M-x package-list-packages'
 (use-package paradox
   :defer
