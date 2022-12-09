@@ -14,10 +14,10 @@ which hsetroot && hsetroot -full "$HOME/Pictures/jpgs/housewallpaper.jpg"
 
 # Unleash the daemons!!!
 which sxhkd && sxhkd -c "$sxhkdrc" &
-if which picom ; then
+if which picom; then
     picom &
 else
-    if which xcompmgr ; then
+    if which xcompmgr; then
         xcompmgr -c &
     fi
 fi
