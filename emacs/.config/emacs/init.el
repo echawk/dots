@@ -11,8 +11,10 @@
   (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents))
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
+  ;; Only install 'use-package' if emacs version is below 29.
+  (if (not (>= emacs-major-version 29))
+      (unless (package-installed-p 'use-package)
+        (package-install 'use-package)))
   (require 'use-package)
   (setq use-package-always-ensure t))
 
