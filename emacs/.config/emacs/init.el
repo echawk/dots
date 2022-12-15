@@ -3,8 +3,8 @@
 ;; package stuff
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+                         ("org"   . "https://orgmode.org/elpa/")
+                         ("elpa"  . "https://elpa.gnu.org/packages/")))
 
 (defun package-bootstrap ()
   "Function to bootstrap package.el."
@@ -36,7 +36,9 @@
   (setq straight-use-package-by-default t))
 
 (setq use-straight nil)
-(if use-straight (straight-bootstrap) (package-bootstrap))
+(if use-straight
+    (straight-bootstrap)
+  (package-bootstrap))
 
 (use-package emacs
   :config
