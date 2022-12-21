@@ -374,7 +374,7 @@
 (use-package pdf-tools
   :defer
   :init
-  (pdf-tools-install))
+  (pdf-loader-install :no-query))
 
 (use-package eww
   :defer
