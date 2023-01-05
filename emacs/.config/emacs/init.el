@@ -218,6 +218,8 @@
 
 ;; In-buffer auto-completion.
 (use-package corfu
+  ;; Enable info popups whenever we use corfu.
+  :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
   (corfu-auto t)  ;; Enable auto-completion.
   (corfu-cycle t) ;; Enable cycling.
@@ -227,6 +229,8 @@
   (corfu-quit-at-boundary 'separator)
   (corfu-echo-documentation 0.25) ;; Echo documentation.
 
+  (corfu-popupinfo-delay '(0.25 . 0.1)) 
+  (corfu-popupinfo-hide nil) ;; Don't hide the popup when candidates switch.
   ;; https://github.com/minad/corfu#tab-and-go-completion
   :bind
   (:map corfu-map
