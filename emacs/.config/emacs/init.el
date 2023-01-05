@@ -373,7 +373,9 @@
   :mode ("\\.epub\\'" . nov-mode)
   :hook (nov-mode . visual-line-mode))
 
-(use-package vterm :defer)
+(use-package vterm
+  :defer
+  :hook (vterm-mode . (lambda () (display-line-numbers-mode 0))))
 
 (use-package pdf-tools
   :defer
