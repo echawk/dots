@@ -132,26 +132,6 @@
   (global-set-key (kbd "C-h k") #'helpful-key)
   (global-set-key (kbd "C-h C-d") #'helpful-at-point))
 
-(use-package doom-themes :defer)
-(use-package all-the-icons :defer)
-(use-package doom-modeline
-  :custom ((doom-modeline-height 15))
-  :config
-  (doom-modeline-mode 1))
-
-(use-package rainbow-delimiters
-  :defer
-  :hook (prog-mode . rainbow-delimiters-mode))
-(use-package rainbow-mode :defer)
-(use-package diff-hl
-  :config
-  (global-diff-hl-mode))
-
-(use-package hl-prog-extra
-  :defer
-  :hook ((prog-mode . hl-prog-extra-mode))
-  :commands (hl-prog-extra-mode))
-
 (use-package editorconfig
   :defer
   :config
@@ -182,6 +162,26 @@
   :after evil
   :config
   (evil-lion-mode))
+
+(use-package doom-themes :defer)
+(use-package all-the-icons :defer)
+(use-package doom-modeline
+  :custom ((doom-modeline-height 15))
+  :hook (after-init . doom-modeline-mode))
+
+(use-package rainbow-delimiters
+  :defer
+  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-mode :defer)
+(use-package diff-hl
+  :hook (prog-mode . diff-hl-mode))
+;;:config
+;;(global-diff-hl-mode))
+
+(use-package hl-prog-extra
+  :defer
+  :hook ((prog-mode . hl-prog-extra-mode))
+  :commands (hl-prog-extra-mode))
 
 ;; Git frontend.
 (use-package magit :defer)
