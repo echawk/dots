@@ -242,6 +242,13 @@
   :init
   (global-corfu-mode))
 
+;; Nice icons for corfu completions, depends on librsvg.
+(use-package kind-icon
+  :if (and (display-graphic-p) (image-type-available-p 'svg))
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
 
 (use-package apheleia
   :defer
