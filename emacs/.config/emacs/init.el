@@ -365,7 +365,33 @@
   :after org)
 
 (use-package focus :defer)
-(use-package darkroom :defer)
+(use-package writeroom-mode
+  :config
+  ;; TODO: make this way prettier - macro?
+  ;; Arguments: function, enable value, disable value
+  ;; (defun writeroom-toggle-theme (arg)
+  ;;   (cond
+  ;;    ((= arg 1)  (load-theme 'modus-operandi))
+  ;;    ((= arg -1) (load-theme 'modus-operandi))))
+  (defun writeroom-toggle-line-numbers (arg)
+    (cond
+     ((= arg 1)  (display-line-numbers-mode 0))
+     ((= arg -1) (display-line-numbers-mode 1))))
+  (defun writeroom-toggle-focus-mode (arg)
+    (cond
+     ((= arg 1)  (focus-mode 1))
+     ((= arg -1) (focus-mode 0))))
+  ;; TODO: see if I can set a custom sans serif font as well.
+  (defun writeroom-toggle-variable-pitch (arg)
+    (cond
+     ((= arg 1)  (variable-pitch-mode 1))
+     ((= arg -1) (variable-pitch-mode 0))))
+  ;; Add all of our functions to the local effects list.
+  (dolist (func '(writeroom-toggle-line-numbers
+                  writeroom-toggle-focus-mode
+                  writeroom-toggle-variable-pitch)
+                nil)
+    (add-to-list #'writeroom-local-effects func)))
 
 ;; Read EPUBs in Emacs!
 (use-package nov
