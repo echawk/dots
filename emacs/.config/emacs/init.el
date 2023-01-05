@@ -327,18 +327,24 @@
   :mode ("\\.jl$" . ess-julia-mode))
 (use-package julia-mode :defer)
 
-;; Prolog configuration.
-(let ((pl (concat user-emacs-directory "prolog.el")))
-  (unless (file-exists-p pl)
-    (url-copy-file "https://bruda.ca/_media/emacs/prolog.el" pl))
-  (load pl))
-(setq prolog-system 'swi
-      prolog-program-name "swipl")
-;; Have <file>.(P|pl), be recognized as prolog source files.
-(dolist (item '("\\.P\\'" "\\.pl\\'") nil)
-  (add-to-list 'auto-mode-alist (cons item 'prolog-mode)))
-;; Have <file>.m be recognized as mercury source file.
-(add-to-list 'auto-mode-alist '("\\.m$" . mercury-mode))
+(use-package prolog
+  :ensure nil
+  :defer
+  ;; Have <file>.(P|pl), be recognized as prolog source files.
+  ;; Have <file>.m be recognized as mercury source file.
+  :mode (("\\.P\\'"  . prolog-mode)
+         ("\\.pl\\'" . prolog-mode)
+         ("\\.m$"    . mercury-mode))
+
+  :init
+  ;; Prolog configuration.
+  (let ((pl (concat user-emacs-directory "prolog.el")))
+    (unless (file-exists-p pl)
+      (url-copy-file "https://bruda.ca/_media/emacs/prolog.el" pl))
+    (load pl))
+  :config
+  (setq prolog-system 'swi
+        prolog-program-name "swipl"))
 
 (use-package org
   :defer
