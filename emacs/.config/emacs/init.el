@@ -255,21 +255,25 @@
   :init
   (apheleia-global-mode +1)
   :config
-  (add-to-list 'apheleia-formatters '(dfmt      . ("dfmt" "--indent_size" "2"
-                                                   "--soft_max_line_length" "80"
-                                                   "--indent_style" "space"
-                                                   "--brace_style" "otbs"
-                                                   filepath)))
-  (add-to-list 'apheleia-formatters '(zigfmt    . ("zig" "fmt" filepath)))
-  (add-to-list 'apheleia-formatters '(hindent   . ("hindent")))
-  (add-to-list 'apheleia-formatters '(shfmt     . ("shfmt" "-i" "4"
-                                                   "-ci" "-kp" "-sr")))
+  (dolist (formatter-cmd '((dfmt      . ("dfmt" "--indent_size" "2"
+                                         "--soft_max_line_length" "80"
+                                         "--indent_style" "space"
+                                         "--brace_style" "otbs"
+                                         filepath))
+                           (zigfmt    . ("zig" "fmt" filepath))
+                           (hindent   . ("hindent"))
+                           (shfmt     . ("shfmt" "-i" "4" "-ci" "-kp" "-sr")))
+                         nil)
+    (add-to-list #'apheleia-formatters formatter-cmd))
+
   ;; Set custom formatters for various modes.
-  (add-to-list 'apheleia-mode-alist '(caml-mode       . ocamlformat))
-  (add-to-list 'apheleia-mode-alist '(d-mode          . dfmt))
-  (add-to-list 'apheleia-mode-alist '(haskell-mode    . hindent))
-  (add-to-list 'apheleia-mode-alist '(emacs-lisp-mode . lisp-indent))
-  (add-to-list 'apheleia-mode-alist '(zig-mode        . zigfmt)))
+  (dolist (mode-formatter '((caml-mode       . ocamlformat)
+                            (d-mode          . dfmt)
+                            (haskell-mode    . hindent)
+                            (emacs-lisp-mode . lisp-indent)
+                            (zig-mode        . zigfmt))
+                          nil)
+    (add-to-list #'apheleia-mode-alist mode-formatter)))
 
 (defun buffer-as-string ()
   "Returns the current buffer as a string."
