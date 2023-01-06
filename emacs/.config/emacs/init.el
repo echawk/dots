@@ -336,16 +336,15 @@
   :mode (("\\.P\\'"  . prolog-mode)
          ("\\.pl\\'" . prolog-mode)
          ("\\.m$"    . mercury-mode))
-
   :init
   ;; Prolog configuration.
   (let ((pl (concat user-emacs-directory "prolog.el")))
     (unless (file-exists-p pl)
       (url-copy-file "https://bruda.ca/_media/emacs/prolog.el" pl))
     (load pl))
-  :config
-  (setq prolog-system 'swi
-        prolog-program-name "swipl"))
+  :custom
+  (prolog-system 'swi)
+  (prolog-program-name "swipl"))
 
 (use-package org
   :defer
