@@ -426,18 +426,20 @@
 
 (use-package define-word :defer)
 
-;; Only init imaxima if the elisp files exist.
-(when (file-exists-p "/usr/share/emacs/site-lisp/maxima")
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima")
-  (autoload 'maxima-mode "maxima" "Maxima mode" t)
+(use-package maxima
+  :ensure nil
+  :if (file-exists-p "/usr/share/emacs/site-lisp/maxima")
+  :commands (maxima-mode maxima imaxima imath-mode)
+  :defer
+  :mode ("\\.ma[cx]\\'" . maxima-mode)
+  :custom
+  (imaxima-use-maxima-mode-flag t)
+  (imaxima-fnt-size "LARGE")
+  (imaxima-latex-preamble "\\usepackage{concrete}") ;; Sets the font for the LaTeX output.
+  :config
+  ;; Needed to fix commands section above. TODO: see if I can remove this.
   (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
-  (autoload 'maxima "maxima" "Maxima interaction" t)
-  (autoload 'imath-mode "imath" "Imath mode for math formula input" t)
-  ;; Sets the font for the LaTeX output.
-  (setq imaxima-use-maxima-mode-flag t
-        imaxima-fnt-size "LARGE"
-        imaxima-latex-preamble "\\usepackage{concrete}")
-  (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode)))
+  (autoload 'imath-mode "imath" "Imath mode for math formula input" t))
 
 ;; Init singular if files exist.
 (when (file-exists-p "/usr/share/singular/emacs")
