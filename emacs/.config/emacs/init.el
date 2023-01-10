@@ -529,8 +529,8 @@
 
 (use-package idris-mode
   :defer
-  :config
-  (setq idris-interpreter-path "idris2"))
+  :custom
+  (idris-interpreter-path "idris2"))
 
 (use-package futhark-mode :defer)
 
