@@ -498,8 +498,8 @@
   :defer
   :hook ((sly-mode . (lambda ()
                        (unless (sly-connected-p) (save-excursion (sly))))))
-  :init
-  (setq inferior-lisp-program "sbcl"))
+  :custom
+  (inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
 
 (use-package clojure-mode :defer)
