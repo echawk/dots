@@ -320,8 +320,8 @@
 ;; SML
 (use-package sml-mode
   :defer
-  :init
-  (setq sml-program-name "hamlet"))
+  :custom
+  (sml-program-name "hamlet"))
 (use-package sml-basis :defer)
 
 (use-package go-mode :defer)
