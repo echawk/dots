@@ -486,8 +486,8 @@
 ;; Better scheme editing.
 (use-package geiser
   :defer
-  :init
-  (setq geiser-active-implementations '(chez)))
+  :custom
+  (geiser-active-implementations '(chez)))
 (use-package geiser-chez     :after geiser)
 (use-package macrostep        :defer)
 (use-package macrostep-geiser :defer)
