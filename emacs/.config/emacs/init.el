@@ -513,8 +513,8 @@
 
 (use-package lua-mode
   :defer
-  :config
-  (setq lua-default-application "luajit"))
+  :custom
+  (lua-default-application "luajit"))
 (use-package fennel-mode :defer)
 
 (use-package haskell-mode
