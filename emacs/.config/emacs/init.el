@@ -76,6 +76,11 @@
 
         ;; Keep custom variables from polluting this file.
         custom-file (concat user-emacs-directory "custom.el")
+
+        ;; Automatically visit symlink sources.
+        find-file-visit-truename t
+        vc-follow-symlinks t
+
         ;; Don't prompt when trying to kill a buffer with a live process.
         kill-buffer-query-functions
         (remq 'process-kill-buffer-query-function
