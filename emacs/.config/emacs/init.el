@@ -42,9 +42,11 @@
     (package-bootstrap)))
 
 (use-package emacs
-  :config
   ;; Enable flyspell in all programming modes.
-  (add-hook 'prog-mode-hook #'flyspell-prog-mode)
+  :hook (prog-mode . flyspell-prog-mode)
+  :config
+  ;; Automatically update buffers when contents change on disk.
+  (global-auto-revert-mode)
   ;; Don't ask to spell out 'yes'
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; Indentation
