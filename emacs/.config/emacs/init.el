@@ -134,7 +134,9 @@
   (which-key-mode))
 
 (use-package helpful
-  :config
+  :defer
+  :commands (helpful-callable helpful-variable helpful-key helpful-at-point)
+  :init
   (global-set-key (kbd "C-h f") #'helpful-callable)
   (global-set-key (kbd "C-h v") #'helpful-variable)
   (global-set-key (kbd "C-h k") #'helpful-key)
