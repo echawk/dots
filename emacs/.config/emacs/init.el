@@ -11,10 +11,11 @@
   (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents))
-  ;; Only install 'use-package' if emacs version is below 29.
-  (if (not (>= emacs-major-version 29))
-      (unless (package-installed-p 'use-package)
-        (package-install 'use-package)))
+  ;; Only install 'use-package' if emacs version is below 29,
+  ;; and if use-package is not already installed.
+  (if (and (< emacs-major-version 29)
+           (not (package-installed-p 'use-package)))
+      (package-install 'use-package))
   (require 'use-package)
   (setq use-package-always-ensure t))
 
@@ -35,10 +36,10 @@
   (straight-use-package 'use-package)
   (setq straight-use-package-by-default t))
 
-(setq use-straight nil)
-(if use-straight
-    (straight-bootstrap)
-  (package-bootstrap))
+(let ((use-straight nil))
+  (if use-straight
+      (straight-bootstrap)
+    (package-bootstrap)))
 
 (use-package emacs
   :config
