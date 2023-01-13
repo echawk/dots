@@ -237,7 +237,7 @@
   (corfu-quit-at-boundary 'separator)
   (corfu-echo-documentation 0.25) ;; Echo documentation.
 
-  (corfu-popupinfo-delay '(0.25 . 0.1)) 
+  (corfu-popupinfo-delay '(0.25 . 0.1))
   (corfu-popupinfo-hide nil) ;; Don't hide the popup when candidates switch.
   ;; https://github.com/minad/corfu#tab-and-go-completion
   :bind
@@ -463,14 +463,15 @@
          (LaTeX-mode . flyspell-mode)
          (LaTeX-mode . auctex-cluttex-mode))
   :init
-  ;; Make pdf-tools the default viewer for auctex.
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-        TeX-source-correlate-start-server t
-
-        TeX-auto-save nil
-        TeX-parse-self t)
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+  :custom
+  ;; Make pdf-tools the default viewer for auctex.
+  (TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+  (TeX-source-correlate-start-server t)
+
+  (TeX-auto-save nil)
+  (TeX-parse-self t)
   :config
   (setq-default TeX-master nil))
 (use-package auctex-cluttex
