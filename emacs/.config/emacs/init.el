@@ -44,51 +44,53 @@
 (use-package emacs
   ;; Enable flyspell in all programming modes.
   :hook (prog-mode . flyspell-prog-mode)
+  :custom
+  ;; Indentation
+  (default-tab-width 4)
+  (tab-width 4)
+  (default-fill-column 80)
+  (fill-column 80)
+
+  ;; Show column number too
+  (column-number-mode t)
+
+  ;; Be more like vim when scrolling
+  (scroll-step 1)
+  (scroll-conservatively 10000)
+  (next-screen-context-lines 5)
+  (line-move-visual nil)
+
+  ;; Don't use file backups.
+  ;; Don't ask for confirmation when opening large files.
+  (backup-inhibited t)
+  (auto-save-default nil)
+  (large-file-warning-threshold nil)
+
+  ;; Native Compilation.
+  (package-native-compile (>= emacs-major-version 28))
+  (native-comp-async-report-warnings-errors (not (>= emacs-major-version 28)))
+
+  ;; utf-8
+  (default-buffer-file-coding-system 'utf-8)
+
+  ;; Keep custom variables from polluting this file.
+  (custom-file (concat user-emacs-directory "custom.el"))
+
+  ;; Automatically visit symlink sources.
+  (find-file-visit-truename t)
+  (vc-follow-symlinks t)
+
+  (use-dialog-box nil)
+
+  ;; Don't prompt when trying to kill a buffer with a live process.
+  (kill-buffer-query-functions
+   (remq 'process-kill-buffer-query-function
+         kill-buffer-query-functions))
   :config
   ;; Automatically update buffers when contents change on disk.
   (global-auto-revert-mode)
   ;; Don't ask to spell out 'yes'
   (fset 'yes-or-no-p 'y-or-n-p)
-  ;; Indentation
-  (setq default-tab-width 4
-        tab-width 4
-        default-fill-column 80
-        fill-column 80
-
-        ;; Show column number too
-        column-number-mode t
-
-        ;; Be more like vim when scrolling
-        scroll-step 1
-        scroll-conservatively 10000
-        next-screen-context-lines 5
-        line-move-visual nil
-
-        ;; Don't use file backups.
-        ;; Don't ask for confirmation when opening large files.
-        backup-inhibited t
-        auto-save-default nil
-        large-file-warning-threshold nil
-
-        ;; Native Compilation.
-        package-native-compile (>= emacs-major-version 28)
-        native-comp-async-report-warnings-errors (not (>= emacs-major-version 28))
-
-        ;; utf-8
-        default-buffer-file-coding-system 'utf-8
-
-        ;; Keep custom variables from polluting this file.
-        custom-file (concat user-emacs-directory "custom.el")
-
-        ;; Automatically visit symlink sources.
-        find-file-visit-truename t
-        vc-follow-symlinks t
-
-        ;; Don't prompt when trying to kill a buffer with a live process.
-        kill-buffer-query-functions
-        (remq 'process-kill-buffer-query-function
-              kill-buffer-query-functions))
-
   ;; utf-8
   (prefer-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
