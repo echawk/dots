@@ -506,6 +506,10 @@
   :defer
   :hook ((sly-mode . (lambda ()
                        (unless (sly-connected-p) (save-excursion (sly))))))
+  :bind
+  (:map sly-mode-map
+        ("C-c C-i" . sly-interrupt)
+        ("C-c C-b" . sly-eval-buffer))
   :custom
   (inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
