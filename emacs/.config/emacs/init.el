@@ -426,6 +426,7 @@
 
 (use-package pdf-tools
   :defer
+  :hook (pdf-view-mode . (lambda () (display-line-numbers-mode 0)))
   :init
   (pdf-loader-install :no-query))
 
