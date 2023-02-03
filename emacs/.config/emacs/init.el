@@ -344,6 +344,7 @@
 
 (use-package prolog
   :ensure nil
+  :load-path "prolog"
   :defer
   ;; Have <file>.(P|pl), be recognized as prolog source files.
   ;; Have <file>.m be recognized as mercury source file.
@@ -351,11 +352,11 @@
          ("\\.pl\\'" . prolog-mode)
          ("\\.m$"    . mercury-mode))
   :init
-  ;; Prolog configuration.
-  (let ((pl (concat user-emacs-directory "prolog.el")))
-    (unless (file-exists-p pl)
-      (url-copy-file "https://bruda.ca/_media/emacs/prolog.el" pl))
-    (load pl))
+  (let ((pl-dir (concat user-emacs-directory "prolog/")))
+    (unless (file-exists-p pl-dir)
+      (make-directory pl-dir)
+      (url-copy-file "https://bruda.ca/_media/emacs/prolog.el"
+                     (concat pl-dir "prolog.el"))))
   :custom
   (prolog-system 'swi)
   (prolog-program-name "swipl"))
