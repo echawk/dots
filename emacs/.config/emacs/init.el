@@ -280,8 +280,9 @@
   ;; Set custom formatters for various modes.
   (dolist (mode-formatter '((caml-mode       . ocamlformat)
                             (d-mode          . dfmt)
-                            (haskell-mode    . hindent)
                             (emacs-lisp-mode . lisp-indent)
+                            (haskell-mode    . hindent)
+                            (sh-mode         . shfmt)
                             (zig-mode        . zigfmt))
                           nil)
     (add-to-list #'apheleia-mode-alist mode-formatter)))
