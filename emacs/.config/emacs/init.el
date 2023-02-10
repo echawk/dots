@@ -392,6 +392,8 @@
 
 (use-package focus :defer)
 (use-package writeroom-mode
+  :defer
+  :commands (writeroom-mode)
   :config
   ;; TODO: make this way prettier - macro?
   ;; Arguments: function, enable value, disable value
