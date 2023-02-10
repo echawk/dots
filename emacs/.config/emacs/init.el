@@ -358,6 +358,13 @@
   (prolog-system 'swi)
   (prolog-program-name "swipl"))
 
+;; Custom snobol mode.
+(use-package snobol-mode
+  :ensure nil
+  :load-path "snobol-mode"
+  :defer
+  :mode ("\\.sno" . snobol-mode))
+
 (use-package org
   :defer
   :hook (org-mode . flyspell-mode)
