@@ -24,10 +24,12 @@
 (set-face-attribute 'default nil :height 140)
 ;; Set the theme based on the time.
 ;; If it's before 6AM or after 8PM, switch to vivendi.
-(setq theme (let ((curr-hour (string-to-number
-                              (format-time-string "%H" (current-time)))))
-              (if (or (<= curr-hour 6)
-                      (>= curr-hour (+ 12 8)))
-                  'modus-vivendi
-                'modus-operandi)))
+(let ((curr-hour (string-to-number
+                  (format-time-string "%H" (current-time)))))
+  (setq is-night-p (or (<= curr-hour 6)
+                       (>= curr-hour (+ 12 8)))))
+
+(setq theme (if is-night-p
+                'modus-vivendi
+              'modus-operandi))
 (load-theme theme)
