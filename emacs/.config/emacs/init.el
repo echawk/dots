@@ -433,7 +433,8 @@
 
 (use-package pdf-tools
   :defer
-  :hook (pdf-view-mode . (lambda () (display-line-numbers-mode 0)))
+  :hook ((pdf-view-mode . (lambda () (display-line-numbers-mode 0)))
+         (pdf-view-mode . (lambda () (if is-night-p (pdf-view-midnight-minor-mode)))))
   :init
   (pdf-loader-install :no-query))
 
