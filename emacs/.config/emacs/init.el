@@ -288,7 +288,7 @@
     (add-to-list #'apheleia-mode-alist mode-formatter)))
 
 (defun buffer-as-string ()
-  "Returns the current buffer as a string."
+  "Return the current buffer as a string."
   (buffer-substring-no-properties (point-min) (point-max)))
 
 (use-package caml
@@ -574,6 +574,7 @@
 
 ;; Print startup time on emacs startup.
 (defun display-startup-time ()
+  "Print Emacs startup time."
   (message "Emacs loaded in %s with %d garbage collections."
            (format "%.2f seconds"
                    (float-time
