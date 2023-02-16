@@ -4,6 +4,6 @@
 
 html_file="$(mktemp)"
 curl -s "$1" > "$html_file"
-channelid=$(sed -e "s~<~\n<~g" "$html_file" | grep -E "^<meta" | grep channelId | cut -d'"' -f4)
+channelid=$(sed "s~<~\n<~g" "$html_file" | sed -E -n '/^<meta itemprop="channelId"/s/.*content="(.*)">/\1/p')
 echo "https://www.youtube.com/feeds/videos.xml?channel_id=$channelid"
 rm "$html_file"
