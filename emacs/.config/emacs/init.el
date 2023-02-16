@@ -445,6 +445,8 @@
   ;; (setq browse-url-browser-function 'eww-browse-url)
   :hook (eww-mode . visual-line-mode))
 
+(use-package google-translate :defer)
+
 (use-package ement :defer)
 
 (use-package define-word :defer)
