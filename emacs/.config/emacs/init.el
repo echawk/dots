@@ -574,7 +574,11 @@
               nil)
   (add-hook hook #'prettify-symbols-mode))
 
-;; Print startup time on emacs startup.
+(use-package gnu-apl-mode
+  :defer
+  :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
+         (gnu-apl-interactive-mode . (lambda () (set-input-method "APL-Z")))))
+
 (defun display-startup-time ()
   "Print Emacs startup time."
   (message "Emacs loaded in %s with %d garbage collections."
