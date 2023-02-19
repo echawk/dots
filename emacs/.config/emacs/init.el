@@ -227,6 +227,49 @@
   (add-to-list 'eglot-server-programs
                '(elixir-mode . ("elixir-ls"))))
 
+(use-package treesit
+  ;; Need to make sure we don't try to install this from package.el
+  :ensure nil
+  :commands (treesit-install-language-grammar nf/treesit-install-all-languages)
+  :init
+  (setq treesit-language-source-alist
+        '((bash       . ("https://github.com/tree-sitter/tree-sitter-bash"))
+          (c          . ("https://github.com/tree-sitter/tree-sitter-c"))
+          (cpp        . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+          (c-sharp    . ("https://github.com/tree-sitter/tree-sitter-c-sharp"))
+          (clojure    . ("https://github.com/sogaiu/tree-sitter-clojure"))
+          (elixir     . ("https://github.com/elixir-lang/tree-sitter-elixir"))
+          (erlang     . ("https://github.com/AbstractMachinesLab/tree-sitter-erlang"))
+          (fennel     . ("https://github.com/TravonteD/tree-sitter-fennel"))
+          (go         . ("https://github.com/tree-sitter/tree-sitter-go"))
+          (haskell    . ("https://github.com/tree-sitter/tree-sitter-haskell"))
+          (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
+          (julia      . ("https://github.com/tree-sitter/tree-sitter-julia"))
+          (latex      . ("https://github.com/latex-lsp/tree-sitter-latex"))
+          (lua        . ("https://github.com/Azganoth/tree-sitter-lua"))
+          (make       . ("https://github.com/alemuller/tree-sitter-make"))
+          (ocaml      . ("https://github.com/tree-sitter/tree-sitter-ocaml" "master" "ocaml/src"))
+          (python     . ("https://github.com/tree-sitter/tree-sitter-python"))
+          (ruby       . ("https://github.com/tree-sitter/tree-sitter-ruby"))
+          (rust       . ("https://github.com/tree-sitter/tree-sitter-rust"))
+          (zig        . ("https://github.com/GrayJack/tree-sitter-zig"))))
+  :config
+  ;; https://www.nathanfurnal.xyz/posts/building-tree-sitter-langs-emacs/#native-emacs-solution
+  (defun treesit-install-all-languages ()
+    "Install all languages specified by `treesit-language-source-alist'."
+    (interactive)
+    (let ((languages (mapcar 'car treesit-language-source-alist)))
+      (dolist (lang languages)
+        (treesit-install-language-grammar lang)
+        (message "`%s' parser was installed." lang)
+        (sit-for 0.75)))))
+
+;; https://github.com/renzmann/treesit-auto
+(use-package treesit-auto
+  ;; :defer
+  :config
+  (global-treesit-auto-mode))
+
 ;; In-buffer auto-completion.
 (use-package corfu
   ;; Enable info popups whenever we use corfu.
