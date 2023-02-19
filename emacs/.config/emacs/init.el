@@ -332,8 +332,10 @@
 (use-package go-mode :defer)
 (use-package d-mode :defer)
 (use-package crystal-mode :defer)
+(use-package nim-mode :defer)
 (use-package vala-mode :defer)
 (use-package zig-mode :defer)
+(use-package hy-mode :defer)
 
 (use-package ess
   :defer
