@@ -377,6 +377,7 @@
 (use-package crystal-mode :defer)
 (use-package nim-mode :defer)
 (use-package vala-mode :defer)
+(use-package vimrc-mode :defer)
 (use-package zig-mode :defer)
 (use-package hy-mode :defer)
 
