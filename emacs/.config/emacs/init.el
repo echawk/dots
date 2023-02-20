@@ -631,6 +631,11 @@
   :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
          (gnu-apl-interactive-mode . (lambda () (set-input-method "APL-Z")))))
 
+(use-package forth-mode
+  :defer
+  :init
+  (setq forth-executable "gforth"))
+
 (defun display-startup-time ()
   "Print Emacs startup time."
   (message "Emacs loaded in %s with %d garbage collections."
