@@ -201,18 +201,19 @@
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
-  :hook ((tuareg-mode  . eglot-ensure)
-         (caml-mode    . eglot-ensure)
-         (go-mode      . eglot-ensure)
+  :hook ((caml-mode    . eglot-ensure)
          (c-mode       . eglot-ensure)
          (crystal-mode . eglot-ensure)
-         (vala-mode    . eglot-ensure)
-         (zig-mode     . eglot-ensure)
          (elixir-mode  . eglot-ensure)
          (erlang-mode  . eglot-ensure)
-         (LaTeX-mode   . eglot-ensure)
          (futhark-mode . eglot-ensure)
-         (sh-mode      . eglot-ensure))
+         (go-mode      . eglot-ensure)
+         (haskell-mode . eglot-ensure)
+         (LaTeX-mode   . eglot-ensure)
+         (sh-mode      . eglot-ensure)
+         (tuareg-mode  . eglot-ensure)
+         (vala-mode    . eglot-ensure)
+         (zig-mode     . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
                '((latex-mode
