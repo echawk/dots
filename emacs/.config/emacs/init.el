@@ -555,7 +555,13 @@
   :custom
   (geiser-active-implementations '(chez)))
 (use-package geiser-chez     :after geiser)
-(use-package macrostep        :defer)
+(use-package macrostep
+  :defer
+  :bind
+  (:map macrostep-keymap
+        ("C-c C-e" . macrostep-expand)
+        ("C-c C-u" . macrostep-collapse)
+        ("C-c C-q" . macrostep-collapse-all)))
 (use-package macrostep-geiser :defer)
 (use-package srfi :defer)
 
