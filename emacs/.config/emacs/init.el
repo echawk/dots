@@ -231,7 +231,7 @@
 (use-package treesit
   ;; Need to make sure we don't try to install this from package.el
   :ensure nil
-  :commands (treesit-install-language-grammar nf/treesit-install-all-languages)
+  :commands (treesit-install-language-grammar treesit-install-all-languages)
   :init
   (setq treesit-language-source-alist
         '((bash       . ("https://github.com/tree-sitter/tree-sitter-bash"))
