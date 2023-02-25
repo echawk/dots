@@ -267,6 +267,7 @@
 
 ;; https://github.com/renzmann/treesit-auto
 (use-package treesit-auto
+  :if (>= emacs-major-version 29)
   ;; :defer
   :config
   (global-treesit-auto-mode))
