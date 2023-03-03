@@ -1,5 +1,6 @@
 # potentially change the order of $PATH to have '.local' stuff to be first
 export PATH="$(find "$HOME/.local/bin/" -type d | tr '\n' ':' | sed 's/:*$//'):$PATH"
+[ -d "$HOME/.dotnet/" ] && PATH="$PATH:$HOME/.dotnet/"
 
 export EDITOR="nvim" # emacs, vis
 export PAGER="less"
@@ -59,6 +60,8 @@ export CABAL_CONFIG="$XDG_CONFIG_HOME/cabal/config"
 export CABAL_DIR="$XDG_DATA_HOME/cabal"
 export PATH="$CABAL_DIR/bin:$PATH"
 
+# Disable telemetry for dotnet cli.
+export DOTNET_CLI_TELEMETRY_OUTPUT=1
 
 export JULIA_DEPOT_PATH="$XDG_DATA_HOME/julia:$JULIA_DEPOT_PATH"
 export DISTCC_DIR="$XDG_CONFIG_HOME/distcc"
