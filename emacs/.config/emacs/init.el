@@ -326,6 +326,7 @@
   (dolist (mode-formatter '((caml-mode       . ocamlformat)
                             (d-mode          . dfmt)
                             (emacs-lisp-mode . lisp-indent)
+                            (geiser-mode     . lisp-indent)
                             (haskell-mode    . hindent)
                             (sh-mode         . shfmt)
                             (zig-mode        . zigfmt))
