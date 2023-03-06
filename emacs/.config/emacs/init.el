@@ -375,14 +375,15 @@
   (sml-program-name "hamlet"))
 (use-package sml-basis :defer)
 
-(use-package go-mode :defer)
-(use-package d-mode :defer)
 (use-package crystal-mode :defer)
+(use-package d-mode :defer)
+(use-package fsharp-mode :defer)
+(use-package go-mode :defer)
+(use-package hy-mode :defer)
 (use-package nim-mode :defer)
 (use-package vala-mode :defer)
 (use-package vimrc-mode :defer)
 (use-package zig-mode :defer)
-(use-package hy-mode :defer)
 
 (use-package ess
   :defer
