@@ -11,7 +11,7 @@ export FUZZY="fzf"
 export WM="dwm"     # bspwm i3 herbstluftwm
 export AUDIO="alsa" # pulseaudio pipewire
 export FILE="fff"
-export DISTRO="$(cat /etc/os-release | grep "ID" | cut -d'=' -f2)" #arch, void, kiss/carbs
+export DISTRO="$(grep "ID"  /etc/os-release | cut -d'=' -f2)" #arch, void, kiss/carbs
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_CACHE_HOME="${HOME}/.cache"
