@@ -97,6 +97,13 @@
   ;; Delete trailing whitespace before saving buffers.
   (add-hook 'before-save-hook #'(lambda () (delete-trailing-whitespace (point-min) (point-max))))
 
+  ;; Print startup time & num of gcs done.
+  (add-hook 'emacs-startup-hook #'(lambda ()
+                                    (message "Emacs loaded in %s with %d garbage collections."
+                                             (format "%.2f seconds"
+                                                     (float-time
+                                                      (time-subtract after-init-time before-init-time))) gcs-done)))
+
   ;; Prevent the scratch buffer from being killed.
   (with-current-buffer "*scratch*"
     (emacs-lock-mode 'kill))
@@ -638,11 +645,4 @@
   :init
   (setq forth-executable "gforth"))
 
-(defun display-startup-time ()
-  "Print Emacs startup time."
-  (message "Emacs loaded in %s with %d garbage collections."
-           (format "%.2f seconds"
-                   (float-time
-                    (time-subtract after-init-time before-init-time))) gcs-done))
 
-(add-hook 'emacs-startup-hook #'display-startup-time)
