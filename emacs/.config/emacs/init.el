@@ -94,6 +94,9 @@
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
 
+  ;; Delete trailing whitespace before saving buffers.
+  (add-hook 'before-save-hook #'(lambda () (delete-trailing-whitespace (point-min) (point-max))))
+
   ;; Prevent the scratch buffer from being killed.
   (with-current-buffer "*scratch*"
     (emacs-lock-mode 'kill))
