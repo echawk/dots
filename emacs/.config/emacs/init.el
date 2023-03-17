@@ -624,7 +624,7 @@
   :defer
   :mode ("\\.shen$" . shen-mode)
   :custom
-  (inferior-shen-program "shen-ccl"))
+  (inferior-shen-program "shen-scheme"))
 
 ;; Enable prettify-symbols-mode in some languages
 (dolist (hook '(sly-mode-hook
