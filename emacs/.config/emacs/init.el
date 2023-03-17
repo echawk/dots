@@ -570,7 +570,17 @@
         ("C-c C-u" . macrostep-collapse)
         ("C-c C-q" . macrostep-collapse-all)))
 (use-package macrostep-geiser :defer)
-(use-package srfi :defer)
+;; TODO: override browse-url and have it use eww for srfi.
+(use-package srfi
+  :defer
+  ;; Add some keybinds that make this easier to use from evil-mode.
+  :bind
+  (:map srfi-mode-map
+        ("C-<return>" . srfi-browse-document-url)
+        ("C-c C-k"    . srfi-keyword)
+        ("C-c C-l"    . srfi-browse-landing-page-url)
+        ("C-c C-r"    . srfi-browse-repository-url)
+        ("C-c C-s"    . sfri-search)))
 
 ;; Use sly instead of slime
 (use-package sly
