@@ -336,40 +336,14 @@
                           nil)
     (add-to-list #'apheleia-mode-alist mode-formatter)))
 
-(defun buffer-as-string ()
-  "Return the current buffer as a string."
-  (buffer-substring-no-properties (point-min) (point-max)))
 
-(use-package caml
+(use-package tuareg
   :defer
-  :mode ("\\.ml[iylp]?$" . caml-mode)
-  :interpreter (("ocaml"    . caml-mode)
-                ("ocamlrun" . caml-mode))
-  :bind (:map caml-mode-map
-              ("C-c C-b" . 'custom-caml-eval-buffer)
-              ("C-c C-r" . caml-eval-region))
-  :config
-  (autoload 'caml-mode "caml" "Major mode for editing OCaml code." t)
-  (autoload 'run-caml "inf-caml" "Run an inferior OCaml process." t)
-  (autoload 'camldebug "camldebug" "Run ocamldebug on program." t)
-  (defun custom-caml-eval-buffer ()
-    "Send the current buffer to OCaml and evaluate it."
-    (interactive)
-    (let ((buff (concat
-                 (replace-regexp-in-string
-                  "[ \t\n]*\\(;;[ \t\n]*\\)?\\'"
-                  ""
-                  (buffer-as-string))
-                 ";;")))
-      (with-current-buffer "*inferior-caml*"
-        (goto-char (point-max))
-        (comint-send-string "*inferior-caml*" buff)
-        (let ((pos (point)))
-          (comint-send-input)
-          (save-excursion
-            (goto-char pos)
-            (insert buff))))
-      (display-buffer "*inferior-caml*"))))
+  :hook (tuareg-mode . (lambda () (electric-indent-mode 0)))
+  :mode ("\\.ml[iylp]?$" . tuareg-mode)
+  :custom
+  (tuareg-indent-align-with-first-arg t)
+  (tuareg-match-patterns-aligned t))
 
 ;; SML
 (use-package sml-mode
