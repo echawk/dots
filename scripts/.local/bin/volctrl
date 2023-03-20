@@ -1,9 +1,9 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 #usage:
 #volctrl i/d/m  (increase/decrease/mute)
 
-USAGE_S="No action provided!\n'i' - to increase\n'd' - to decrease\n'm' - to toggle mute"
+USAGE_S="No action provided!\n'i' - to increase\n'd' - to decrease\n'm' - to toggle mute\n"
 
 pa_h(){
     command -v pactl || exit 1
@@ -29,11 +29,22 @@ a_h(){
     esac
 }
 
+pw_h(){
+    command -v wpctl || exit 1
+    [ -n $2 ] && percent="$2"
+    case $1 in
+        i) lt_100 && wpctl set-volume @DEFAULT_AUDIO_SINK@ "${percent:-5}"%+ && exit 0;;
+        d) wpctl set-volume @DEFAULT_AUDIO_SINK@ "${percent:-5}"%- && exit 0;;
+        m) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && exit 0;;
+        *) exit 1;;
+    esac
+}
+
 lt_100(){
     case $AUDIO in
         pulseaudio) volstat="$(pactl list sinks)";;
         alsa) volstat="$(amixer get Master)" ;; # ALSA only equivalent.
-        jack2) exit 1;;
+        pipewire) volstat="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)";;
         *) exit 1;;
     esac
 
@@ -41,6 +52,7 @@ lt_100(){
         pulseaudio) vol="$(echo "$volstat" | grep '[0-9]\+%' | sed "s,.* \([0-9]\+\)%.*,\1,;1q")";;
         alsa) vol=$(echo "$volstat" | grep -o "\[[0-9]\+%\]" | sed "s/[^0-9]*//g;1q");;
         jack2) exit 1;;
+        pipewire) vol=$(echo "$volstat" | awk '{print $2 * 100}');;
         *) exit 1;;
     esac
 
@@ -51,15 +63,14 @@ lt_100(){
     fi
 }
 
-[ -z "$1" ] && echo "$USAGE_S" && exit 1
+[ -z "$1" ] && printf "$USAGE_S" && exit 1
 
-AUDIO="${AUDIO:-pulseaudio}" #if 'AUDIO' is not set, default to pulseaudio
+AUDIO="${AUDIO:-pipewire}" #if 'AUDIO' is not set, default to pipewire
 
 case $AUDIO in
     pulseaudio) pa_h "$1" "$2";;
     alsa) a_h "$1" "$2";;
-    jack2) exit 1;;
     jack) exit 1;;
-    pipewire) exit 1;; # pipewire can be used as a pulse/jack replacement, so there is really no need for its own stuff
+    pipewire) pw_h "$1" "$2";; # pipewire can be used as a pulse/jack replacement, so there is really no need for its own stuff
     *) exit 1;;
 esac
