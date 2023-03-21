@@ -2,4 +2,5 @@
 WM=${WM:-dwm}
 [ -f "$HOME/.config/x11/Xresources" ] && which xrdb && xrdb "$HOME/.config/x11/Xresources"
 [ -f "$HOME/.config/x11/xprofile" ]   && . "$HOME/.config/x11/xprofile"
-which "$WM" && exec "$WM"
+command -v pipewire && pipewire &
+exec "$WM"
