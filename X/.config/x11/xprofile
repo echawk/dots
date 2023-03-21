@@ -1,16 +1,16 @@
 #!/bin/sh
 # Basic Setup
 sxhkdrc=$(mktemp)
-cat "${HOME}/.config/sxhkd/${WM}sx" "${HOME}/.config/sxhkd/base" > "$sxhkdrc"
+cat "${HOME}/.config/sxhkd/${WM}sx" "${HOME}/.config/sxhkd/base" >"$sxhkdrc"
 which setxkbmap && setxkbmap -option caps:swapescape
 
 # X settings
-which xset  && xset r rate 300 50 &
-which xhost && xhost +local: &     # allow chroots to connect to the X server
+which xset && xset r rate 300 50 &
+which xhost && xhost +local: & # allow chroots to connect to the X server
 
 # One Time Run
 which bri && bri set 35
-which hsetroot && hsetroot -full "$HOME/Pictures/jpgs/housewallpaper.jpg"
+which hsetroot && hsetroot -solid slategray
 
 # Unleash the daemons!!!
 which sxhkd && sxhkd -c "$sxhkdrc" &
