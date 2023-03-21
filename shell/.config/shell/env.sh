@@ -9,7 +9,7 @@ export BROWSER="chromium" # firefox brave luakit chromium
 export READER="zathura"   # mupdf
 export FUZZY="fzf"
 export WM="dwm"     # bspwm i3 herbstluftwm
-export AUDIO="alsa" # pulseaudio pipewire
+export AUDIO="pipewire" # pulseaudio alsa
 export FILE="fff"
 export DISTRO="$(grep "ID"  /etc/os-release | cut -d'=' -f2)" #arch, void, kiss/carbs
 export XDG_CONFIG_HOME="${HOME}/.config"
