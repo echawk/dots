@@ -335,9 +335,11 @@
   ;; Set custom formatters for various modes.
   (dolist (mode-formatter '((caml-mode       . ocamlformat)
                             (d-mode          . dfmt)
+                            (elisp-mode      . lisp-indent)
                             (emacs-lisp-mode . lisp-indent)
                             (geiser-mode     . lisp-indent)
                             (haskell-mode    . hindent)
+                            (scheme-mode     . lisp-indent)
                             (sh-mode         . shfmt)
                             (zig-mode        . zigfmt))
                           nil)
