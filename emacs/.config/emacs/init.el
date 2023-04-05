@@ -350,6 +350,11 @@
   :defer
   :hook (tuareg-mode . (lambda () (electric-indent-mode 0)))
   :mode ("\\.ml[iylp]?$" . tuareg-mode)
+  :init
+  ;; Ensure that `ocamllsp` is in Emacs' $PATH.
+  (let ((opam-bindir (concat (getenv "HOME") "/.opam/default/bin/")))
+    (if (file-exists-p opam-bindir)
+        (setq exec-path (cons opam-bindir exec-path))))
   :custom
   (tuareg-indent-align-with-first-arg t)
   (tuareg-match-patterns-aligned t))
