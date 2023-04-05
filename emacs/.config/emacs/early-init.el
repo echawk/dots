@@ -70,14 +70,14 @@
 ;;   ;;   type) that we can no-op for a free 50-100ms boost in startup time.
 ;;   (advice-add #'display-startup-screen :override #'ignore))
 
-;; Set the theme based on the time.
-;; If it's before 6AM or after 8PM, switch to vivendi.
-(let ((curr-hour (string-to-number
-                  (format-time-string "%H" (current-time)))))
-  (setq is-night-p (or (<= curr-hour 6)
-                       (>= curr-hour (+ 12 8)))))
+(defun is-night-p ()
+  "Return t if the current time is between 8PM and 6AM, nil otherwise."
+  (let ((curr-hour (string-to-number
+                    (format-time-string "%H" (current-time)))))
+    (or (<= curr-hour 6)
+        (>= curr-hour (+ 12 8)))))
 
-(setq theme (if is-night-p
-                'modus-vivendi
-              'modus-operandi))
-(load-theme theme)
+(load-theme
+ (if (is-night-p)
+     'modus-vivendi
+   'modus-operandi))
