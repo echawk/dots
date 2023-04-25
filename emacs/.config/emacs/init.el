@@ -528,6 +528,7 @@
   (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
   (TeX-source-correlate-start-server t)
 
+  (TeX-engine 'xetex)
   (TeX-auto-save nil)
   (TeX-parse-self t)
   :config
