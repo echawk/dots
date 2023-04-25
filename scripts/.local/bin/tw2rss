@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Generates a nitter rss feed of a twitter link.
+
+# https://nitter.net/user/rss
+# https://twitter.com/user/status/[0-9]*?cxt=[a-zA-Z]+
+
+echo "$1" |
+      sed -E "s!(^https?://twitter.com/[^/]+/)status.*!\1!" |
+      sed \
+        -e "s/twitter.com/nitter.net/" \
+        -e "s/$/rss/"
