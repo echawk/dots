@@ -315,9 +315,8 @@
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-
+;; NOTE: Can't defer this package because it won't add in the custom formatters.
 (use-package apheleia
-  :defer
   :init
   (apheleia-global-mode +1)
   :config
