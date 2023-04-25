@@ -7,5 +7,5 @@ trackpad=$(xinput list | grep Synapt | cut -d'=' -f2 | cut -f1)
 case $1 in
 	e) xinput --enable "$trackpad";;
 	d) xinput --disable "$trackpad";;
-	*) echo "'e' to enable trackpad\n'd' to disable trackpad"; exit 0;;
+	*) printf "'e' to enable trackpad\n'd' to disable trackpad\n"; exit 0;;
 esac
