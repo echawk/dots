@@ -39,8 +39,6 @@
     (package-bootstrap)))
 
 (use-package emacs
-  ;; Enable flyspell in all programming modes.
-  :hook (prog-mode . flyspell-prog-mode)
   :custom
   ;; Indentation
   (default-tab-width 4)
@@ -344,6 +342,9 @@
                           nil)
     (add-to-list #'apheleia-mode-alist mode-formatter)))
 
+(use-package jinx
+  :bind ([remap ispell-word] . jinx-correct))
+
 
 (use-package tuareg
   :defer
@@ -408,7 +409,7 @@
 
 (use-package org
   :defer
-  :hook (org-mode . flyspell-mode)
+  :hook (org-mode . jinx-mode)
   :config
   ;; Add in shortcuts for code blocks and whatnot.
   (require 'org-tempo)
@@ -518,7 +519,7 @@
   :defer
   :hook ((LaTeX-mode . visual-line-mode)
          (LaTeX-mode . LaTeX-math-mode)
-         (LaTeX-mode . flyspell-mode)
+         (LaTeX-mode . jinx-mode)
          (LaTeX-mode . auctex-cluttex-mode))
   :init
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
@@ -539,7 +540,7 @@
 ;; Markdown support.
 (use-package markdown-mode
   :defer
-  :hook (markdown-mode . flyspell-mode)
+  :hook (markdown-mode . jinx-mode)
   :custom
   (markdown-command "lowdown -s -Thtml"))
 (use-package markdown-preview-mode :defer)
