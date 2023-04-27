@@ -409,6 +409,13 @@
   :defer
   :mode ("\\.sno" . snobol-mode))
 
+;; Speed reading in Emacs.
+(use-package spray
+  :ensure nil
+  :load-path "spray"
+  :defer
+  :commands (spray-mode))
+
 (use-package org
   :defer
   :hook (org-mode . jinx-mode)
