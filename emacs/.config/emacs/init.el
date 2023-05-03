@@ -3,7 +3,7 @@
                          ("org"   . "https://orgmode.org/elpa/")
                          ("elpa"  . "https://elpa.gnu.org/packages/")))
 
-(defun package-bootstrap ()
+(defun me/package-bootstrap ()
   "Function to bootstrap package.el."
   (package-initialize)
   (unless package-archive-contents
@@ -16,7 +16,7 @@
   (require 'use-package)
   (setq use-package-always-ensure t))
 
-(defun straight-bootstrap ()
+(defun me/straight-bootstrap ()
   "Function to bootstrap straight.el."
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -35,8 +35,8 @@
 
 (let ((use-straight nil))
   (if use-straight
-      (straight-bootstrap)
-    (package-bootstrap)))
+      (me/straight-bootstrap)
+    (me/package-bootstrap)))
 
 (use-package emacs
   :custom
