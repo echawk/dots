@@ -485,14 +485,14 @@ find_networks() {
 case "$1" in
     e | enable)  enable_wifi  ;;
     d | disable) disable_wifi ;;
-    restart)     disable_wifi && enable_wifi;;
+    restart)     disable_wifi && enable_wifi ;;
     config)      make_config  ;;
     s | status)  get_status   ;;
-    f | find)    find_networks;;
+    f | find)    find_networks ;;
     l | list)    list         ;;
-    a | add)     add "$2" "$3";;
+    a | add)     add "$2" "$3" ;;
     remove)      remove "$2"  ;;
-    changepass)  changepass "$2" "$3";;
+    changepass)  changepass "$2" "$3" ;;
     migrate)     migrate      ;;
     sys-purge)   purge        ;;
     *)
