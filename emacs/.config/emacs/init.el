@@ -517,12 +517,6 @@
   (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
   (autoload 'imath-mode "imath" "Imath mode for math formula input" t))
 
-;; Init singular if files exist.
-(when (file-exists-p "/usr/share/singular/emacs")
-  (add-to-list 'load-path "/usr/share/singular/emacs/")
-  (autoload 'singular "singular" "Singular mode" t))
-
-(use-package frimacs :defer)
 
 ;; Better LaTeX editing.
 (use-package auctex
