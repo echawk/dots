@@ -182,11 +182,12 @@
   :config
   (evil-lion-mode))
 
-(use-package doom-themes :defer)
+;; (use-package doom-themes :defer)
 (use-package all-the-icons :defer)
-(use-package doom-modeline
-  :custom ((doom-modeline-height 15))
-  :hook (after-init . doom-modeline-mode))
+
+(use-package mood-line
+  :config
+  (mood-line-mode))
 
 (use-package rainbow-delimiters
   :defer
