@@ -3,7 +3,7 @@
 #usage:
 #volctrl i/d/m  (increase/decrease/mute)
 
-USAGE_S="No action provided!\n'i' - to increase\n'd' - to decrease\n'm' - to toggle mute\n"
+USAGE_S="No action provided!\n'i' - increase\n'd' - decrease\n'm' - toggle mute\n's' - set a specifc level\n"
 
 pa_h(){
     command -v pactl || exit 1
@@ -33,7 +33,7 @@ a_h(){
 
 pw_h(){
     command -v wpctl || exit 1
-    [ -n $2 ] && percent="$2"
+    [ -n "$2" ] && percent="$2"
     case $1 in
         i) lt_100 && wpctl set-volume @DEFAULT_AUDIO_SINK@ "${percent:-5}"%+ && exit 0;;
         d) wpctl set-volume @DEFAULT_AUDIO_SINK@ "${percent:-5}"%- && exit 0;;
