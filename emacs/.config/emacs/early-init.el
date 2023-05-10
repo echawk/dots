@@ -1,7 +1,15 @@
+;;; early-init --- early init stuff
+;;; Commentary:
+;; My early-init.el file, this section is here just to get
+;; Emacs to stop labelling this as an issue in flymake.
+
+;;; Code:
 ;; Increases Garbage Collection During Startup
 (setq startup/gc-cons-threshold gc-cons-threshold)
 (setq gc-cons-threshold most-positive-fixnum)
-(defun startup/reset-gc () (setq gc-cons-threshold startup/gc-cons-threshold))
+(defun startup/reset-gc ()
+  "Reset the gc-cons-threshhold to be it's initial value."
+  (setq gc-cons-threshold startup/gc-cons-threshold))
 (add-hook 'emacs-startup-hook 'startup/reset-gc)
 
 ;; Cleanup the inital screen
@@ -89,3 +97,6 @@
 ;; https://github.com/haji-ali/elcron
 ;; Every 1/4 hour, reset the theme.
 (run-with-timer 0 (* 15 60) 'me/set-theme)
+
+(provide 'early-init)
+;;; early-init.el ends here
