@@ -185,9 +185,24 @@
 ;; (use-package doom-themes :defer)
 (use-package all-the-icons :defer)
 
-(use-package mood-line
-  :config
-  (mood-line-mode))
+;; Semi-Configurable modeline.
+(defun me/modeline ()
+  "Create a modeline."
+  (interactive)
+  (setq-default
+   mode-line-format
+   '("%e"
+     (:eval
+      (let ((fns '(
+                   (lambda () (propertize (symbol-name evil-state) 'face 'italic))
+                   (lambda () (propertize (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
+                   (lambda () (propertize (if (buffer-modified-p) "M" "U")))
+                   (lambda () (propertize (format-mode-line "%b") 'face 'bold))
+                   (lambda () (propertize "L%lC%c"))
+                   )))
+        (mapconcat (lambda (f) (format "%s " (funcall f))) fns)))
+     mode-line-misc-info)))
+(me/modeline)
 
 (use-package rainbow-delimiters
   :defer
