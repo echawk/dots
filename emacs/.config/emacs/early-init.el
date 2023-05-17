@@ -5,12 +5,11 @@
 
 ;;; Code:
 ;; Increases Garbage Collection During Startup
-(setq startup/gc-cons-threshold gc-cons-threshold)
+
+(defvar startup-gc-cons-threshold gc-cons-threshold)
 (setq gc-cons-threshold most-positive-fixnum)
-(defun startup/reset-gc ()
-  "Reset the gc-cons-threshhold to be it's initial value."
-  (setq gc-cons-threshold startup/gc-cons-threshold))
-(add-hook 'emacs-startup-hook 'startup/reset-gc)
+(add-hook 'emacs-startup-hook
+          (lambda () (setq gc-cons-threshold startup-gc-cons-threshold)))
 
 ;; Cleanup the inital screen
 (setq inhibit-startup-message t
