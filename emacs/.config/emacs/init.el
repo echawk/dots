@@ -196,6 +196,7 @@
       (let ((fns '(
                    (lambda () (propertize (symbol-name evil-state) 'face 'italic))
                    (lambda () (propertize (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
+                   (lambda () (propertize (replace-regexp-in-string "-mode$" "" (format "%s" major-mode))))
                    (lambda () (propertize (if (buffer-modified-p) "M" "U")))
                    (lambda () (propertize (format-mode-line "%b") 'face 'bold))
                    (lambda () (propertize "L%lC%c"))
