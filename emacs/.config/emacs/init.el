@@ -195,11 +195,19 @@
      (:eval
       (let ((fns '(
                    (lambda () (propertize (symbol-name evil-state) 'face 'italic))
-                   (lambda () (propertize (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
+                   (lambda () (propertize
+                               ;; TODO: Add in extra checks -> if we fail for the major mode, fall back to the filename, etc.
+                               (let ((icon (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
+                                 (if (not (eq major-mode icon)) icon ""))))
                    (lambda () (propertize (replace-regexp-in-string "-mode$" "" (format "%s" major-mode))))
                    (lambda () (propertize (if (buffer-modified-p) "M" "U")))
                    (lambda () (propertize (format-mode-line "%b") 'face 'bold))
-                   (lambda () (propertize "L%lC%c"))
+                   (lambda () (propertize "%l:%c"))
+                   (lambda ()
+                     ;; TODO: incorporate (vc-state buffer-file-name (vc-backend buffer-file-name))
+                     (if (and vc-mode buffer-file-name)
+                         (concat "git:" (propertize (substring vc-mode (+ (if (eq (vc-backend buffer-file-name) 'Hg) 2 3) 2))))
+                       ""))
                    )))
         (mapconcat (lambda (f) (format "%s " (funcall f))) fns)))
      mode-line-misc-info)))
