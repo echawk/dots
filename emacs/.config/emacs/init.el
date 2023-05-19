@@ -371,6 +371,8 @@
     (add-to-list #'apheleia-mode-alist mode-formatter)))
 
 (use-package jinx
+  :hook ((emacs-startup . global-jinx-mode)
+         (prog-mode     . (lambda () (jinx-mode -1))))
   :bind ([remap ispell-word] . jinx-correct))
 
 
