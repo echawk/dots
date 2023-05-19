@@ -56,9 +56,9 @@
   (line-move-visual nil)
 
   ;; Don't use file backups.
-  ;; Don't ask for confirmation when opening large files.
   (backup-inhibited t)
   (auto-save-default nil)
+  ;; Don't ask for confirmation when opening large files.
   (large-file-warning-threshold nil)
 
   ;; Native Compilation.
