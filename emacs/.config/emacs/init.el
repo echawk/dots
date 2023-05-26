@@ -39,6 +39,7 @@
     (me/package-bootstrap)))
 
 (use-package emacs
+  :hook ((prog-mode . display-fill-column-indicator-mode))
   :custom
   ;; Indentation
   (default-tab-width 4)
