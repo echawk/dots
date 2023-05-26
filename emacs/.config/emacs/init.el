@@ -102,6 +102,10 @@
                                                      (float-time
                                                       (time-subtract after-init-time before-init-time))) gcs-done)))
 
+  ;; ibuffer is a better version of list-buffers.
+  ;; http://xahlee.info/emacs/emacs/emacs_buffer_management.html
+  (defalias 'list-buffers 'ibuffer)
+
   ;; Prevent the scratch buffer from being killed.
   (with-current-buffer "*scratch*"
     (emacs-lock-mode 'kill))
