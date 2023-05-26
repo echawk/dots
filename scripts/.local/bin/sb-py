@@ -1,0 +1,49 @@
+#!/bin/python3
+
+# sb - a simple bar for dwm in ***python3*** 😱
+
+# This is a port of my sb script to python3.
+
+# Q: Why python???
+# A: While POSIX sh is fine for this type of thing,
+#    it was super hacky and led to high cpu usage.
+
+import subprocess
+import time
+import sys
+
+sleep_sec=3
+pad=' '
+delim='|'
+
+cmds=[["disk"],
+      ["internet"],
+      ["battery"],
+      ["volume"],
+      ["clock"]]
+
+def get_bar_txt(cmds):
+    bar_txt = delim + pad
+    for cmd in cmds:
+        assert cmd != None
+        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        txt = pipe.communicate()[0]
+        txt = txt.decode("utf-8").replace("\n", "")
+        bar_txt += txt + pad + delim + pad
+    return bar_txt
+
+def xset():
+    return subprocess.run(["xset", "q"], stdout=subprocess.DEVNULL)
+
+def main():
+    # Try to run `xset`, will return non-0 exit if X is not running.
+    while xset().returncode == 0:
+        p = subprocess.run(["xsetroot", "-name", get_bar_txt(cmds)])
+        if p.returncode == 0:
+            time.sleep(sleep_sec)
+        else:
+            sys.exit(p.returncode)
+    sys.exit(1)
+
+if __name__ == "__main__":
+    main()
