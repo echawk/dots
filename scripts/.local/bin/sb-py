@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 
 # sb - a simple bar for dwm in ***python3*** 😱
 
@@ -30,7 +30,7 @@ def get_bar_txt(cmds):
         txt = pipe.communicate()[0]
         txt = txt.decode("utf-8").replace("\n", "")
         bar_txt += txt + pad + delim + pad
-    return bar_txt
+    return bar_txt.strip()
 
 def xset():
     return subprocess.run(["xset", "q"], stdout=subprocess.DEVNULL)
