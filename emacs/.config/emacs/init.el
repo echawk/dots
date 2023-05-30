@@ -670,7 +670,6 @@
 (dolist (hook '(sly-mode-hook
                 emacs-lisp-mode-hook
                 geiser-mode-hook
-                shen-mode-hook
                 clojure-mode-hook)
               nil)
   (add-hook hook #'prettify-symbols-mode))
