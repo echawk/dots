@@ -396,11 +396,17 @@
   (sml-program-name "hamlet"))
 (use-package sml-basis :defer)
 
+(use-package bqn-mode :defer)
 (use-package crystal-mode :defer)
 (use-package d-mode :defer)
+(use-package elixir-mode :defer)
+(use-package erlang :defer)
 (use-package fsharp-mode :defer)
+(use-package futhark-mode :defer)
 (use-package go-mode :defer)
 (use-package hy-mode :defer)
+(use-package inf-elixir :defer)
+(use-package lfe-mode :defer)
 (use-package meson-mode :defer)
 (use-package nim-mode :defer)
 (use-package python :defer)
@@ -631,12 +637,6 @@
   :config
   (require 'inf-carp-mode))
 
-(use-package erlang :defer)
-(use-package lfe-mode :defer)
-
-(use-package elixir-mode :defer)
-(use-package inf-elixir :defer)
-
 (use-package lua-mode
   :defer
   :custom
@@ -658,7 +658,6 @@
   :custom
   (idris-interpreter-path "idris2"))
 
-(use-package futhark-mode :defer)
 
 (use-package shen-elisp :defer)
 (use-package shen-mode
