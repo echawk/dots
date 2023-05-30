@@ -161,14 +161,14 @@
   :config
   (editorconfig-mode 1))
 
-(use-package undo-fu :defer)
 
 (use-package evil
   :init
+  ;; TODO: see if this can be set via :custom
   (setq evil-want-integration t
         evil-want-keybinding nil
         evil-want-C-u-scroll t
-        evil-undo-system 'undo-fu)
+        evil-undo-system 'undo-redo)
   :config
   (evil-mode 1))
 
