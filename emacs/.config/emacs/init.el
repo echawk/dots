@@ -156,12 +156,6 @@
   (global-set-key (kbd "C-h k") #'helpful-key)
   (global-set-key (kbd "C-h C-d") #'helpful-at-point))
 
-(use-package editorconfig
-  :defer
-  :config
-  (editorconfig-mode 1))
-
-
 (use-package evil
   :init
   ;; TODO: see if this can be set via :custom
