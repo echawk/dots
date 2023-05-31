@@ -445,6 +445,24 @@
   :defer
   :mode ("\\.sno" . snobol-mode))
 
+(use-package llama-cpp-comint
+  :ensure nil
+  :load-path "llama-cpp-comint"
+  :defer
+  :commands (run-llama-cpp llama-cpp-query-region)
+  :init
+  (global-set-key (kbd "C-c C-l C-c") #'run-llama-cpp)
+  (global-set-key (kbd "C-c C-l C-r") #'llama-cpp-query-region)
+  :custom
+  (llama-cpp-model-alist
+   '(
+     ("WizardLM-7B" "/home/ethan/AI/llama.cpp/build/bin/main"
+      "/home/ethan/AI/MODELS/ggml/WizardLM-7B-uncensored.ggmlv3.q4_1.bin")
+     ("Airoboros-13B" "/home/ethan/AI/llama.cpp/build/bin/main"
+      "/home/ethan/AI/MODELS/ggml/airoboros-13b-ggml-q4_0.bin")
+     ))
+  (llama-cpp-num-cpus 8))
+
 ;; Speed reading in Emacs.
 (use-package spray
   :ensure nil
