@@ -598,9 +598,13 @@
         ("C-c C-u" . macrostep-collapse)
         ("C-c C-q" . macrostep-collapse-all)))
 (use-package macrostep-geiser :defer)
-;; TODO: override browse-url and have it use eww for srfi.
+;; https://scripter.co/emacs-lisp-advice-combinators/
 (use-package srfi
   :defer
+  :config
+  ;; Override browse-url to be eww-browse-url. TODO: may need to reset?
+  (advice-add 'srfi-browse-document-url :before
+              #'(lambda (a) (defalias 'browse-url 'eww-browse-url)))
   ;; Add some keybinds that make this easier to use from evil-mode.
   :bind
   (:map srfi-mode-map
@@ -608,7 +612,7 @@
         ("C-c C-k"    . srfi-keyword)
         ("C-c C-l"    . srfi-browse-landing-page-url)
         ("C-c C-r"    . srfi-browse-repository-url)
-        ("C-c C-s"    . sfri-search)))
+        ("C-c C-s"    . srfi-search)))
 
 ;; Use sly instead of slime
 (use-package sly
