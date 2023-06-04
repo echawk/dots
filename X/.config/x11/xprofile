@@ -22,5 +22,5 @@ else
     fi
 fi
 [ "$WM" = dwm ] && {
-    which sb-py && sb-py &
+    which sb-py && sb-py dwm &
 }

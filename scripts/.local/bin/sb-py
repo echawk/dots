@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# sb - a simple bar for dwm in ***python3*** 😱
+# sb - a simple bar for dwm & dwl in ***python3*** 😱
 
 # This is a port of my sb script to python3.
 
@@ -32,13 +32,24 @@ def get_bar_txt(cmds):
         bar_txt += txt + pad + delim + pad
     return bar_txt.strip()
 
-def xset():
-    return subprocess.run(["xset", "q"], stdout=subprocess.DEVNULL)
+def is_x11_alive():
+    return subprocess.run(["xset", "q"], stdout=subprocess.DEVNULL).returncode == 0
+
+def is_wayland_alive():
+    return subprocess.run(["wayup"]).returncode == 0
 
 def main():
-    # Try to run `xset`, will return non-0 exit if X is not running.
-    while xset().returncode == 0:
-        p = subprocess.run(["xsetroot", "-name", get_bar_txt(cmds)])
+    if sys.argv[1] == "dwm":
+        upd_bar = ["xsetroot", "-name"]
+        alive_f = is_x11_alive
+    elif sys.argv[1] == "dwl":
+        upd_bar = ["dwlb", "-status", "all"]
+        alive_f = is_wayland_alive
+    else:
+        sys.exit(1)
+
+    while alive_f():
+        p = subprocess.run(upd_bar + [get_bar_txt(cmds)])
         if p.returncode == 0:
             time.sleep(sleep_sec)
         else:
