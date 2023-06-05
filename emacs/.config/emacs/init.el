@@ -706,4 +706,40 @@
   :init
   (setq forth-executable "gforth"))
 
+(defun me/make-exwm-script ()
+  "Create `exwm` script in `HOME/.local/bin/`."
+  (let ((exwm-script (concat (getenv "HOME") "/.local/bin/exwm")))
+    (write-region
+     (concat
+      "#!/bin/sh"
+      "\n"
+      "EMACS_IS_EXWM=1 emacs -mm --debug-init")
+     nil
+     exwm-script)
+    (shell-command (concat "chmod +x " exwm-script))))
+
+;; https://github.com/johanwiden/exwm-setup
+;; https://wiki.archlinux.org/title/EXWM
+;; https://github.com/ch11ng/exwm/wiki/Configuration-Example
+;; https://github.com/ch11ng/exwm/wiki
+(use-package exwm
+  :if (getenv "EMACS_IS_EXWM")
+  :init
+  (unless (file-exists-p (executable-find "exwm"))
+    (me/make-exwm-script))
+  :config
+  ;; Have the current time show up in the modeline.
+  (display-time-mode)
+
+  ;; Init exwm.
+  (require 'exwm)
+  (exwm-init)
+
+  ;; TODO: add in custom config for exwm here.
+  (require 'exwm-config)
+  (exwm-config-example)
+  )
+(use-package dmenu
+  :defer
+  :commands (dmenu))
 
