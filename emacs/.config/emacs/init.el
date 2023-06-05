@@ -721,9 +721,9 @@
 ;; https://github.com/johanwiden/exwm-setup
 ;; https://wiki.archlinux.org/title/EXWM
 ;; https://github.com/ch11ng/exwm/wiki/Configuration-Example
-;; https://github.com/ch11ng/exwm/wiki
 (use-package exwm
   :if (getenv "EMACS_IS_EXWM")
+  :hook ((exwm-update-class . (lambda () (exwm-workspace-rename-buffer exwm-class-name))))
   :init
   (unless (file-exists-p (executable-find "exwm"))
     (me/make-exwm-script))
@@ -731,13 +731,43 @@
   ;; Have the current time show up in the modeline.
   (display-time-mode)
 
-  ;; Init exwm.
-  (require 'exwm)
+  ;; Ctrl+q will send the next key directly.
+  (define-key exwm-mode-map [\?C-q] 'exwm-input-send-next-key)
+
   (exwm-init)
 
-  ;; TODO: add in custom config for exwm here.
-  (require 'exwm-config)
-  (exwm-config-example)
+  :custom
+  (exwm-workspace-number 4)
+  (exwm-input-global-keys
+   `(([?\s-r] . exwm-reset)
+     ([?\s-w] . exwm-workspace-switch)
+
+     ([?\s-f] . exwm-layout-toggle-fullscreen)
+
+     ([?\s-d] . dmenu) ;; FIXME: Change this to be an emacs built-in.
+
+     ;; TODO: Consider making the window keybinds available to non-exwm emacs.
+     ([?\s-Q] . delete-window)
+
+     ([?\s-s] . split-window-right)
+     ([?\s-S] . split-window-below)
+
+     ([?\s-h] . windmove-left)
+     ([?\s-l] . windmove-right)
+     ([?\s-j] . windmove-down)
+     ([?\s-k] . windmove-up)
+
+     ([?\s-H] . windmove-swap-states-left)
+     ([?\s-L] . windmove-swap-states-right)
+     ([?\s-J] . windmove-swap-states-down)
+     ([?\s-K] . windmove-swap-states-up)
+
+     ,@(mapcar (lambda (i)
+                 `(,(kbd (format "s-%d" i)) .
+                   (lambda ()
+                     (interactive)
+                     (exwm-workspace-switch-create ,i))))
+               (number-sequence 0 9))))
   )
 (use-package dmenu
   :defer
