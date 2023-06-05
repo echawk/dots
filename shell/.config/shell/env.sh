@@ -1,6 +1,7 @@
 # potentially change the order of $PATH to have '.local' stuff to be first
 export PATH="$(find "$HOME/.local/bin/" -type d | tr '\n' ':' | sed 's/:*$//'):$PATH"
-[ -d "$HOME/.dotnet/" ] && PATH="$PATH:$HOME/.dotnet/"
+[ -d "$HOME/.dotnet/" ] && PATH="$PATH:$HOME/.dotnet"
+[ -d "$HOME/.dotnet/tools" ] && PATH="$PATH:$HOME/.dotnet/tools"
 
 export EDITOR="nvim" # emacs, vis
 export PAGER="less"
