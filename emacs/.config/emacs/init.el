@@ -445,6 +445,109 @@
   :defer
   :mode ("\\.sno" . snobol-mode))
 
+;; Better scheme editing.
+(use-package geiser
+  :defer
+  :custom
+  (geiser-active-implementations '(chez)))
+(use-package geiser-chez     :after geiser)
+(use-package macrostep
+  :defer
+  :bind
+  (:map macrostep-keymap
+        ("C-c C-e" . macrostep-expand)
+        ("C-c C-u" . macrostep-collapse)
+        ("C-c C-q" . macrostep-collapse-all)))
+(use-package macrostep-geiser :defer)
+;; https://scripter.co/emacs-lisp-advice-combinators/
+(use-package srfi
+  :defer
+  :config
+  ;; Override browse-url to be eww-browse-url. TODO: may need to reset?
+  (advice-add 'srfi-browse-document-url :before
+              #'(lambda (a) (defalias 'browse-url 'eww-browse-url)))
+  ;; Add some keybinds that make this easier to use from evil-mode.
+  :bind
+  (:map srfi-mode-map
+        ("C-<return>" . srfi-browse-document-url)
+        ("C-c C-k"    . srfi-keyword)
+        ("C-c C-l"    . srfi-browse-landing-page-url)
+        ("C-c C-r"    . srfi-browse-repository-url)
+        ("C-c C-s"    . srfi-search)))
+
+;; Use sly instead of slime
+(use-package sly
+  :defer
+  :hook ((sly-mode . (lambda ()
+                       (unless (sly-connected-p) (save-excursion (sly))))))
+  :bind
+  (:map sly-mode-map
+        ("C-c C-i" . sly-interrupt)
+        ("C-c C-b" . sly-eval-buffer))
+  :custom
+  (inferior-lisp-program "sbcl"))
+(use-package sly-macrostep :after sly)
+
+(use-package clojure-mode :defer)
+(use-package inf-clojure :defer)
+
+;; Depends on clojure-mdoe
+(use-package carp-mode
+  :ensure nil
+  :if (file-exists-p (concat user-emacs-directory "carp-emacs/"))
+  :commands (carp-mode run-carp)
+  :load-path "carp-emacs"
+  :defer
+  :mode ("\\.carp$" . carp-mode)
+  :config
+  (require 'inf-carp-mode))
+
+(use-package lua-mode
+  :defer
+  :custom
+  (lua-default-application "luajit"))
+(use-package fennel-mode :defer)
+
+(use-package haskell-mode
+  :defer
+  :hook ((haskell-mode . haskell-indentation-mode)
+         (haskell-mode . interactive-haskell-mode)))
+;; FIXME: check to see if I can use flymake instead.
+(use-package dante
+  :after haskell-mode
+  :commands 'dante-mode
+  :hook ((haskell-mode . flycheck-mode)
+         (haskell-mode . dante-mode)))
+
+(use-package idris-mode
+  :defer
+  :custom
+  (idris-interpreter-path "idris2"))
+
+(use-package shen-mode
+  :defer
+  :mode ("\\.shen$" . shen-mode)
+  :custom
+  (inferior-shen-program "shen-scheme"))
+
+;; Enable prettify-symbols-mode in some languages
+(dolist (hook '(sly-mode-hook
+                emacs-lisp-mode-hook
+                geiser-mode-hook
+                clojure-mode-hook)
+              nil)
+  (add-hook hook #'prettify-symbols-mode))
+
+(use-package gnu-apl-mode
+  :defer
+  :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
+         (gnu-apl-interactive-mode . (lambda () (set-input-method "APL-Z")))))
+
+(use-package forth-mode
+  :defer
+  :init
+  (setq forth-executable "gforth"))
+
 (use-package llama-cpp-comint
   :ensure nil
   :load-path "llama-cpp-comint"
@@ -602,109 +705,15 @@
   (markdown-command "lowdown -s -Thtml"))
 (use-package markdown-preview-mode :defer)
 
-;; Better scheme editing.
-(use-package geiser
+
+
+
+
+
+
+
   :defer
   :custom
-  (geiser-active-implementations '(chez)))
-(use-package geiser-chez     :after geiser)
-(use-package macrostep
-  :defer
-  :bind
-  (:map macrostep-keymap
-        ("C-c C-e" . macrostep-expand)
-        ("C-c C-u" . macrostep-collapse)
-        ("C-c C-q" . macrostep-collapse-all)))
-(use-package macrostep-geiser :defer)
-;; https://scripter.co/emacs-lisp-advice-combinators/
-(use-package srfi
-  :defer
-  :config
-  ;; Override browse-url to be eww-browse-url. TODO: may need to reset?
-  (advice-add 'srfi-browse-document-url :before
-              #'(lambda (a) (defalias 'browse-url 'eww-browse-url)))
-  ;; Add some keybinds that make this easier to use from evil-mode.
-  :bind
-  (:map srfi-mode-map
-        ("C-<return>" . srfi-browse-document-url)
-        ("C-c C-k"    . srfi-keyword)
-        ("C-c C-l"    . srfi-browse-landing-page-url)
-        ("C-c C-r"    . srfi-browse-repository-url)
-        ("C-c C-s"    . srfi-search)))
-
-;; Use sly instead of slime
-(use-package sly
-  :defer
-  :hook ((sly-mode . (lambda ()
-                       (unless (sly-connected-p) (save-excursion (sly))))))
-  :bind
-  (:map sly-mode-map
-        ("C-c C-i" . sly-interrupt)
-        ("C-c C-b" . sly-eval-buffer))
-  :custom
-  (inferior-lisp-program "sbcl"))
-(use-package sly-macrostep :after sly)
-
-(use-package clojure-mode :defer)
-(use-package inf-clojure :defer)
-
-;; Depends on clojure-mdoe
-(use-package carp-mode
-  :ensure nil
-  :if (file-exists-p (concat user-emacs-directory "carp-emacs/"))
-  :commands (carp-mode run-carp)
-  :load-path "carp-emacs"
-  :defer
-  :mode ("\\.carp$" . carp-mode)
-  :config
-  (require 'inf-carp-mode))
-
-(use-package lua-mode
-  :defer
-  :custom
-  (lua-default-application "luajit"))
-(use-package fennel-mode :defer)
-
-(use-package haskell-mode
-  :defer
-  :hook ((haskell-mode . haskell-indentation-mode)
-         (haskell-mode . interactive-haskell-mode)))
-(use-package dante
-  :after haskell-mode
-  :commands 'dante-mode
-  :hook ((haskell-mode . flycheck-mode)
-         (haskell-mode . dante-mode)))
-
-(use-package idris-mode
-  :defer
-  :custom
-  (idris-interpreter-path "idris2"))
-
-
-(use-package shen-elisp :defer)
-(use-package shen-mode
-  :defer
-  :mode ("\\.shen$" . shen-mode)
-  :custom
-  (inferior-shen-program "shen-scheme"))
-
-;; Enable prettify-symbols-mode in some languages
-(dolist (hook '(sly-mode-hook
-                emacs-lisp-mode-hook
-                geiser-mode-hook
-                clojure-mode-hook)
-              nil)
-  (add-hook hook #'prettify-symbols-mode))
-
-(use-package gnu-apl-mode
-  :defer
-  :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
-         (gnu-apl-interactive-mode . (lambda () (set-input-method "APL-Z")))))
-
-(use-package forth-mode
-  :defer
-  :init
-  (setq forth-executable "gforth"))
 
 (defun me/make-exwm-script ()
   "Create `exwm` script in `HOME/.local/bin/`."
