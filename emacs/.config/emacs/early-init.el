@@ -19,6 +19,7 @@
 (scroll-bar-mode -1)
 (set-fringe-mode 10)
 (tool-bar-mode -1)
+(menu-bar-mode -1)
 ;;(tooltip-mode -1)
 (global-display-line-numbers-mode 1)  ; Show line numbers
 (advice-add #'x-apply-session-resources :override #'ignore) ; Ignore Xresources
