@@ -547,8 +547,8 @@
   (setq forth-executable "gforth"))
 
 (use-package llama-cpp-comint
-  :ensure nil
-  :load-path "llama-cpp-comint"
+  :if (>= emacs-major-version 30)
+  :vc (:url "https://github.com/ehawkvu/llama-cpp-comint")
   :defer
   :commands (run-llama-cpp llama-cpp-query-region)
   :init
