@@ -220,9 +220,8 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 (use-package rainbow-mode :defer)
 (use-package diff-hl
-  :hook (prog-mode . diff-hl-mode))
-;;:config
-;;(global-diff-hl-mode))
+  :hook ((prog-mode . diff-hl-mode)
+         (magit-post-refresh . diff-hl-magit-post-refresh)))
 
 (use-package hl-prog-extra
   :defer
