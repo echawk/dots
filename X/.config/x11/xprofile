@@ -21,6 +21,9 @@ else
         xcompmgr -c &
     fi
 fi
+[ "$WM" = exwm ] && {
+    which hsetroot && hsetroot -full $HOME/Pictures/Wallpapers/rockycoast.jpg
+}
 [ "$WM" = dwm ] && {
     which sb-py && sb-py dwm &
 }
