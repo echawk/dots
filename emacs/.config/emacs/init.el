@@ -492,11 +492,10 @@
 
 ;; Depends on clojure-mdoe
 (use-package carp-mode
-  :ensure nil
-  :if (file-exists-p (concat user-emacs-directory "carp-emacs/"))
-  :commands (carp-mode run-carp)
-  :load-path "carp-emacs"
+  :if (>= emacs-major-version 30)
   :defer
+  :vc (:url "https://github.com/carp-lang/carp-emacs")
+  :commands (carp-mode run-carp)
   :mode ("\\.carp$" . carp-mode)
   :config
   (require 'inf-carp-mode))
