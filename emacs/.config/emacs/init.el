@@ -438,8 +438,8 @@
 
 ;; Custom snobol mode.
 (use-package snobol-mode
-  :ensure nil
-  :load-path "snobol-mode"
+  :if (>= emacs-major-version 30)
+  :vc (:url "https://github.com/ehawkvu/snobol-mode")
   :defer
   :mode ("\\.sno" . snobol-mode))
 
