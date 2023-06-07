@@ -119,14 +119,6 @@
   :bind
   (("<escape>" . keyboard-escape-quit)))
 
-;; Better 'M-x package-list-packages'
-(use-package paradox
-  :defer
-  :custom
-  (paradox-execute-asynchronously t)
-  :config
-  (paradox-enable))
-
 (use-package async :defer)
 
 (use-package vertico
