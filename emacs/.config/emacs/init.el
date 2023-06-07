@@ -723,23 +723,66 @@
      exwm-script)
     (shell-command (concat "chmod +x " exwm-script))))
 
+;; TODO: Integrate this into exwm.
+(use-package exwm-mff
+  :after exwm
+  :hook (exwm-mode . exwm-mff-mode))
+(use-package exwm-modeline
+  :after exwm
+  :hook (exwm-mode . exwm-modeline-mode))
+
+(use-package dmenu
+  :after exwm
+  :commands (dmenu))
+
 ;; https://github.com/johanwiden/exwm-setup
 ;; https://wiki.archlinux.org/title/EXWM
 ;; https://github.com/ch11ng/exwm/wiki/Configuration-Example
 (use-package exwm
-  :if (getenv "EMACS_IS_EXWM")
+  :if (and (getenv "EMACS_IS_EXWM")
+           (or (eq system-type 'gnu/linux)
+               (eq system-type 'berkeley-unix)))
   :hook ((exwm-update-class . (lambda () (exwm-workspace-rename-buffer exwm-class-name))))
   :init
   (unless (file-exists-p (executable-find "exwm"))
     (me/make-exwm-script))
   :config
+
+  ;; Make sure the battery is shown.
+  (display-battery-mode) ;; TODO: show time until dead/charging.
+
   ;; Have the current time show up in the modeline.
+  (setq display-time-default-load-average nil)
   (display-time-mode)
+
+  (set-frame-parameter nil 'alpha-background 80)
+  (add-to-list 'default-frame-alist '(alpha-background . 80))
+
+  ;; https://gitea.petton.fr/DamienCassou/desktop-environment
+  (defun volume-raise       () (interactive) (call-process-shell-command "volctrl i"))
+  (defun volume-lower       () (interactive) (call-process-shell-command "volctrl d"))
+  (defun volume-toggle-mute () (interactive) (call-process-shell-command "volctrl m"))
+  (defun brighness-inc      () (interactive) (call-process-shell-command "bri i"))
+  (defun brighness-dec      () (interactive) (call-process-shell-command "bri d"))
+
+  ;; Set the media keys. Maybe move this out?
+  (global-set-key (kbd "<XF86AudioRaiseVolume>")  'volume-raise)
+  (global-set-key (kbd "<XF86AudioLowerVolume>")  'volume-lower)
+  (global-set-key (kbd "<XF86AudioMute>")         'volume-toggle-mute)
+  (global-set-key (kbd "<XF86MonBrightnessUp>")   'brightness-inc)
+  (global-set-key (kbd "<XF86MonBrightnessDown>") 'brightness-dec)
 
   ;; Ctrl+q will send the next key directly.
   (define-key exwm-mode-map [\?C-q] 'exwm-input-send-next-key)
 
   (exwm-init)
+
+  ;; Start up with a vterm window instead of a scratch buffer.
+  (vterm)
+
+  ;; Garbage collect every 15 minutes when running exwm.
+  (let ((mins-15 (* 15 60)))
+    (run-with-timer mins-15 mins-15 'garbage-collect))
 
   :custom
   (exwm-workspace-number 4)
@@ -749,10 +792,11 @@
 
      ([?\s-f] . exwm-layout-toggle-fullscreen)
 
-     ([?\s-d] . dmenu) ;; FIXME: Change this to be an emacs built-in.
+     ([?\s-d] . dmenu) ;; FIXME: Change this to be an Emacs built-in.
 
-     ;; TODO: Consider making the window keybinds available to non-exwm emacs.
-     ([?\s-Q] . delete-window)
+     ;; TODO: Consider making the window key binds available to non-exwm Emacs.
+     ([?\s-q] . delete-window)
+     ;; ([?\s-C] . delete-window) ;; have this kill the associated buffer.
 
      ([?\s-s] . split-window-right)
      ([?\s-S] . split-window-below)
@@ -774,7 +818,4 @@
                      (exwm-workspace-switch-create ,i))))
                (number-sequence 0 9))))
   )
-(use-package dmenu
-  :defer
-  :commands (dmenu))
 
