@@ -39,7 +39,16 @@
     (me/package-bootstrap)))
 
 (use-package emacs
-  :hook ((prog-mode . display-fill-column-indicator-mode))
+  :hook ((prog-mode . display-fill-column-indicator-mode)
+         (before-save . (lambda ()
+                          (delete-trailing-whitespace (point-min) (point-max))))
+         (emacs-startup . (lambda ()
+                            (message "Emacs loaded in %s with %d garbage collections."
+                                     (format "%.2f seconds"
+                                             (float-time
+                                              (time-subtract after-init-time before-init-time))) gcs-done)))
+         (after-save . executable-make-buffer-file-executable-if-script-p))
+
   :custom
   ;; Indentation
   (default-tab-width 4)
@@ -92,16 +101,6 @@
   (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
-
-  ;; Delete trailing whitespace before saving buffers.
-  (add-hook 'before-save-hook #'(lambda () (delete-trailing-whitespace (point-min) (point-max))))
-
-  ;; Print startup time & num of gcs done.
-  (add-hook 'emacs-startup-hook #'(lambda ()
-                                    (message "Emacs loaded in %s with %d garbage collections."
-                                             (format "%.2f seconds"
-                                                     (float-time
-                                                      (time-subtract after-init-time before-init-time))) gcs-done)))
 
   ;; ibuffer is a better version of list-buffers.
   ;; http://xahlee.info/emacs/emacs/emacs_buffer_management.html
