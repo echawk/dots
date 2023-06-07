@@ -209,7 +209,6 @@
 (use-package rainbow-delimiters
   :defer
   :hook (prog-mode . rainbow-delimiters-mode))
-(use-package rainbow-mode :defer)
 (use-package diff-hl
   :hook ((prog-mode . diff-hl-mode)
          (magit-post-refresh . diff-hl-magit-post-refresh)))
