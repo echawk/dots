@@ -693,14 +693,10 @@
 (use-package markdown-preview-mode :defer)
 
 
-
-
-
-
-
-
+(use-package realgud
   :defer
   :custom
+  )
 
 (defun me/make-exwm-script ()
   "Create `exwm` script in `HOME/.local/bin/`."
