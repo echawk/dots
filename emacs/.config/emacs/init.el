@@ -8,7 +8,7 @@
   (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents))
-  ;; Only install 'use-package' if emacs version is below 29,
+  ;; Only install 'use-package' if Emacs version is below 29,
   ;; and if use-package is not already installed.
   (if (and (< emacs-major-version 29)
            (not (package-installed-p 'use-package)))
