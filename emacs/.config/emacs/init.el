@@ -555,9 +555,8 @@
 
 ;; Speed reading in Emacs.
 (use-package spray
-  :ensure nil
-  :load-path "spray"
   :defer
+  :vc (:url "https://github.com/emacsmirror/spray")
   :commands (spray-mode))
 
 (use-package org
