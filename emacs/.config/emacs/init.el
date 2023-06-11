@@ -743,11 +743,11 @@
   (add-to-list 'default-frame-alist '(alpha-background . 80))
 
   ;; https://gitea.petton.fr/DamienCassou/desktop-environment
-  (defun volume-raise       () (interactive) (call-process-shell-command "volctrl i"))
-  (defun volume-lower       () (interactive) (call-process-shell-command "volctrl d"))
-  (defun volume-toggle-mute () (interactive) (call-process-shell-command "volctrl m"))
-  (defun brighness-inc      () (interactive) (call-process-shell-command "bri i"))
-  (defun brighness-dec      () (interactive) (call-process-shell-command "bri d"))
+  (defun volume-raise        () (interactive) (call-process-shell-command "volctrl i"))
+  (defun volume-lower        () (interactive) (call-process-shell-command "volctrl d"))
+  (defun volume-toggle-mute  () (interactive) (call-process-shell-command "volctrl m"))
+  (defun brightness-inc      () (interactive) (call-process-shell-command "bri i"))
+  (defun brightness-dec      () (interactive) (call-process-shell-command "bri d"))
 
   ;; Set the media keys. Maybe move this out?
   (global-set-key (kbd "<XF86AudioRaiseVolume>")  'volume-raise)
