@@ -377,27 +377,38 @@
   (tuareg-indent-align-with-first-arg t)
   (tuareg-match-patterns-aligned t))
 
-;; SML
-(use-package sml-mode
-  :defer
-  :custom
-  (sml-program-name "hamlet"))
-(use-package sml-basis :defer)
-
 (use-package bqn-mode :defer)
 (use-package crystal-mode :defer)
 (use-package d-mode :defer)
 (use-package elixir-mode :defer)
 (use-package erlang :defer)
+(use-package fennel-mode :defer)
+(use-package forth-mode :defer
+  :init
+  (setq forth-executable "gforth"))
 (use-package fsharp-mode :defer)
 (use-package futhark-mode :defer)
 (use-package go-mode :defer)
 (use-package hy-mode :defer)
+(use-package idris-mode :defer
+  :custom
+  (idris-interpreter-path "idris2"))
 (use-package inf-elixir :defer)
 (use-package lfe-mode :defer)
+(use-package lua-mode :defer
+  :custom
+  (lua-default-application "luajit"))
 (use-package meson-mode :defer)
 (use-package nim-mode :defer)
 (use-package python :defer)
+(use-package shen-mode :defer
+  :mode ("\\.shen$" . shen-mode)
+  :custom
+  (inferior-shen-program "shen-sbcl"))
+(use-package sml-mode :defer
+  :custom
+  (sml-program-name "hamlet"))
+(use-package sml-basis :defer)
 (use-package vala-mode :defer)
 (use-package vimrc-mode :defer)
 (use-package zig-mode :defer)
@@ -489,12 +500,6 @@
   :config
   (require 'inf-carp-mode))
 
-(use-package lua-mode
-  :defer
-  :custom
-  (lua-default-application "luajit"))
-(use-package fennel-mode :defer)
-
 (use-package haskell-mode
   :defer
   :hook ((haskell-mode . haskell-indentation-mode)
@@ -505,17 +510,6 @@
   :commands 'dante-mode
   :hook ((haskell-mode . flycheck-mode)
          (haskell-mode . dante-mode)))
-
-(use-package idris-mode
-  :defer
-  :custom
-  (idris-interpreter-path "idris2"))
-
-(use-package shen-mode
-  :defer
-  :mode ("\\.shen$" . shen-mode)
-  :custom
-  (inferior-shen-program "shen-scheme"))
 
 ;; Enable prettify-symbols-mode in some languages
 (dolist (hook '(sly-mode-hook
@@ -530,10 +524,6 @@
   :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
          (gnu-apl-interactive-mode . (lambda () (set-input-method "APL-Z")))))
 
-(use-package forth-mode
-  :defer
-  :init
-  (setq forth-executable "gforth"))
 
 (use-package llama-cpp-comint
   :if (>= emacs-major-version 30)
