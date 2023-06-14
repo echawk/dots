@@ -183,7 +183,7 @@
    '("%e"
      (:eval
       (let ((fns '(
-                   (lambda () (propertize (symbol-name evil-state) 'face 'italic))
+                   (lambda () (propertize (if evil-mode (symbol-name evil-state) "") 'face 'italic))
                    (lambda () (propertize
                                (let ((icon  (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
                                  (if (not (eq major-mode icon))
@@ -202,7 +202,7 @@
                          (concat "git:" (propertize (substring vc-mode (+ (if (eq (vc-backend buffer-file-name) 'Hg) 2 3) 2))))
                        ""))
                    )))
-        (mapconcat (lambda (f) (format "%s " (funcall f))) fns)))
+        (mapconcat (lambda (f) (format "%s" (funcall f))) fns " ")))
      mode-line-misc-info)))
 (me/modeline)
 
