@@ -527,8 +527,8 @@
 
 (use-package llama-cpp-comint
   :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/ehawkvu/llama-cpp-comint")
   :defer
+  :vc (:url "https://github.com/ehawkvu/llama-cpp-comint")
   :commands (run-llama-cpp llama-cpp-query-region)
   :init
   (global-set-key (kbd "C-c C-l C-c") #'run-llama-cpp)
