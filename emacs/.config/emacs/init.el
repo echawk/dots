@@ -745,6 +745,10 @@
   (global-set-key (kbd "<XF86MonBrightnessUp>")   'brightness-inc)
   (global-set-key (kbd "<XF86MonBrightnessDown>") 'brightness-dec)
 
+  ;; Might as well have a systemtray, since it can be handy at times.
+  (require 'exwm-systemtray)
+  (exwm-systemtray-enable)
+
   ;; Ctrl+q will send the next key directly.
   (define-key exwm-mode-map [\?C-q] 'exwm-input-send-next-key)
 
