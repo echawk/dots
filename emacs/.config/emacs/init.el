@@ -704,10 +704,6 @@
   :after exwm
   :hook (exwm-mode . exwm-modeline-mode))
 
-(use-package dmenu
-  :after exwm
-  :commands (dmenu))
-
 ;; https://github.com/johanwiden/exwm-setup
 ;; https://wiki.archlinux.org/title/EXWM
 ;; https://github.com/ch11ng/exwm/wiki/Configuration-Example
@@ -769,7 +765,9 @@
 
      ([?\s-f] . exwm-layout-toggle-fullscreen)
 
-     ([?\s-d] . dmenu) ;; FIXME: Change this to be an Emacs built-in.
+     ([?\s-d] . (lambda (cmd)
+                  (interactive (list (read-shell-command "λ ")))
+                  (start-process-shell-command cmd nil cmd)))
 
      ;; TODO: Consider making the window key binds available to non-exwm Emacs.
      ([?\s-q] . delete-window)
