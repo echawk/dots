@@ -221,6 +221,14 @@
 ;; Git frontend.
 (use-package magit :defer)
 (use-package forge :defer)
+(defun me/add-to-eglot-server-programs (modes-lsp-cmd)
+  "Add additional modes to eglot-server-programs if the lsp server exists."
+  (dolist (modes-cmd modes-lsp-cmd)
+    (let ((modes (car   modes-cmd))
+          (cmd   (nth 1 modes-cmd)))
+      (if (executable-find cmd)
+          (add-to-list 'eglot-server-programs
+                       `(,modes . (,cmd)))))))
 
 ;; Simple LSP mode for emacs.
 (use-package eglot
@@ -239,18 +247,18 @@
          (vala-mode    . eglot-ensure)
          (zig-mode     . eglot-ensure))
   :config
-  (add-to-list 'eglot-server-programs
-               '((latex-mode
-                  tex-mode
-                  context-mode
-                  texinfo-mode
-                  bibtex-mode) . ("texlab")))
-  (add-to-list 'eglot-server-programs
-               '(vala-mode . ("vala-language-server")))
-  (add-to-list 'eglot-server-programs
-               '(crystal-mode . ("crystalline")))
-  (add-to-list 'eglot-server-programs
-               '(elixir-mode . ("elixir-ls"))))
+  (me/add-to-eglot-server-programs
+   '((crystal-mode  "crystalline")
+     (d-mode        "serve-d")
+     (elixir-mode   "elixir-ls")
+     ;; TODO: integrate julia into this
+     ;; https://github.com/julia-vscode/LanguageServer.jl
+     ((latex-mode
+       tex-mode
+       context-mode
+       texinfo-mode
+       bibtex-mode) "texlab")
+     (vala-mode     "vala-language-server"))))
 
 (use-package treesit
   ;; Need to make sure we don't try to install this from package.el
