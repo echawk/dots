@@ -1,6 +1,6 @@
 # if not running interactively, don't do anything
 case "$-" in
-    *i*);;
+    *i*) ;;
     *) return ;;
 esac
 [ -f "$XDG_CONFIG_HOME/shell/alias.sh" ] && . "$XDG_CONFIG_HOME/shell/alias.sh"
@@ -22,16 +22,16 @@ KISS_PATH="$HOME/.cache/kiss/hold:$KISS_PATH"
 
 # special funtion to make it obvious when you are inside of a git repo; print out the name of the branch
 parse_git_branch() {
-    printf "git:%s" "$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's~* \(.*\)~(\1)~')"
+    printf "git:%s" "$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's~* \(.*\)~(\1)~')"
 }
 
 parse_fossil_branch() {
-    printf "fossil:%s" "$(fossil branch 2>/dev/null  | grep -E "^\ \*" | cut -d' ' -f3)"
+    printf "fossil:%s" "$(fossil branch 2> /dev/null | grep -E "^\ \*" | cut -d' ' -f3)"
 }
 
-extra_ps1_info(){
+extra_ps1_info() {
     # if in a git repo, show currently checked out branch
-    git rev-parse >/dev/null 2>&1 && parse_git_branch
+    git rev-parse > /dev/null 2>&1 && parse_git_branch
     #fossil status >/dev/null 2>&1 && parse_fossil_branch
 }
 
@@ -39,7 +39,7 @@ test_microphone() {
     arecord -vvv -f dat /dev/null
 }
 
-command -v opam >/dev/null 2>&1 && eval $(opam env)
+command -v opam > /dev/null 2>&1 && eval $(opam env)
 
 case "$0" in
     *bash)
