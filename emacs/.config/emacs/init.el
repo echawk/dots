@@ -726,7 +726,8 @@
   :config
 
   ;; Make sure the battery is shown.
-  (display-battery-mode) ;; TODO: show time until dead/charging.
+  (setq battery-mode-line-format " [%b%p%%|%t] ")
+  (display-battery-mode)
 
   ;; Have the current time show up in the modeline.
   (setq display-time-default-load-average nil)
