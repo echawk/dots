@@ -4,4 +4,10 @@ WM=${WM:-dwm}
 [ -f "$HOME/.config/x11/xprofile" ]   && . "$HOME/.config/x11/xprofile"
 ! pidof pipewire && command -v pipewire && pipewire &
 ! pidof pipewire-pulse && command -v pipewire-pulse && pipewire-pulse &
-exec "$WM"
+
+# Launch WM w/ dbus if available.
+if command -v dbus-launch; then
+    dbus-launch --exit-with-session "$WM"
+else
+    exec "$WM"
+fi
