@@ -453,13 +453,11 @@
   :mode ("\\.sno" . snobol-mode))
 
 ;; Better scheme editing.
-(use-package geiser
-  :defer
+(use-package geiser :defer
   :custom
   (geiser-active-implementations '(chez)))
-(use-package geiser-chez     :after geiser)
-(use-package macrostep
-  :defer
+(use-package geiser-chez :after geiser)
+(use-package macrostep :defer
   :bind
   (:map macrostep-keymap
         ("C-c C-e" . macrostep-expand)
@@ -467,8 +465,7 @@
         ("C-c C-q" . macrostep-collapse-all)))
 (use-package macrostep-geiser :defer)
 ;; https://scripter.co/emacs-lisp-advice-combinators/
-(use-package srfi
-  :defer
+(use-package srfi :defer
   :config
   ;; Override browse-url to be eww-browse-url. TODO: may need to reset?
   (advice-add 'srfi-browse-document-url :before
@@ -483,8 +480,7 @@
         ("C-c C-s"    . srfi-search)))
 
 ;; Use sly instead of slime
-(use-package sly
-  :defer
+(use-package sly :defer
   :hook ((sly-mode . (lambda ()
                        (unless (sly-connected-p) (save-excursion (sly))))))
   :bind
@@ -501,8 +497,8 @@
 ;; Depends on clojure-mdoe
 (use-package carp-mode
   :if (>= emacs-major-version 30)
-  :defer
   :vc (:url "https://github.com/carp-lang/carp-emacs")
+  :defer
   :commands (carp-mode run-carp)
   :mode ("\\.carp$" . carp-mode)
   :config
@@ -535,8 +531,8 @@
 
 (use-package llama-cpp-comint
   :if (>= emacs-major-version 30)
-  :defer
   :vc (:url "https://github.com/ehawkvu/llama-cpp-comint")
+  :defer
   :commands (run-llama-cpp llama-cpp-query-region)
   :init
   (global-set-key (kbd "C-c C-l C-c") #'run-llama-cpp)
