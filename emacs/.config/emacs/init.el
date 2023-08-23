@@ -185,6 +185,7 @@
       (let ((fns '(
                    (lambda () (propertize (if evil-mode (symbol-name evil-state) "") 'face 'italic))
                    (lambda () (propertize
+                               ;; Need to do a check for the *-ts-mode modes.
                                (let ((icon  (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
                                  (if (not (eq major-mode icon))
                                      icon
@@ -425,8 +426,7 @@
 (use-package vimrc-mode :defer)
 (use-package zig-mode :defer)
 
-(use-package ess
-  :defer
+(use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
 (use-package julia-mode :defer)
 
@@ -704,7 +704,7 @@
      exwm-script)
     (shell-command (concat "chmod +x " exwm-script))))
 
-;; TODO: Integrate this into exwm.
+;; TODO: Integrate these both into exwm. (IE: don't depend on these pkgs)
 (use-package exwm-mff
   :after exwm
   :hook (exwm-mode . exwm-mff-mode))
@@ -779,6 +779,7 @@
                   (start-process-shell-command cmd nil cmd)))
 
      ;; TODO: Consider making the window key binds available to non-exwm Emacs.
+     ;; FIXME: ^^^ I'd like to use these binds everywhere.
      ([?\s-q] . delete-window)
      ;; ([?\s-C] . delete-window) ;; have this kill the associated buffer.
 
@@ -795,6 +796,8 @@
      ([?\s-J] . windmove-swap-states-down)
      ([?\s-K] . windmove-swap-states-up)
 
+     ;; This handy little block makes it possible to switch to
+     ;; the different workspaces by using s-<num>
      ,@(mapcar (lambda (i)
                  `(,(kbd (format "s-%d" i)) .
                    (lambda ()
