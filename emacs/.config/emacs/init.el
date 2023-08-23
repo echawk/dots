@@ -260,6 +260,37 @@
        bibtex-mode) "texlab")
      (vala-mode     "vala-language-server"))))
 
+;; NOTE: Can't defer this package because it won't add in the custom formatters.
+
+
+(use-package apheleia
+  :init
+  (apheleia-global-mode +1)
+  :config
+  (dolist (formatter-cmd '((dfmt      . ("dfmt" "--indent_size" "2"
+                                         "--soft_max_line_length" "80"
+                                         "--indent_style" "space"
+                                         "--brace_style" "otbs"
+                                         filepath))
+                           (zigfmt    . ("zig" "fmt" filepath))
+                           (hindent   . ("hindent"))
+                           (shfmt     . ("shfmt" "-i" "4" "-ci" "-kp" "-sr")))
+                         nil)
+    (add-to-list #'apheleia-formatters formatter-cmd))
+
+  ;; Set custom formatters for various modes.
+  (dolist (mode-formatter '((caml-mode       . ocamlformat)
+                            (d-mode          . dfmt)
+                            (elisp-mode      . lisp-indent)
+                            (emacs-lisp-mode . lisp-indent)
+                            (geiser-mode     . lisp-indent)
+                            (haskell-mode    . hindent)
+                            (scheme-mode     . lisp-indent)
+                            (sh-mode         . shfmt)
+                            (shen-mode       . lisp-indent)
+                            (zig-mode        . zigfmt))
+                          nil)
+    (add-to-list #'apheleia-mode-alist mode-formatter)))
 (use-package treesit
   ;; Need to make sure we don't try to install this from package.el
   :ensure nil
@@ -337,34 +368,7 @@
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-;; NOTE: Can't defer this package because it won't add in the custom formatters.
-(use-package apheleia
-  :init
-  (apheleia-global-mode +1)
-  :config
-  (dolist (formatter-cmd '((dfmt      . ("dfmt" "--indent_size" "2"
-                                         "--soft_max_line_length" "80"
-                                         "--indent_style" "space"
-                                         "--brace_style" "otbs"
-                                         filepath))
-                           (zigfmt    . ("zig" "fmt" filepath))
-                           (hindent   . ("hindent"))
-                           (shfmt     . ("shfmt" "-i" "4" "-ci" "-kp" "-sr")))
-                         nil)
-    (add-to-list #'apheleia-formatters formatter-cmd))
 
-  ;; Set custom formatters for various modes.
-  (dolist (mode-formatter '((caml-mode       . ocamlformat)
-                            (d-mode          . dfmt)
-                            (elisp-mode      . lisp-indent)
-                            (emacs-lisp-mode . lisp-indent)
-                            (geiser-mode     . lisp-indent)
-                            (haskell-mode    . hindent)
-                            (scheme-mode     . lisp-indent)
-                            (sh-mode         . shfmt)
-                            (zig-mode        . zigfmt))
-                          nil)
-    (add-to-list #'apheleia-mode-alist mode-formatter)))
 
 (use-package jinx
   :hook ((emacs-startup . global-jinx-mode)
