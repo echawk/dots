@@ -491,24 +491,26 @@
   (:map sly-mode-map
         ("C-c C-i" . sly-interrupt)
         ("C-c C-b" . sly-eval-buffer))
-  :custom
-  (inferior-lisp-program "sbcl")
-  :config
+  :init
   ;; This little bit of magic code will make a custom sly-<lisp> command
   ;; for each of the available lisps.
-  (let ((inf-lisps '(sbcl ecl ccl clasp clisp)))
-    (dolist (inf-lisp inf-lisps)
-      (if (executable-find (format "%s" inf-lisp))
-          (let ((func-name
-                 (intern
-                  (seq-concatenate
-                   'string (symbol-name 'sly-) (symbol-name inf-lisp)))))
-            (eval
-             `(defun ,func-name ()
-                (interactive)
-                (let ((orig-inf-lisp-prog inferior-lisp-program)
-                      (inferior-lisp-program (symbol-name ',inf-lisp)))
-                  (sly)))))))))
+  (dolist (inf-lisp '(sbcl ecl ccl clasp clisp abcl))
+    (if (executable-find (format "%s" inf-lisp))
+        (let* ((inf-lisp-str (symbol-name inf-lisp))
+               (func-name
+                (intern
+                 (seq-concatenate 'string (symbol-name 'sly-) inf-lisp-str)))
+               (doc-str
+                (seq-concatenate
+                 'string "Start " inf-lisp-str " and connect to it.")))
+          (eval
+           `(defun ,func-name ()
+              ,doc-str
+              (interactive)
+              (let ((inferior-lisp-program ,inf-lisp-str))
+                (sly)))))))
+  :custom
+  (inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
 
 (use-package clojure-mode :defer)
