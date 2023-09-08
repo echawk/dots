@@ -447,7 +447,33 @@
                      (concat pl-dir "prolog.el"))))
   :custom
   (prolog-system 'swi)
-  (prolog-program-name "swipl"))
+  :config
+  ;; Custom code to allow for switching between prolog implementations.
+  (let* ((custom-prologs '((trealla "tpl")))
+         (new-prolog-program-name
+          (seq-remove
+           (lambda (p)
+             (or (equal (car p) t)
+                 (equal (cadr p) nil)))
+           (seq-filter (lambda (p) (symbolp (car p)))
+                       (append prolog-program-name custom-prologs)))))
+    (dolist (prolog-pair new-prolog-program-name)
+      (if (executable-find (cadr prolog-pair))
+          (let* ((prolog-sys (car prolog-pair))
+                 (prolog-exe (cadr prolog-pair))
+                 (prolog-sym-str (symbol-name (car prolog-pair)))
+                 (func-name
+                  (intern
+                   (seq-concatenate
+                    'string
+                    "run-" prolog-sym-str "-prolog")
+                   )))
+            (eval
+             `(defun ,func-name ()
+                (interactive)
+                (let ((prolog-system ',prolog-sys)
+                      (prolog-program-name ,prolog-exe))
+                  (run-prolog t)))))))))
 
 ;; Custom snobol mode.
 (use-package snobol-mode
