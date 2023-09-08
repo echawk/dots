@@ -478,7 +478,8 @@
 ;; Custom snobol mode.
 (use-package snobol-mode
   :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/ehawkvu/snobol-mode")
+  :vc (:url "https://github.com/ehawkvu/snobol-mode"
+            :rev :newest)
   :defer
   :mode ("\\.sno" . snobol-mode))
 
@@ -545,7 +546,8 @@
 ;; Depends on clojure-mdoe
 (use-package carp-mode
   :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/carp-lang/carp-emacs")
+  :vc (:url "https://github.com/carp-lang/carp-emacs"
+            :rev :newest)
   :defer
   :commands (carp-mode run-carp)
   :mode ("\\.carp$" . carp-mode)
@@ -579,7 +581,8 @@
 
 (use-package llama-cpp-comint
   :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/ehawkvu/llama-cpp-comint")
+  :vc (:url "https://github.com/ehawkvu/llama-cpp-comint"
+            :rev :newest)
   :defer
   :commands (run-llama-cpp llama-cpp-query-region)
   :init
@@ -598,7 +601,8 @@
 ;; Speed reading in Emacs.
 (use-package spray
   :defer
-  :vc (:url "https://github.com/emacsmirror/spray")
+  :vc (:url "https://github.com/emacsmirror/spray"
+            :rev :newest)
   :commands (spray-mode))
 
 (use-package org
