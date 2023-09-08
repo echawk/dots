@@ -719,6 +719,8 @@
   ;; Make pdf-tools the default viewer for auctex.
   (TeX-view-program-selection '((output-pdf "PDF Tools")))
   (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+
+  (TeX-source-correlate-mode t)
   (TeX-source-correlate-start-server t)
 
   (TeX-engine 'xetex)
