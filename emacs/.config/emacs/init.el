@@ -811,9 +811,6 @@
 
   (exwm-init)
 
-  ;; Start up with a vterm window instead of a scratch buffer.
-  (vterm)
-
   ;; Garbage collect every 15 minutes when running exwm.
   (let ((mins-15 (* 15 60)))
     (run-with-timer mins-15 mins-15 'garbage-collect))
