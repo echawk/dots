@@ -222,14 +222,15 @@
 ;; Git frontend.
 (use-package magit :defer)
 (use-package forge :defer)
-(defun me/add-to-eglot-server-programs (modes-lsp-cmd)
-  "Add additional modes to eglot-server-programs if the lsp server exists."
-  (dolist (modes-cmd modes-lsp-cmd)
-    (let ((modes (car   modes-cmd))
-          (cmd   (nth 1 modes-cmd)))
-      (if (executable-find cmd)
-          (add-to-list 'eglot-server-programs
-                       `(,modes . (,cmd)))))))
+
+(defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
+  "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
+  `(dolist (modes-cmd ,modes-lsp-cmd)
+     (let ((modes (car   modes-cmd))
+           (cmd   (nth 1 modes-cmd)))
+       (if (executable-find cmd)
+           (add-to-list 'eglot-server-programs
+                        `(,modes . (,cmd)))))))
 
 ;; Simple LSP mode for emacs.
 (use-package eglot
@@ -237,6 +238,7 @@
   :hook ((caml-mode    . eglot-ensure)
          (c-mode       . eglot-ensure)
          (crystal-mode . eglot-ensure)
+         (d-mode       . eglot-ensure)
          (elixir-mode  . eglot-ensure)
          (erlang-mode  . eglot-ensure)
          (futhark-mode . eglot-ensure)
