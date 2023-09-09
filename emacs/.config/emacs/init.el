@@ -451,7 +451,8 @@
   (prolog-system 'swi)
   :config
   ;; Custom code to allow for switching between prolog implementations.
-  (let* ((custom-prologs '((trealla "tpl")))
+  (let* ((custom-prologs '((trealla "tpl")
+                           (scryer "scryer-prolog")))
          (new-prolog-program-name
           (seq-remove
            (lambda (p)
