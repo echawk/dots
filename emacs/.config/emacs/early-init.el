@@ -25,9 +25,7 @@
 (advice-add #'x-apply-session-resources :override #'ignore) ; Ignore Xresources
 
 ;; https://reddit.com/r/emacs/comments/np6ey4/how_packageel_works_with_use_package/
-(setq straight-check-for-modifications nil
-      straight-vc-git-default-clone-depth 1
-      package-enable-at-startup nil)
+(setq package-enable-at-startup nil)
 
 (set-face-attribute 'default nil :height 140)
 
