@@ -364,6 +364,18 @@
   :init
   (global-corfu-mode))
 
+;; Some extra in-buffer autocompletion - add ability to complete words
+;; as well as files.
+;; TODO: need to add a check/wrapper for cape-dict, since it is only
+;; useful in some circumstances, like writing prose in LaTeX mode or
+;; markdown mode - it'd be interesting to have it be dynamically enabled
+;; in programming modes while I am writing comments as well.
+(use-package cape
+  :init
+  (setq cape-dict-file "/home/ethan/cape-test-dict")
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dict))
+
 ;; Nice icons for corfu completions, depends on librsvg.
 (use-package kind-icon
   :if (and (display-graphic-p) (image-type-available-p 'svg))
