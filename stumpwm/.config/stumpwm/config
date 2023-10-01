@@ -1,0 +1,283 @@
+;; Other stumpwm configs to look over and pull ideas from.
+
+;; https://config.phundrak.com/stumpwm.html
+;; https://github.com/jamesmccabe/stumpwm-demo-config/blob/master/init.lisp
+;; https://github.com/the-beast-coder/stumpwm/blob/main/config.org
+;; https://systemcrafters.net/live-streams/december-3-2021/
+;; https://github.com/Gavinok/stump-conf/blob/main/config
+;; https://github.com/dmb2/dotfiles/blob/master/stumpwmrc
+;; https://git.sr.ht/~teutonicjoe/dotfiles/tree/master/item/legacy/void-stumpwm-2023-09-21/stumpwm/init.lisp
+;; https://github.com/jarmuszz/dots/tree/master
+;; https://github.com/alezost/stumpwm-config
+;; https://github.com/gefjon/stumpwm-init
+;; https://github.com/tslight/stumpwm/
+;; https://github.com/CakeML/cakeml/releases/download/v2184/cake-x64-64.tar.gz
+
+;; Since I'm already an Emacs fan, it naturally makes sense to move
+;; on from dwm and its friends onto greener, lispier pastures.
+
+;; https://github.com/Junker/awesome-stumpwm
+
+;; https://old.reddit.com/r/stumpwm/comments/zgigdt/a_stumpwm_debugger/
+;; https://github.com/szos/SDB
+;; https://gist.github.com/MIvanchev/807efbf54ea9e220fae4d1a7e5975e3b
+;; https://github.com/shackra/stumpwm-config/tree/jorge
+;; https://github.com/szos/swmipc
+
+;; TODO: better integrate Emacs into stump.
+
+;; TODO: need to look into the dynamic tiling feature.
+
+;; TODO: extend the setup to work on multiple monitors.
+
+;; How to get the arguments for a function:
+;; -- (slynk-backend:arglist #'testfn)
+
+;; (run-shell-command ..)
+
+(in-package :stumpwm)
+
+(setf *default-package* :stumpwm)
+
+(set-prefix-key (kbd "C-t"))
+
+;; Ensure contrib modules can be found.
+(set-module-dir "/usr/share/stumpwm/contrib/")
+
+;; The traditional numbered groups. Simliar to dwm.
+(grename "1")
+(loop :for n :from 2 :to 9 :do (gnewbg (format nil "~A" n)))
+
+(defvar *move-to-keybinds* (list "!" "@" "#" "$" "%" "^" "&" "*" "("))
+(loop :for n :from 1 :to 9
+      :do (let* ((sn (write-to-string n))
+                 (movekey (nth (- n 1) *move-to-keybinds*))
+                 (mk-keybind (lambda (s)
+                               (format nil "~{~a~}" (list "s-" s))))
+                 (mk-cmd (lambda (s)
+                           (concatenate 'string s " " sn))))
+
+            ;; Define the keys to move windows and focus between
+            ;; the different groups.
+            ;; Example:
+            ;; (define-key *top-map* (kbd "s-1") "gselect 1")
+            ;; (define-key *top-map* (kbd "s-!") "gmove 1")
+
+
+            (define-key *top-map*
+                (kbd (funcall mk-keybind sn))
+              (funcall mk-cmd "gselect"))
+
+            (define-key *top-map*
+                ;;(kbd (format nil "~{~a~}" (list "s-" movekey)))
+                (kbd (funcall mk-keybind movekey))
+              (funcall mk-cmd "gmove"))))
+
+;; Gap
+;;(load-module "swm-gaps")
+;;(swm-gaps:toggle-gaps)
+
+;; (load-module "battery-portable")
+
+;; Ensure that we have access to quicklisp.
+#-QUICKLISP
+(load (merge-pathnames "quicklisp/setup.lisp" (user-homedir-pathname)))
+
+
+;; Notifications via stumpwm.
+;; (ql:quickload :xml-emitter)
+;; (ql:quickload :dbus)
+;; (load-module "notify")
+;; (setf notify:*notify-server-body-color* "^1") ;; red
+;; (notify:notify-server-on)
+
+
+;; control via sly.
+(ql:quickload :slynk)
+
+(defparameter *slynk-port-number* 4005)
+(defvar *slynk-server-p* nil
+  "T if slynk server is running, nil if not running.")
+
+(defcommand start-slynk () ()
+  "Start slynk if it is not already running."
+  (if *slynk-server-p*
+      (message "slynk server is already active on port^5 ~a^n"
+               *slynk-port-number*)
+      (progn
+        (slynk:create-server :port *slynk-port-number* :dont-close t)
+        (setf *slynk-server-p* t)
+        (message "slynk server is now active on port^5 ~a^n.
+Use ^M-x sly-connect^n in Emacs.
+Type^2 (in-package :stumpwm)^n in sly REPL."
+                 *slynk-port-number*))))
+
+(defcommand stop-slynk () ()
+  (if *slynk-server-p*
+      (progn
+        (slynk:stop-server *slynk-port-number*)
+        (setf *slynk-server-p* nil)
+        (message "slynk server is now stopped."))
+      (message "slynk server is not active on port^5 ~a^n"
+               *slynk-port-number*)))
+
+(defcommand toggle-slynk () ()
+  (if *slynk-server-p*
+      (stop-slynk)
+      (start-slynk)))
+
+(defun get-slynk-status ()
+  (if *slynk-server-p*
+      (setf *slynk-ml-status*
+            (format nil "Slynk : ~a" *slynk-port-number*))
+      (setf *slynk-ml-status* "")))
+
+;; Modeline
+
+;; TODO: need to actually implement the mode-line
+;; would like to, at a minimum, have the wifi status, battery, audio, and time.
+;; (uiop:run-program "battery" :output t)
+
+(defun ml-fmt-slynk-status (ml)
+  (declare (ignore ml))
+  (get-slynk-status))
+
+(add-screen-mode-line-formatter #\S #'ml-fmt-slynk-status)
+
+;; General settings.
+
+(setf
+ *message-window-gravity* :center
+ *input-window-gravity* :center
+ *window-border-style* :thin
+ *window-format* "%m%s%15t"
+ *mouse-focus-policy* :click)
+
+;; Font setup.
+;; Need to clone the clx-truetype repo to ~/quicklisp/local-projects/
+;; git clone https://github.com/stumpwm/clx-truetype
+(ql:quickload :clx-truetype)
+(load-module "ttf-fonts")
+(clx-truetype:cache-fonts)
+(set-font (make-instance 'xft:font
+                         :family "JetBrains Mono"
+                         :subfamily "Regular"
+                         :size 14
+                         :antialias t))
+
+;; FIXME: make this much prettier and contain actually useful info.
+
+;; (setf *mode-line-background-color* "#007755"
+;;       *mode-line-foreground-color* "#cdcdcd"
+;;       *mode-line-timeout* 2)
+
+(setf *group-format* "%t")
+(setf *mode-line-timeout* 3)
+(setf *screen-mode-line-format*
+      (list
+       "| %g | %W | "
+       "^>"
+       "%S | "
+       '(:eval (run-shell-command "internet" t))
+       " | "
+       '(:eval (run-shell-command "battery" t))
+       " | "
+       '(:eval (run-shell-command "volume" t))
+       " | %d |"))
+;; '(:eval (run-shell-command "clock" t))))
+
+(when *initializing*
+  (mode-line))
+
+;; System tray.
+(ql:quickload :xembed)
+(load-module "stumptray")
+(stumptray:stumptray)
+
+;; better keybinds
+
+;; TODO: add in keybind to open up Emacs w/ slynk connected.
+
+;; (run-shell-command
+;;  (format nil "emacs --eval (sly-connect 'localhost' ~a)"
+;;          *slynk-port-number*))
+
+;; FIXME: add in more commands into the top map - I'd like to
+;; avoid the prefix key as much as possible - should have
+;; the maximum amount of functionality available via the super
+;; key that I can.
+
+;; Also, need to figure out a way to unset a bunch of the
+;; prefix keys that I am using for other stuff here.
+
+;; Beckon will teleport the mouse to the center of the target frame.
+(load-module "beckon")
+(defcommand beckon-move-focus (dir) ((:string "Enter a direction: "))
+  (move-focus (intern (string-upcase dir) "KEYWORD"))
+
+  ;; Only call beckon:beckon if there is a window in the other frame.
+  (if (frame-windows (current-group) (tile-group-current-frame (current-group)))
+      (beckon:beckon)))
+
+;; Working on a better 'expose' - need to expose all windows in each
+;; group and allow the user to select the window that they would like to
+;; see, then change to that group and focus that window.
+;; (mapcar #'sort-windows-by-number (screen-groups (current-screen)))
+;; (select-window-from-menu (flatten (mapcar #'sort-windows-by-number (screen-groups (current-screen)))) *window-info-format*)
+;; (select-window-from-menu (flatten (mapcar #'sort-windows-by-number (screen-groups (current-screen)))) "%n %t")
+;; (window-group (select-window-from-menu (flatten (mapcar #'sort-windows-by-number (screen-groups (current-screen)))) "%n %t"))
+
+;; TODO: see if I can at all add in the group info to each window.
+;; TODO: see if this will work on multiple monitors...
+(defcommand custom-expose () ()
+  "Custom expose command, which lists all open windows managed by StumpWM."
+  (if-let ((sel-window
+            (select-window-from-menu
+             (flatten
+              (mapcar #'sort-windows-by-number
+                      (screen-groups (current-screen))))
+             "%n %t")))
+    (if-let ((sel-group (window-group sel-window)))
+      (progn
+        (switch-to-group sel-group)
+        (group-focus-window sel-group sel-window)
+        (beckon:beckon))
+      (throw 'error :abort))
+    (message "No Selected Window")))
+
+(define-key *top-map* (kbd "s-h") "beckon-move-focus left")
+(define-key *top-map* (kbd "s-j") "beckon-move-focus down")
+(define-key *top-map* (kbd "s-k") "beckon-move-focus up")
+(define-key *top-map* (kbd "s-l") "beckon-move-focus right")
+
+(define-key *top-map* (kbd "s-H") "move-window left")
+(define-key *top-map* (kbd "s-J") "move-window down")
+(define-key *top-map* (kbd "s-K") "move-window up")
+(define-key *top-map* (kbd "s-L") "move-window right")
+
+(define-key *top-map* (kbd "s-'") "custom-expose")
+
+;; TODO: make the split and move focus??
+;; FIXME: make consistent w/ Emacs
+(define-key *top-map* (kbd "s-v") "hsplit")
+(define-key *top-map* (kbd "s-s") "vsplit")
+
+(define-key *top-map* (kbd "s-Q") "delete")
+(define-key *top-map* (kbd "s-d") "remove")
+(define-key *top-map* (kbd "s-r") "iresize")
+(define-key *top-map* (kbd "s-f") "fullscreen")
+
+(define-key *top-map* (kbd "M-h") "resize-direction left")
+(define-key *top-map* (kbd "M-j") "resize-direction down")
+(define-key *top-map* (kbd "M-k") "resize-direction up")
+(define-key *top-map* (kbd "M-l") "resize-direction right")
+
+(define-key *top-map* (kbd "s-;") "colon")
+
+;; dmenu alternative.
+(define-key *top-map* (kbd "s-p") "exec")
+
+(define-key *top-map* (kbd "s-,") "pull-hidden-next")
+(define-key *top-map* (kbd "s-.") "pull-hidden-previous")
+
+(setf *startup-message* "StumpWM is ready!")
