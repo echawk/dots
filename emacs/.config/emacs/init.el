@@ -245,6 +245,7 @@
          (go-mode      . eglot-ensure)
          (haskell-mode . eglot-ensure)
          (LaTeX-mode   . eglot-ensure)
+         (ruby-mode    . eglot-ensure)
          (sh-mode      . eglot-ensure)
          (tuareg-mode  . eglot-ensure)
          (vala-mode    . eglot-ensure)
