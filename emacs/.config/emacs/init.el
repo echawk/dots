@@ -444,6 +444,7 @@
   :mode ("\\.jl$" . ess-julia-mode))
 (use-package julia-mode :defer)
 
+;; https://eshelyaron.com/sweep.html
 (use-package prolog
   :ensure nil
   :load-path "prolog"
@@ -476,7 +477,7 @@
       (if (executable-find (cadr prolog-pair))
           (let* ((prolog-sys (car prolog-pair))
                  (prolog-exe (cadr prolog-pair))
-                 (prolog-sym-str (symbol-name (car prolog-pair)))
+                 (prolog-sym-str (symbol-name prolog-sys))
                  (func-name
                   (intern
                    (seq-concatenate
