@@ -428,6 +428,11 @@
 (use-package meson-mode :defer)
 (use-package nim-mode :defer)
 (use-package python :defer)
+(use-package ruby-mode :defer
+  :init
+  (let ((gem-bindir (concat (getenv "GEM_PATH") "/bin/")))
+    (when (file-exists-p gem-bindir)
+      (setq exec-path (cons gem-bindir exec-path)))))
 (use-package shen-mode :defer
   :mode ("\\.shen$" . shen-mode)
   :custom
