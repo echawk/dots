@@ -1,3 +1,5 @@
+;; -*- mode: lisp; fill-column: 80; -*-
+
 ;; Other stumpwm configs to look over and pull ideas from.
 
 ;; https://config.phundrak.com/stumpwm.html
@@ -62,7 +64,6 @@
             ;; Example:
             ;; (define-key *top-map* (kbd "s-1") "gselect 1")
             ;; (define-key *top-map* (kbd "s-!") "gmove 1")
-
 
             (define-key *top-map*
                 (kbd (funcall mk-keybind sn))
