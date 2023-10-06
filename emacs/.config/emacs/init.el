@@ -171,6 +171,14 @@
   :config
   (evil-lion-mode))
 
+(use-package perspective
+  :defer
+  :bind (("C-x k" . persp-kill-buffer*)
+         ("C-x C-b" . persp-list-buffers))
+  :init
+  (persp-mode)
+  :config
+  (add-hook #'after-make-frame-functions #'persp-init-frame))
 ;; (use-package doom-themes :defer)
 (use-package all-the-icons :defer)
 
