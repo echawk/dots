@@ -257,7 +257,7 @@
 
 (defun me/make-eglot-quickload-file ()
   (require 'eglot)
-  (with-temp-file eglot-quickload-file
+  (with-temp-file me/eglot-quickload-file
     (prin1
      `(setq eglot-server-programs ',eglot-server-programs)
      (current-buffer))))
