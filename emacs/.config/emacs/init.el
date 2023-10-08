@@ -603,6 +603,10 @@
               nil)
   (add-hook hook #'prettify-symbols-mode))
 
+(use-package j-mode :defer
+  :mode ("\\.ij[rstp]$" . j-mode)
+  :custom (j-console-cmd "/usr/lib/j9/bin/jconsole"))
+
 (use-package gnu-apl-mode
   :defer
   :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
