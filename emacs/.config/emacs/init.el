@@ -249,12 +249,11 @@
      (add-hook
       (intern (seq-concatenate 'string mode-str "-hook")) #'eglot-ensure))
    (seq-filter
-    (lambda (str) (and (string-match-p ".*-mode$" str)
-                       (boundp (intern (seq-concatenate 'string str "-hook")))))
+    (lambda (str) (string-match-p ".*-mode$" str))
     (mapcar (lambda (sym) (if (symbolp sym) (symbol-name sym) sym))
             (flatten-list (mapcar #'car eglot-server-programs))))))
 
-(setq eglot-quickload-file (concat user-emacs-directory "eglot-quickload.el"))
+(setq me/eglot-quickload-file (concat user-emacs-directory "eglot-quickload.el"))
 
 (defun me/make-eglot-quickload-file ()
   (require 'eglot)
@@ -266,14 +265,16 @@
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
-  :hook (prog-mode . me/eglot-enable-everything)
   :init
   ;; Refresh the file every two weeks.
-  (when (<= 14
-            (- (time-to-days (current-time))
-               (time-to-days (nth 5 (file-attributes eglot-quickload-file)))))
+  (when (or
+         (not (file-exists-p me/eglot-quickload-file))
+         (<= 14
+             (- (time-to-days (current-time))
+                (time-to-days (nth 5 (file-attributes me/eglot-quickload-file))))))
     (me/make-eglot-quickload-file))
-  (load-file eglot-quickload-file)
+  (load-file me/eglot-quickload-file)
+  (me/eglot-enable-everything)
   :config
   (me/add-to-eglot-server-programs
    '((crystal-mode  "crystalline")
