@@ -173,6 +173,8 @@
 
 (use-package perspective
   :defer
+  :custom
+  (persp-suppress-no-prefix-key-warning t)
   :bind (("C-x k" . persp-kill-buffer*)
          ("C-x C-b" . persp-list-buffers))
   :init
