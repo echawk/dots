@@ -242,24 +242,38 @@
            (add-to-list 'eglot-server-programs
                         `(,modes . (,cmd)))))))
 
+(defun me/eglot-enable-everything ()
+  "Little function to enable eglot in every mode that it knows about."
+  (mapcar
+   (lambda (mode-str)
+     (add-hook
+      (intern (seq-concatenate 'string mode-str "-hook")) #'eglot-ensure))
+   (seq-filter
+    (lambda (str) (and (string-match-p ".*-mode$" str)
+                       (boundp (intern (seq-concatenate 'string str "-hook")))))
+    (mapcar (lambda (sym) (if (symbolp sym) (symbol-name sym) sym))
+            (flatten-list (mapcar #'car eglot-server-programs))))))
+
+(setq eglot-quickload-file (concat user-emacs-directory "eglot-quickload.el"))
+
+(defun me/make-eglot-quickload-file ()
+  (require 'eglot)
+  (with-temp-file eglot-quickload-file
+    (prin1
+     `(setq eglot-server-programs ',eglot-server-programs)
+     (current-buffer))))
+
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
-  :hook ((caml-mode    . eglot-ensure)
-         (c-mode       . eglot-ensure)
-         (crystal-mode . eglot-ensure)
-         (d-mode       . eglot-ensure)
-         (elixir-mode  . eglot-ensure)
-         (erlang-mode  . eglot-ensure)
-         (futhark-mode . eglot-ensure)
-         (go-mode      . eglot-ensure)
-         (haskell-mode . eglot-ensure)
-         (LaTeX-mode   . eglot-ensure)
-         (ruby-mode    . eglot-ensure)
-         (sh-mode      . eglot-ensure)
-         (tuareg-mode  . eglot-ensure)
-         (vala-mode    . eglot-ensure)
-         (zig-mode     . eglot-ensure))
+  :hook (prog-mode . me/eglot-enable-everything)
+  :init
+  ;; Refresh the file every two weeks.
+  (when (<= 14
+            (- (time-to-days (current-time))
+               (time-to-days (nth 5 (file-attributes eglot-quickload-file)))))
+    (me/make-eglot-quickload-file))
+  (load-file eglot-quickload-file)
   :config
   (me/add-to-eglot-server-programs
    '((crystal-mode  "crystalline")
