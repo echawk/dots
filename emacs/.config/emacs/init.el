@@ -572,8 +572,6 @@
 
 ;; Use sly instead of slime
 (use-package sly :defer
-  :hook ((sly-mode . (lambda ()
-                       (unless (sly-connected-p) (save-excursion (sly))))))
   :bind
   (:map sly-mode-map
         ("C-c C-i" . sly-interrupt)
