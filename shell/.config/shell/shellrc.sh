@@ -51,7 +51,7 @@ case "$0" in
         PS1="\[\033[01;32m\][\u\[\033[01;37m\] \W\[\033[01;32m\]] \[\033[01;34m\]\$(extra_ps1_info)\[\033[01;32m\]%\[\033[00m\] "
         ;;
     *yash)
-        PS1="\fo\fg[$USER\fw \$(basename \$PWD)\fg]\fb \$(extra_ps1_info)\fg% "
+        PS1="\fo\fg[$USER\fw \$(basename \"\$PWD\")\fg]\fb \$(extra_ps1_info)\fg% "
         ;;
 esac
 
