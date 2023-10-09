@@ -410,11 +410,24 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 
-
 (use-package jinx
   :hook ((emacs-startup . global-jinx-mode)
          (prog-mode     . (lambda () (jinx-mode -1))))
   :bind ([remap ispell-word] . jinx-correct))
+
+(use-package flymake
+  :defer
+  :hook (text-mode . flymake-mode))
+
+;; https://github.com/purcell/flymake-flycheck
+(use-package flymake-flycheck
+  :defer
+  :after flymake)
+
+(use-package flymake-proselint
+  :if (executable-find "proselint")
+  :defer
+  :hook (flymake-mode . flymake-proselint-setup))
 
 
 (use-package tuareg
@@ -609,8 +622,11 @@
 (use-package dante
   :after haskell-mode
   :commands 'dante-mode
-  :hook ((haskell-mode . flycheck-mode)
-         (haskell-mode . dante-mode)))
+  :hook ((haskell-mode . flymake-mode)
+         (haskell-mode . dante-mode))
+  (defalias 'flymake-hlint
+    (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
+  (add-tolist 'flymake-diagnostic-functions 'flymake-hlint))
 
 ;; Enable prettify-symbols-mode in some languages
 (dolist (hook '(sly-mode-hook
