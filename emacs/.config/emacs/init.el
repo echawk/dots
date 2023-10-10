@@ -31,12 +31,34 @@
         (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
   (straight-use-package 'use-package)
-  (setq straight-use-package-by-default t))
+  (setq straight-use-package-by-default t
+        straight-check-for-modifications nil
+        straight-vc-git-default-clone-depth 1))
 
-(let ((use-straight nil))
-  (if use-straight
-      (me/straight-bootstrap)
-    (me/package-bootstrap)))
+(defun me/quelpa-bootstrap ()
+  "Function to bootstrap quelpa."
+  (me/package-bootstrap)
+  (use-package use-package-ensure
+    :config
+    (setq use-package-ensure-function 'quelpa))
+
+  (unless (package-installed-p 'quelpa)
+    (with-temp-buffer
+      (url-insert-file-contents
+       "https://github.com/quelpa/quelpa/raw/master/quelpa.el")
+      (eval-buffer)
+      (quelpa-self-upgrade)))
+  (quelpa
+   '(quelpa-use-package
+     :fetcher git
+     :url "https://github.com/quelpa/quelpa-use-package.git"))
+  (require 'quelpa-use-package))
+
+(let ((pkg-system 'package-el))
+  (pcase pkg-system
+    ('package-el (me/package-bootstrap))
+    ('straight (me/straight-bootstrap))
+    ('quelpa (me/quelpa-bootstrap))))
 
 (use-package emacs
   :hook ((prog-mode . display-fill-column-indicator-mode)
