@@ -439,7 +439,9 @@
 
 (use-package flymake
   :defer
-  :hook (text-mode . flymake-mode))
+  :hook ((text-mode . flymake-mode))
+  :config
+  (require 'flymake-proc))
 
 ;; https://github.com/purcell/flymake-flycheck
 (use-package flymake-flycheck
