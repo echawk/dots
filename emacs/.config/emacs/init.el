@@ -453,6 +453,32 @@
   :defer
   :hook (flymake-mode . flymake-proselint-setup))
 
+;; https://github.com/tpeacock19/flymake-vale
+
+(defun me/make-vale-config ()
+  "Write a simple vale config to `.vale.ini' in the `default-directory'."
+  (interactive)
+  (let ((vale-cfg (concat default-directory ".vale.ini")))
+    (write-region
+     "StylesPath = styles
+
+MinAlertLevel = suggestion
+
+Packages = proselint, write-good, alex, Readability, Joblint
+
+[*]
+BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
+     nil
+     vale-cfg))
+  (shell-command "vale sync")
+  (when flymake-mode (flymake-vale-maybe-load)))
+
+(use-package flymake-vale
+  :if (executable-find "vale")
+  :defer
+  :vc (:url "https://github.com/tpeacock19/flymake-vale"
+            :rev :newest)
+  :hook (flymake-mode . flymake-vale-load))
 
 (use-package tuareg
   :defer
