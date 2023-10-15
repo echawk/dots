@@ -157,6 +157,12 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; Font setup.
 ;; Need to clone the clx-truetype repo to ~/quicklisp/local-projects/
 ;; git clone https://github.com/stumpwm/clx-truetype
+(let ((clx-truetype-git-repo "https://github.com/stumpwm/clx-truetype")
+      (ql-local-proj-dir (car quicklisp:*local-project-directories*)))
+  (unless (uiop:directory-exists-p
+           (merge-pathnames ql-local-proj-dir "clx-truetype"))
+    (uiop:chdir ql-local-proj-dir)
+    (uiop:run-program (concatenate "git clone " clx-truetype-git-repo))))
 (ql:quickload :clx-truetype)
 (load-module "ttf-fonts")
 (clx-truetype:cache-fonts)
