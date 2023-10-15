@@ -702,6 +702,27 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
          (gnu-apl-interactive-mode . (lambda () (set-input-method "APL-Z")))))
 
+;; Refactoring mode:
+;; https://github.com/Wilfred/emacs-refactor
+
+;; FIXME: fork erefactor & fix the warnings.
+(use-package erefactor :defer)
+(use-package emr :defer)
+(use-package etrace
+  :if (>= emacs-major-version 30)
+  :vc (:url "https://github.com/aspiers/etrace"
+            :rev :newest)
+  :defer)
+
+;; Emacs lisp editing stuff.
+;; https://github.com/emacs-elsa/Elsa
+;; https://github.com/p3r7/awesome-elisp
+;; https://github.com/gonewest818/elisp-lint
+;; https://alphapapa.github.io/emacs-package-dev-handbook/
+;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
+;; (use-package elisp-demap :defer)
+(use-package suggest :defer)
+(use-package package-lint :defer)
 
 (use-package llama-cpp-comint
   :if (>= emacs-major-version 30)
