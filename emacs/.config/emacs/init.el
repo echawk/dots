@@ -584,8 +584,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                   (intern
                    (seq-concatenate
                     'string
-                    "run-" prolog-sym-str "-prolog")
-                   )))
+                    "run-" prolog-sym-str "-prolog"))))
             (eval
              `(defun ,func-name ()
                 (interactive)
@@ -774,7 +773,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
          (org-babel-do-load-languages 'org-babel-load-languages
                                       org-babel-load-languages)))
      (apply orig args))))
-
 
 ;; Fix weird tab behavior in default org-mode. Preferable to "C-c '".
 (use-package poly-org
