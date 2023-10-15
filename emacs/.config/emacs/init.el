@@ -708,6 +708,15 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :mode ("\\.ij[rstp]$" . j-mode)
   :custom (j-console-cmd "/usr/lib/j9/bin/jconsole"))
 
+;; https://github.com/phantomics/april/tree/master
+;; anaphora is a dependency of jpt-apl-mode.
+(use-package anaphora :defer)
+(use-package jpt-apl-mode
+  :if (>= emacs-major-version 30)
+  :vc (:url "https://github.com/jthing/apl-mode"
+            :rev :newest)
+  :defer)
+
 (use-package gnu-apl-mode
   :defer
   :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
