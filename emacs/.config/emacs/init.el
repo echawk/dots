@@ -671,9 +671,10 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :commands 'dante-mode
   :hook ((haskell-mode . flymake-mode)
          (haskell-mode . dante-mode))
+  :config
   (defalias 'flymake-hlint
     (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
-  (add-tolist 'flymake-diagnostic-functions 'flymake-hlint))
+  (add-to-list 'flymake-diagnostic-functions 'flymake-hlint))
 
 ;; Enable prettify-symbols-mode in some languages
 (dolist (hook '(sly-mode-hook
