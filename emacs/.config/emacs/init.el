@@ -420,6 +420,7 @@
 
 ;; Some extra in-buffer autocompletion - add ability to complete words
 ;; as well as files.
+;; TODO: add misc company backends as a capf too.
 ;; TODO: need to add a check/wrapper for cape-dict, since it is only
 ;; useful in some circumstances, like writing prose in LaTeX mode or
 ;; markdown mode - it'd be interesting to have it be dynamically enabled
@@ -428,7 +429,8 @@
   :init
   (setq cape-dict-file "/home/ethan/cape-test-dict")
   (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dict))
+  (add-to-list 'completion-at-point-functions #'cape-emoji))
+
 
 ;; Nice icons for corfu completions, depends on librsvg.
 (use-package kind-icon
