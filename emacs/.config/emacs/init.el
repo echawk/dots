@@ -208,6 +208,10 @@
   :defer
   :hook (dired-mode . all-the-icons-dired-mode))
 
+;; TODO: Break this out into a package.
+;; TODO: also make a macro to help simplify the creation of
+;; the functions - it should suffice to simply provide the quoted
+;; code and to have that automagically be inserted into an anonymous function.
 ;; Semi-Configurable modeline.
 (defun me/modeline ()
   "Create a modeline."
