@@ -204,6 +204,10 @@
 ;; (use-package doom-themes :defer)
 (use-package all-the-icons :defer)
 
+(use-package all-the-icons-dired
+  :defer
+  :hook (dired-mode . all-the-icons-dired-mode))
+
 ;; Semi-Configurable modeline.
 (defun me/modeline ()
   "Create a modeline."
