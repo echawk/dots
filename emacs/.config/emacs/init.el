@@ -1,3 +1,13 @@
+;;; init --- my Emacs init file
+
+;;; Commentary:
+
+;; This is my personal Emacs configuration.  It may be of use to you,
+;; as I have configured quite a number of packages.  However, there is
+;; an emphasis on lightweight or builtin packages in Emacs.  Also, by
+;; default, every package is explicitly deferred unless if it is
+;; absolutely required at init time.  Because of this, my init time hovers
+;; around 0.5 to 1 second.  This could be reduced if you don't use evil.
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("elpa"  . "https://elpa.gnu.org/packages/")))
