@@ -440,6 +440,9 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 
+;; Collaborative editing in Emacs.
+(use-package crdt :defer)
+
 (use-package jinx
   :hook ((emacs-startup . global-jinx-mode)
          (prog-mode     . (lambda () (jinx-mode -1))))
