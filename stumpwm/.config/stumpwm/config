@@ -227,8 +227,9 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
   (move-focus (intern (string-upcase dir) "KEYWORD"))
 
   ;; Only call beckon:beckon if there is a window in the other frame.
-  (if (frame-windows (current-group) (tile-group-current-frame (current-group)))
-      (beckon:beckon)))
+  (when (frame-windows (current-group)
+                       (tile-group-current-frame (current-group)))
+    (beckon:beckon)))
 
 ;; Working on a better 'expose' - need to expose all windows in each
 ;; group and allow the user to select the window that they would like to
