@@ -493,7 +493,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 (use-package tuareg
   :defer
-  :hook (tuareg-mode . (lambda () (electric-indent-mode 0)))
   :mode ("\\.ml[iylp]?$" . tuareg-mode)
   :init
   ;; Ensure that `ocamllsp` is in Emacs' $PATH.
