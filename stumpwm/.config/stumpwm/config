@@ -163,6 +163,10 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
            (merge-pathnames ql-local-proj-dir "clx-truetype"))
     (uiop:chdir ql-local-proj-dir)
     (uiop:run-program (concatenate "git clone " clx-truetype-git-repo))))
+
+;; Important note:
+;; Whatever font you choose to use here, MUST be a TrueType font, and
+;; **NOT** an OpenType font.
 (ql:quickload :clx-truetype)
 (load-module "ttf-fonts")
 (clx-truetype:cache-fonts)
