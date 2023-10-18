@@ -393,7 +393,11 @@
       (dolist (lang languages)
         (treesit-install-language-grammar lang)
         (message "`%s' parser was installed." lang)
-        (sit-for 0.75)))))
+        (sit-for 0.75))))
+  (defun treesit-indent-buffer ()
+    "Format the current buffer with `treesit-indent-region'."
+    (interactive)
+    (treesit-indent-region (point-min) (point-max))))
 
 ;; FIXME: see if i can replace this package by just using
 ;; the auto mode remap list
