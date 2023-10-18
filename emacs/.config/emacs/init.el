@@ -395,6 +395,12 @@
         (message "`%s' parser was installed." lang)
         (sit-for 0.75)))))
 
+;; FIXME: see if i can replace this package by just using
+;; the auto mode remap list
+
+;; FIXME: I would like to write some Emacs lisp code to automatically move
+;; over my hooks from non-tree-sitter modes to the tree-sitter modes so that
+;; way there is little headache when it comes to actually using this
 ;; https://github.com/renzmann/treesit-auto
 (use-package treesit-auto
   :if (>= emacs-major-version 29)
@@ -469,6 +475,7 @@
   :defer
   :after flymake)
 
+;; TODO: consider rm'ing this pkg, since vale can do this?
 (use-package flymake-proselint
   :if (executable-find "proselint")
   :defer
