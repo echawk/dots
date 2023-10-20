@@ -375,14 +375,17 @@
           (go         . ("https://github.com/tree-sitter/tree-sitter-go"))
           (haskell    . ("https://github.com/tree-sitter/tree-sitter-haskell"))
           (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
+          (json       . ("https://github.com/tree-sitter/tree-sitter-json"))
           (julia      . ("https://github.com/tree-sitter/tree-sitter-julia"))
           (latex      . ("https://github.com/latex-lsp/tree-sitter-latex"))
           (lua        . ("https://github.com/Azganoth/tree-sitter-lua"))
           (make       . ("https://github.com/alemuller/tree-sitter-make"))
           (ocaml      . ("https://github.com/tree-sitter/tree-sitter-ocaml" "master" "ocaml/src"))
+          (php        . ("https://github.com/tree-sitter/tree-sitter-php"))
           (python     . ("https://github.com/tree-sitter/tree-sitter-python"))
           (ruby       . ("https://github.com/tree-sitter/tree-sitter-ruby"))
           (rust       . ("https://github.com/tree-sitter/tree-sitter-rust"))
+          (swift      . ("https://github.com/tree-sitter/tree-sitter-swift"))
           (zig        . ("https://github.com/GrayJack/tree-sitter-zig"))))
   :config
   ;; https://www.nathanfurnal.xyz/posts/building-tree-sitter-langs-emacs/#native-emacs-solution
