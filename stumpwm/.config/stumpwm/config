@@ -41,7 +41,7 @@
 
 (setf *default-package* :stumpwm)
 
-(set-prefix-key (kbd "C-t"))
+(set-prefix-key (kbd "C-z"))
 
 ;; Ensure contrib modules can be found.
 (set-module-dir "/usr/share/stumpwm/contrib/")
@@ -70,7 +70,6 @@
               (funcall mk-cmd "gselect"))
 
             (define-key *top-map*
-                ;;(kbd (format nil "~{~a~}" (list "s-" movekey)))
                 (kbd (funcall mk-keybind movekey))
               (funcall mk-cmd "gmove"))))
 
@@ -171,7 +170,7 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 (load-module "ttf-fonts")
 (clx-truetype:cache-fonts)
 (set-font (make-instance 'xft:font
-                         :family "JetBrains Mono"
+                         :family "SF Mono"
                          :subfamily "Regular"
                          :size 14
                          :antialias t))
