@@ -923,6 +923,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (markdown-command "lowdown -s -Thtml"))
 (use-package markdown-preview-mode :defer)
 
+(use-package rmsbolt :defer)
 
 (use-package realgud :defer)
 
