@@ -1,5 +1,5 @@
 #!/bin/sh
-WM=${WM:-dwm}
+WM=${WM:-stumpwm}
 [ -f "$HOME/.config/x11/Xresources" ] && which xrdb && xrdb "$HOME/.config/x11/Xresources"
 [ -f "$HOME/.config/x11/xprofile" ]   && . "$HOME/.config/x11/xprofile"
 ! pidof pipewire && command -v pipewire && pipewire &
