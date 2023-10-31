@@ -202,15 +202,15 @@
   :config
   (evil-lion-mode))
 
-(use-package perspective
+(use-package beframe
   :defer
   :custom
-  (persp-suppress-no-prefix-key-warning t)
-  :bind (("C-x k" . persp-kill-buffer*))
+  (beframe-global-buffers '("*scratch*" "*Messages*" "*Backtrace*"))
+  :bind
+  (("C-x b" . beframe-switch-buffer-in-frame))
   :init
-  (persp-mode)
-  :config
-  (add-hook #'after-make-frame-functions #'persp-init-frame))
+  (beframe-mode 1))
+
 ;; (use-package doom-themes :defer)
 (use-package all-the-icons :defer)
 
