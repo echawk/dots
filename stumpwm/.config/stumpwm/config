@@ -217,6 +217,33 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; the maximum amount of functionality available via the super
 ;; key that I can.
 
+;; Might switch over to this instead of my hacked together custom-expose command.
+;; from: https://lists.nongnu.org/archive/html/stumpwm-devel/2016-07/msg00002.html
+(defcommand vgrouplist () (:rest)
+  (let* ((groups (sort-groups (current-screen)))
+         (selection
+           (second (select-from-menu
+                    (current-screen)
+                    (mapcan (lambda (g)
+                              (list* (list
+                                      (format-expand
+                                       *group-formatters* *group-format* g) g)
+                                     (mapcar (lambda (w)
+                                               (list (format-expand
+                                                      *window-formatters*
+                                                      (concatenate 'string "  " *window-format*)
+                                                      w)
+                                                     w))
+                                             (sort-windows g))))
+                            groups)
+                    nil))))
+    (if selection
+        (typecase selection
+          (group (switch-to-group selection))
+          (window (progn (switch-to-group (window-group selection))
+                         (group-focus-window (current-group) selection))))
+        (throw 'error :abort))))
+
 ;; Also, need to figure out a way to unset a bunch of the
 ;; prefix keys that I am using for other stuff here.
 
