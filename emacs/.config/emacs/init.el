@@ -23,7 +23,8 @@
            (not (package-installed-p 'use-package)))
       (package-install 'use-package))
   (require 'use-package)
-  (setq use-package-always-ensure t))
+  (setq use-package-always-ensure t
+        use-package-compute-statistics t))
 
 (defun me/straight-bootstrap ()
   "Function to bootstrap straight.el."
