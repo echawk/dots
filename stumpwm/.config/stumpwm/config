@@ -144,6 +144,10 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 
 (add-screen-mode-line-formatter #\S #'ml-fmt-slynk-status)
 
+;; Enable the modeline on each of the monitors that I have.
+(dolist (head (screen-heads (current-screen)))
+  (enable-mode-line (current-screen) head t))
+
 ;; General settings.
 
 (setf
