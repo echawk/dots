@@ -208,7 +208,7 @@
   :custom
   (beframe-global-buffers '("*scratch*" "*Messages*" "*Backtrace*"))
   :bind
-  (("C-x b" . beframe-switch-buffer-in-frame))
+  (("C-x b" . beframe-switch-buffer))
   :init
   (beframe-mode 1))
 
