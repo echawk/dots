@@ -855,14 +855,15 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :vc (:url "https://github.com/natrys/whisper.el"
             :rev :newest)
   :bind ("C-c w" . whisper-run)
-  :custom
-  (whisper-install-directory (concat user-emacs-directory "whisper-el/"))
-  (whisper-model "base")
-  (whisper-language "en")
-  (whisper-translate nil)
-  (whisper-recording-timeout 600)
-  (whisper--ffmpeg-input-format "alsa")
-  (whisper--ffmpeg-input-device "hw:5,0"))
+  :config
+  (setq
+   whisper-install-directory (concat user-emacs-directory "whisper-el/")
+   whisper-model "base"
+   whisper-language "en"
+   whisper-translate nil
+   whisper-recording-timeout 600
+   whisper--ffmpeg-input-format "alsa"
+   whisper--ffmpeg-input-device "hw:5,0"))
 
 ;; Read EPUBs in Emacs!
 (use-package nov
