@@ -304,6 +304,8 @@
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
+  :custom
+  (eglot-events-buffer-size 0)
   :init
   ;; Refresh the file every two weeks.
   (when (or
