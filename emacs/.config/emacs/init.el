@@ -272,6 +272,57 @@
 (use-package magit :defer)
 (use-package forge :defer)
 
+(defun me/format-buffer (&optional formatter)
+  "My custom format-buffer command. Integrates w/ Apheleia, Eglot & -TS- modes.
+
+The heirarchy is as follows:
+- `apheleia-format-buffer'
+- `eglot-format-buffer'
+- `treesit-indent-region'
+- `indent-region'
+
+Additionally, any of these functions can be requested explicity, by providing
+FORMATTER as the optional argument. FORMATTER is expected to be one of the
+following symbols:
+- \\='apheleia
+- \\='eglot
+- \\='treesit
+- \\='indent
+"
+  (interactive)
+  (let ((use-apheleia-p
+         (and apheleia-mode
+              (cdr (assoc major-mode apheleia-mode-alist))))
+        (use-eglot-p
+         (and (fboundp #'eglot-managed-p)
+              (eglot-managed-p)
+              (not
+               (member :documentFormattingProvider
+                       eglot-ignored-server-capabilities))))
+        (use-treesit-p
+         (and (treesit-available-p)
+              (string-match "*-ts-*" (symbol-name major-mode)))))
+    (cl-flet
+        ((apheleia-fmt ()
+           (apheleia-format-buffer (cdr (assoc major-mode apheleia-mode-alist))))
+         (eglot-fmt ()
+           (eglot-format          (point-min) (point-max)))
+         (treesit-fmt ()
+           (treesit-indent-region (point-min) (point-max)))
+         (indent-fmt ()
+           (indent-region         (point-min) (point-max))))
+      (if formatter
+          (pcase formatter
+            ('apheleia (apheleia-fmt))
+            ('eglot    (eglot-fmt))
+            ('treesit  (treesit-fmt))
+            ('indent   (indent-fmt)))
+        (cond
+         (use-apheleia-p (apheleia-fmt))
+         (use-eglot-p    (eglot-fmt))
+         (use-treesit-p  (treesit-fmt))
+         (t              (indent-fmt)))))))
+
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
   `(dolist (modes-cmd ,modes-lsp-cmd)
