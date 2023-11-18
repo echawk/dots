@@ -317,6 +317,7 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 (define-key *top-map* (kbd "M-l") "resize-direction right")
 
 (define-key *top-map* (kbd "s-;") "colon")
+(define-key *top-map* (kbd "s-:") "vgrouplist")
 
 ;; dmenu alternative.
 (define-key *top-map* (kbd "s-p") "exec")
