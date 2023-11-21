@@ -231,27 +231,27 @@
    mode-line-format
    '("%e"
      (:eval
-      (let ((fns '(
-                   (lambda () (propertize (if evil-mode (symbol-name evil-state) "") 'face 'italic))
-                   (lambda () (propertize
-                               ;; Need to do a check for the *-ts-mode modes.
-                               (let ((icon  (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
-                                 (if (not (eq major-mode icon))
-                                     icon
-                                   (if buffer-file-name
-                                       (all-the-icons-icon-for-file buffer-file-name :height 1.0 :v-adjust -0.1)
-                                     "")))))
-                   (lambda () (propertize (replace-regexp-in-string "-mode$" "" (format "%s" major-mode))))
-                   (lambda () (let ((buff-name (format-mode-line "%b")))
-                                (if (buffer-modified-p) (propertize buff-name 'face 'bold-italic)
-                                  (propertize buff-name))))
-                   (lambda () (propertize "%l:%c"))
-                   (lambda ()
-                     ;; TODO: incorporate (vc-state buffer-file-name (vc-backend buffer-file-name))
-                     (if (and vc-mode buffer-file-name)
-                         (concat "git:" (propertize (substring vc-mode (+ (if (eq (vc-backend buffer-file-name) 'Hg) 2 3) 2))))
-                       ""))
-                   )))
+      (let ((fns
+             (mapcar
+              (lambda (expr) `(lambda () (eval ,expr)))
+              '((propertize (if evil-mode (symbol-name evil-state) "") 'face 'italic)
+                (propertize
+                 ;; Need to do a check for the *-ts-mode modes.
+                 (let ((icon  (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
+                   (if (not (eq major-mode icon))
+                       icon
+                     (if buffer-file-name
+                         (all-the-icons-icon-for-file buffer-file-name :height 1.0 :v-adjust -0.1)
+                       ""))))
+                (propertize (replace-regexp-in-string "-mode$" "" (format "%s" major-mode)))
+                (let ((buff-name (format-mode-line "%b")))
+                  (if (buffer-modified-p) (propertize buff-name 'face 'bold-italic)
+                    (propertize buff-name)))
+                (propertize "%l:%c")
+                ;; TODO: incorporate (vc-state buffer-file-name (vc-backend buffer-file-name))
+                (if (and vc-mode buffer-file-name)
+                    (concat "git:" (propertize (substring vc-mode (+ (if (eq (vc-backend buffer-file-name) 'Hg) 2 3) 2))))
+                  "")))))
         (mapconcat (lambda (f) (format "%s" (funcall f))) fns " ")))
      mode-line-misc-info)))
 (me/modeline)
