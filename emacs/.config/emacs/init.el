@@ -256,6 +256,9 @@
      mode-line-misc-info)))
 (me/modeline)
 
+(use-package rainbow-mode
+  :defer
+  :hook (prog-mode . rainbow-mode))
 (use-package rainbow-delimiters
   :defer
   :hook (prog-mode . rainbow-delimiters-mode))
