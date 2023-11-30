@@ -330,16 +330,19 @@ the file.
       ('indent   (indent-fmt))))
   (delete-trailing-whitespace (point-min) (point-max)))
 
-;; TODO: allow for setting a variable to control this...
+(setq me/apheleia-preferred-backend (me/get-formatter-backend))
+
 (advice-add
  #'apheleia-format-after-save
  :around
  (lambda (orig &rest args)
    "Use my custom format-buffer command if applicable"
-   (let ((formatter (me/get-formatter-backend)))
-     (if (eq formatter 'apheleia)
-         (apply orig args)
-       (me/format-buffer formatter)))))
+   (if (not (eq 'apheleia me/apheleia-preferred-backend))
+       (me/format-buffer me/apheleia-preferred-backend)
+     (let ((formatter (me/get-formatter-backend)))
+       (if (eq formatter 'apheleia)
+           (apply orig args)
+         (me/format-buffer formatter))))))
 
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
