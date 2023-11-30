@@ -337,10 +337,9 @@ the file.
  (lambda (orig &rest args)
    "Use my custom format-buffer command if applicable"
    (let ((formatter (me/get-formatter-backend)))
-     (pcase formatter
-       ('apheleia (apply orig args))
-       (_ (me/format-buffer formatter))))))
-
+     (if (eq formatter 'apheleia)
+         (apply orig args)
+       (me/format-buffer formatter)))))
 
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
