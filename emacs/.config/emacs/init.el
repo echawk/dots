@@ -714,9 +714,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; https://scripter.co/emacs-lisp-advice-combinators/
 (use-package srfi :defer
   :config
-  ;; Override browse-url to be eww-browse-url. TODO: may need to reset?
-  (advice-add 'srfi-browse-document-url :before
-              #'(lambda (a) (defalias 'browse-url 'eww-browse-url)))
+  ;; I'm kinda over trying to mess w/ Emacs advice combinators to make
+  ;; this more reliable (cl-flet sucks). This works for now though.
+  (advice-add
+   #'srfi-browse-document-url
+   :override
+   (lambda (number) (eww-browse-url (srfi--document-url number))))
   ;; Add some keybinds that make this easier to use from evil-mode.
   :bind
   (:map srfi-mode-map
