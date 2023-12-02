@@ -864,10 +864,10 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :custom
   (llama-cpp-model-alist
    '(
-     ("WizardLM-7B" "/home/ethan/AI/llama.cpp/build/bin/main"
-      "/home/ethan/AI/MODELS/ggml/WizardLM-7B-uncensored.ggmlv3.q4_1.bin")
-     ("Airoboros-13B" "/home/ethan/AI/llama.cpp/build/bin/main"
-      "/home/ethan/AI/MODELS/ggml/airoboros-13b-ggml-q4_0.bin")
+     ("Guanaco-7B" "/home/ethan/AI/llama.cpp/build/bin/main"
+      "/home/ethan/AI/MODELS/gguf/guanaco-7b-uncensored.Q4_0.gguf")
+     ("Wizard-Vicuna-13B" "/home/ethan/AI/llama.cpp/build/bin/main"
+      "/home/ethan/AI/MODELS/gguf/Wizard-Vicuna-13B-Uncensored.Q4_0.gguf")
      ))
   (llama-cpp-num-cpus 8))
 
