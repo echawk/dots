@@ -70,10 +70,14 @@
     ('straight (me/straight-bootstrap))
     ('quelpa (me/quelpa-bootstrap))))
 
+(setq me/delete-trailing-whitespace nil)
+
 (use-package emacs
   :hook ((prog-mode . display-fill-column-indicator-mode)
          (before-save . (lambda ()
-                          (delete-trailing-whitespace (point-min) (point-max))))
+                          ;; Somewhat better way of deleting whitespace
+                          (when (or (not vc-mode) me/delete-trailing-whitespace)
+                            (delete-trailing-whitespace (point-min) (point-max)))))
          (emacs-startup . (lambda ()
                             (message "Emacs loaded in %s with %d garbage collections."
                                      (format "%.2f seconds"
