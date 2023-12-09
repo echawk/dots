@@ -14,6 +14,7 @@
 ;; https://github.com/gefjon/stumpwm-init
 ;; https://github.com/tslight/stumpwm/
 ;; https://github.com/CakeML/cakeml/releases/download/v2184/cake-x64-64.tar.gz
+;; https://github.com/Izder456/StumpWM-Config
 
 ;; Since I'm already an Emacs fan, it naturally makes sense to move
 ;; on from dwm and its friends onto greener, lispier pastures.
@@ -35,6 +36,11 @@
 ;; How to get the arguments for a function:
 ;; -- (slynk-backend:arglist #'testfn)
 
+;; Stump is a bit different when it comes to multiple monitors
+;; Essentially the monitors are all treated as one big monitor, with the
+;; groups being the primary deliniator.
+;; It's a bit odd, but I can get used to it.
+
 ;; (run-shell-command ..)
 
 (in-package :stumpwm)
@@ -45,6 +51,24 @@
 
 ;; Ensure contrib modules can be found.
 (set-module-dir "/usr/share/stumpwm/contrib/")
+
+;; FIXME: need to use these colors throughout this code...
+;; Want to make the colors a little bit simpler.
+;; Settings the colors
+;; (setf *colors* `("#1d1f21" ; black   (background)
+;;                            "#cc6666" ; red
+;;                            "#b5bd68" ; green
+;;                            "#f0c674" ; yellow
+;;                            "#81a2be" ; blue
+;;                            "#b294bb" ; magenta (purple)
+;;                            "#8abeb7" ; cyan    (aqua)
+;;                            "#c5c8c6" ; white   (foreground)
+
+;;                            "#969896" ; gray    (comment)
+;;                            "#282a2e" ; (current line)
+;;                            "#373b41" ; (selection)
+;;                            "#de935f" ; (orange)
+;;                            ))
 
 ;; The traditional numbered groups. Simliar to dwm.
 (grename "1")
@@ -209,6 +233,14 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 (ql:quickload :xembed)
 (load-module "stumptray")
 (stumptray:stumptray)
+
+;; TODO: would like to move to the built-in clipboard manager, but
+;; tbh qlipper seems to work pretty well ngl.
+;; https://wiki.archlinux.org/title/Clipboard
+;; Clipboard manager
+;; (load-module "clipboard-history")
+;; (define-key *root-map* (kbd "C-y") "show-clipboard-history")
+;; (clipboard-history:start-clipboard-manager)
 
 ;; better keybinds
 
