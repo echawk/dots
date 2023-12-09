@@ -25,9 +25,10 @@
 (advice-add #'x-apply-session-resources :override #'ignore) ; Ignore Xresources
 
 ;; https://reddit.com/r/emacs/comments/np6ey4/how_packageel_works_with_use_package/
-(setq package-enable-at-startup nil)
+(setq package-enable-at-startup nil
+      load-prefer-newer t)
 
-(set-face-attribute 'default nil :height 140)
+(set-face-attribute 'default nil :height 130)
 
 ;; https://github.com/doomemacs/doomemacs/blob/master/lisp/doom.el#L314
 ;; Below is taken straight from DOOM. Time will tell if I'll keep it.
