@@ -1,0 +1,6 @@
+#!/bin/sh
+/usr/bin/emacsclient -e 0 >/dev/null 2>&1 || {
+    /usr/bin/emacs --daemon
+}
+/usr/bin/emacsclient -u -q -c "$@"
+# vim: ft=sh
