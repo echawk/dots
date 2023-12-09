@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+#if wayup; then
+    exec bemenu-run \
+        -p '' \
+        -l 10 \
+        --fn "monospace 14" \
+        --fb "#222222" \
+        --nb "#222222" \
+        --ab "#222222" \
+        --hb "#007755" \
+        --hf "#eeeeee" \
+        $*
+#else
+#    exec dmenu_run -l 10 \
+#       -fn monospace:size=14 $*
+#fi

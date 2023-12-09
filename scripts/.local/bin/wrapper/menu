@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# issue with this is that there is no way for dmenu to receive stdin
+if [ -n $XAUTHORITY ] ; then
+    exec dmenu -l 10 -fn monospace:size=14 $*
+else
+    exec fzf $*
+fi

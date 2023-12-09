@@ -1,0 +1,5 @@
+#!/bin/sh
+# if not running, run
+[ -n "$XAUTHORITY" ] && {
+    pidof -s skippy-xd || skippy-xd-runner
+}
