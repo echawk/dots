@@ -807,6 +807,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
     (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
   (add-to-list 'flymake-diagnostic-functions 'flymake-hlint))
 
+(use-package agda
+  :ensure nil
+  :defer
+  :if (executable-find "agda-mode")
+  :commands (agda2-mode)
+  :init
+  (load-file (shell-command-to-string "agda-mode locate")))
+
 ;; Enable prettify-symbols-mode in some languages
 (dolist (hook '(sly-mode-hook
                 emacs-lisp-mode-hook
