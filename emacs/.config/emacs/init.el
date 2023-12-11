@@ -823,6 +823,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
               nil)
   (add-hook hook #'prettify-symbols-mode))
 
+(use-package uiua-mode :defer)
+(use-package uiua-ts-mode :defer)
+
 (use-package j-mode :defer
   :mode ("\\.ij[rstp]$" . j-mode)
   :custom (j-console-cmd "/usr/lib/j9/bin/jconsole"))
