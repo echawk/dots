@@ -351,14 +351,15 @@ the file.
       ('indent   (indent-fmt))))
   (delete-trailing-whitespace (point-min) (point-max)))
 
-(setq me/apheleia-preferred-backend (me/get-formatter-backend))
+;;(setq me/apheleia-preferred-backend (me/get-formatter-backend))
 
 (advice-add
  #'apheleia-format-after-save
  :around
  (lambda (orig &rest args)
    "Use my custom format-buffer command if applicable"
-   (if (not (eq 'apheleia me/apheleia-preferred-backend))
+   (if (and (boundp 'me/apheleia-preferred-backend)
+            (not (eq 'apheleia me/apheleia-preferred-backend)))
        (me/format-buffer me/apheleia-preferred-backend)
      (let ((formatter (me/get-formatter-backend)))
        (if (eq formatter 'apheleia)
