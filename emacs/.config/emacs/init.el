@@ -1145,14 +1145,16 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
      ([?\s-f] . exwm-layout-toggle-fullscreen)
 
-     ([?\s-d] . (lambda (cmd)
+     ([?\s-p] . (lambda (cmd)
                   (interactive (list (read-shell-command "λ ")))
                   (start-process-shell-command cmd nil cmd)))
 
+     ([?\s-d] . delete-window)
+
      ;; TODO: Consider making the window key binds available to non-exwm Emacs.
      ;; FIXME: ^^^ I'd like to use these binds everywhere.
-     ([?\s-s] . split-window-right)
-     ([?\s-S] . split-window-below)
+     ([?\s-v] . split-window-right)
+     ([?\s-s] . split-window-below)
 
      ([?\s-h] . windmove-left)
      ([?\s-l] . windmove-right)
