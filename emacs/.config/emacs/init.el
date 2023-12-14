@@ -212,6 +212,7 @@
 
 (use-package beframe
   :defer
+  :if (not (getenv "EMACS_IS_EXWM"))
   :custom
   (beframe-global-buffers '("*scratch*" "*Messages*" "*Backtrace*"))
   :bind
