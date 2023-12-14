@@ -1150,6 +1150,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                   (interactive (list (read-shell-command "λ ")))
                   (start-process-shell-command cmd nil cmd)))
 
+     ([?\s-,] . next-buffer)
+     ([?\s-.] . previous-buffer)
+
      ([?\s-d] . delete-window)
 
      ;; TODO: Consider making the window key binds available to non-exwm Emacs.
@@ -1176,6 +1179,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                    (lambda ()
                      (interactive)
                      (exwm-workspace-switch-create ,i))))
+               (number-sequence 0 9))
+
+     ,@(mapcar (lambda (i)
+                 (let ((keys '(")" "!" "@" "#" "$" "%" "^" "&" "*" "(")))
+                   `(,(kbd (concat "s-" (nth i keys))) .
+                     (lambda ()
+                       (interactive)
+                       (exwm-workspace-move-window (selected-frame) ,i)))))
                (number-sequence 0 9))))
   )
 
