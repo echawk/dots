@@ -1156,9 +1156,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
      ;; TODO: Consider making the window key binds available to non-exwm Emacs.
      ;; FIXME: ^^^ I'd like to use these binds everywhere.
-     ([?\s-q] . delete-window)
-     ;; ([?\s-C] . delete-window) ;; have this kill the associated buffer.
-
      ([?\s-s] . split-window-right)
      ([?\s-S] . split-window-below)
 
@@ -1171,6 +1168,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
      ([?\s-L] . windmove-swap-states-right)
      ([?\s-J] . windmove-swap-states-down)
      ([?\s-K] . windmove-swap-states-up)
+
+     ([?\s-Q] . kill-this-buffer)
 
      ;; This handy little block makes it possible to switch to
      ;; the different workspaces by using s-<num>
