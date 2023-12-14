@@ -639,12 +639,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :custom
   (idris-interpreter-path "idris2"))
 (use-package inf-elixir :defer)
-(use-package lfe-mode
-  :defer
-  :bind
-  (:map lfe-mode-map
-        ("C-c C-p" . run-lfe)
-        ("C-c C-b" . (lfe-eval-region (point-min) (point-max)))))
+(use-package lfe-mode :defer)
 (use-package lua-mode :defer
   :custom
   (lua-default-application "luajit"))
