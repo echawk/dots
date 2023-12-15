@@ -1186,7 +1186,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                    `(,(kbd (concat "s-" (nth i keys))) .
                      (lambda ()
                        (interactive)
-                       (exwm-workspace-move-window (selected-frame) ,i)))))
+                       (exwm-workspace-move-window ,i)))))
                (number-sequence 0 9))))
   )
 
