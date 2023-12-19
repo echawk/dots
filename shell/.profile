@@ -12,8 +12,10 @@
 
 # Ensure my ssh identities get added to my environment.
 if [ -e "$HOME/.ssh/" ]; then
-    eval "$(ssh-agent -s)"
-    find "$HOME/.ssh" -name '*.pub' | sed "s/.pub$//" | xargs -I{} ssh-add {}
+    if command -v ssh-agent > /dev/null 2>&1; then
+        eval "$(ssh-agent -s)"
+        find "$HOME/.ssh" -name '*.pub' | sed "s/.pub$//" | xargs -I{} ssh-add {}
+    fi
 fi
 
 # Start up X11 if we are on tty1
