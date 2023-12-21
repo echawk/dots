@@ -75,6 +75,10 @@
 
 (setq me/delete-trailing-whitespace nil)
 
+(defmacro me/emacs-30-progn (&rest body)
+  (when (>= emacs-major-version 30)
+    `(progn ,@body)))
+
 (use-package emacs
   :hook ((prog-mode . display-fill-column-indicator-mode)
          (before-save . (lambda ()
@@ -604,12 +608,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (shell-command "vale sync")
   (when flymake-mode (flymake-vale-maybe-load)))
 
-(use-package flymake-vale
-  :if (executable-find "vale")
-  :defer
-  :vc (:url "https://github.com/tpeacock19/flymake-vale"
-            :rev :newest)
-  :hook (flymake-mode . flymake-vale-load))
+(me/emacs-30-progn
+ (use-package flymake-vale
+   :if (executable-find "vale")
+   :defer
+   :vc (:url "https://github.com/tpeacock19/flymake-vale"
+             :rev :newest)
+   :hook (flymake-mode . flymake-vale-load)))
+
 
 (use-package tuareg
   :defer
@@ -715,12 +721,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                   (run-prolog t)))))))))
 
 ;; Custom snobol mode.
-(use-package snobol-mode
-  :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/ehawkvu/snobol-mode"
-            :rev :newest)
-  :defer
-  :mode ("\\.sno" . snobol-mode))
+(me/emacs-30-progn
+ (use-package snobol-mode
+   :vc (:url "https://github.com/ehawkvu/snobol-mode"
+             :rev :newest)
+   :defer
+   :mode ("\\.sno" . snobol-mode)))
 
 ;; Better scheme editing.
 (use-package geiser :defer
@@ -784,15 +790,15 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package inf-clojure :defer)
 
 ;; Depends on clojure-mdoe
-(use-package carp-mode
-  :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/carp-lang/carp-emacs"
-            :rev :newest)
-  :defer
-  :commands (carp-mode run-carp)
-  :mode ("\\.carp$" . carp-mode)
-  :config
-  (require 'inf-carp-mode))
+(me/emacs-30-progn
+ (use-package carp-mode
+   :vc (:url "https://github.com/carp-lang/carp-emacs"
+             :rev :newest)
+   :defer
+   :commands (carp-mode run-carp)
+   :mode ("\\.carp$" . carp-mode)
+   :config
+   (require 'inf-carp-mode)))
 
 (use-package haskell-mode
   :defer
@@ -834,12 +840,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 ;; https://github.com/phantomics/april/tree/master
 ;; anaphora is a dependency of jpt-apl-mode.
-(use-package anaphora :defer)
-(use-package jpt-apl-mode
-  :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/jthing/apl-mode"
-            :rev :newest)
-  :defer)
+(me/emacs-30-progn
+ (use-package anaphora :defer)
+ (use-package jpt-apl-mode
+   :vc (:url "https://github.com/jthing/apl-mode"
+             :rev :newest)
+   :defer))
 
 (use-package gnu-apl-mode
   :defer
@@ -852,11 +858,11 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; FIXME: fork erefactor & fix the warnings.
 (use-package erefactor :defer)
 (use-package emr :defer)
-(use-package etrace
-  :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/aspiers/etrace"
-            :rev :newest)
-  :defer)
+(me/emacs-30-progn
+ (use-package etrace
+   :vc (:url "https://github.com/aspiers/etrace"
+             :rev :newest)
+   :defer))
 
 ;; Emacs lisp editing stuff.
 ;; https://github.com/emacs-elsa/Elsa
@@ -868,31 +874,32 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package suggest :defer)
 (use-package package-lint :defer)
 
-(use-package llama-cpp-comint
-  :if (>= emacs-major-version 30)
-  :vc (:url "https://github.com/ehawkvu/llama-cpp-comint"
-            :rev :newest)
-  :defer
-  :commands (run-llama-cpp llama-cpp-query-region)
-  :init
-  (global-set-key (kbd "C-c C-l C-c") #'run-llama-cpp)
-  (global-set-key (kbd "C-c C-l C-r") #'llama-cpp-query-region)
-  :custom
-  (llama-cpp-model-alist
-   '(
-     ("Guanaco-7B" "/home/ethan/AI/llama.cpp/build/bin/main"
-      "/home/ethan/AI/MODELS/gguf/guanaco-7b-uncensored.Q4_0.gguf")
-     ("Wizard-Vicuna-13B" "/home/ethan/AI/llama.cpp/build/bin/main"
-      "/home/ethan/AI/MODELS/gguf/Wizard-Vicuna-13B-Uncensored.Q4_0.gguf")
-     ))
-  (llama-cpp-num-cpus 8))
+(me/emacs-30-progn
+ (use-package llama-cpp-comint
+   :vc (:url "https://github.com/ehawkvu/llama-cpp-comint"
+             :rev :newest)
+   :defer
+   :commands (run-llama-cpp llama-cpp-query-region)
+   :init
+   (global-set-key (kbd "C-c C-l C-c") #'run-llama-cpp)
+   (global-set-key (kbd "C-c C-l C-r") #'llama-cpp-query-region)
+   :custom
+   (llama-cpp-model-alist
+    '(
+      ("Guanaco-7B" "/home/ethan/AI/llama.cpp/build/bin/main"
+       "/home/ethan/AI/MODELS/gguf/guanaco-7b-uncensored.Q4_0.gguf")
+      ("Wizard-Vicuna-13B" "/home/ethan/AI/llama.cpp/build/bin/main"
+       "/home/ethan/AI/MODELS/gguf/Wizard-Vicuna-13B-Uncensored.Q4_0.gguf")
+      ))
+   (llama-cpp-num-cpus 8)))
 
 ;; Speed reading in Emacs.
-(use-package spray
-  :defer
-  :vc (:url "https://github.com/emacsmirror/spray"
-            :rev :newest)
-  :commands (spray-mode))
+(me/emacs-30-progn
+ (use-package spray
+   :defer
+   :vc (:url "https://github.com/emacsmirror/spray"
+             :rev :newest)
+   :commands (spray-mode)))
 
 (use-package org
   :defer
@@ -955,20 +962,21 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
     (add-to-list #'writeroom-local-effects func)))
 
 ;; Speech-to-text in Emacs.
-(use-package whisper
-  :defer
-  :vc (:url "https://github.com/natrys/whisper.el"
-            :rev :newest)
-  :bind ("C-c w" . whisper-run)
-  :config
-  (setq
-   whisper-install-directory (concat user-emacs-directory "whisper-el/")
-   whisper-model "base"
-   whisper-language "en"
-   whisper-translate nil
-   whisper-recording-timeout 600
-   whisper--ffmpeg-input-format "alsa"
-   whisper--ffmpeg-input-device "hw:5,0"))
+(me/emacs-30-progn
+ (use-package whisper
+   :defer
+   :vc (:url "https://github.com/natrys/whisper.el"
+             :rev :newest)
+   :bind ("C-c w" . whisper-run)
+   :config
+   (setq
+    whisper-install-directory (concat user-emacs-directory "whisper-el/")
+    whisper-model "base"
+    whisper-language "en"
+    whisper-translate nil
+    whisper-recording-timeout 600
+    whisper--ffmpeg-input-format "alsa"
+    whisper--ffmpeg-input-device "hw:5,0")))
 
 ;; Read EPUBs in Emacs!
 (use-package nov
