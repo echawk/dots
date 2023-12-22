@@ -363,13 +363,13 @@ the file.
  :around
  (lambda (orig &rest args)
    "Use my custom format-buffer command if applicable"
-   (if (and (boundp 'me/apheleia-preferred-backend)
-            (not (eq 'apheleia me/apheleia-preferred-backend)))
-       (me/format-buffer me/apheleia-preferred-backend)
-     (let ((formatter (me/get-formatter-backend)))
-       (if (eq formatter 'apheleia)
-           (apply orig args)
-         (me/format-buffer formatter))))))
+   (let ((formatter (me/get-formatter-backend)))
+     (cond
+      ((boundp 'me/apheleia-preferred-backend)
+       (me/format-buffer me/apheleia-preferred-backend))
+      ((not (eq 'apheleia formatter))
+       (me/format-buffer formatter))
+      (t (apply orig args))))))
 
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
