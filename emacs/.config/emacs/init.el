@@ -623,8 +623,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :init
   ;; Ensure that `ocamllsp` is in Emacs' $PATH.
   (let ((opam-bindir (concat (getenv "HOME") "/.opam/default/bin/")))
-    (if (file-exists-p opam-bindir)
-        (setq exec-path (cons opam-bindir exec-path))))
+    (when (file-exists-p opam-bindir)
+      (add-to-list 'exec-path opam-bindir)))
   :custom
   (tuareg-indent-align-with-first-arg t)
   (tuareg-match-patterns-aligned t))
