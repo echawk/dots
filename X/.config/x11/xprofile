@@ -5,7 +5,10 @@ cat "${HOME}/.config/sxhkd/${WM}sx" "${HOME}/.config/sxhkd/base" >"$sxhkdrc"
 which setxkbmap && setxkbmap -option caps:swapescape
 
 # X settings
-which xset && xset r rate 300 50 &
+if which xset; then
+    xset r rate 300 50 &
+    xset b off &
+fi
 which xhost && xhost +local: & # allow chroots to connect to the X server
 
 # One Time Run
