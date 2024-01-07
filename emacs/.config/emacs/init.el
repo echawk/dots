@@ -303,8 +303,13 @@
 
 
 (defun me/get-formatter-backend ()
-  (or (when (and apheleia-mode
-                 (cdr (assoc major-mode apheleia-mode-alist)))
+  (or (when
+          (let ((aph-func (cdr (assoc major-mode apheleia-mode-alist))))
+            (and
+             apheleia-mode
+             aph-func
+             (or (fboundp (cdr (assoc aph-func apheleia-formatters)))
+                 (executable-find (car (cdr (assoc aph-func apheleia-formatters)))))))
         'apheleia)
       (when (and (fboundp #'eglot-managed-p)
                  (eglot-managed-p)
