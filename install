@@ -1,8 +1,8 @@
 #!/bin/sh -e
 [ $(basename $PWD) = dots ] || exit 1
-mkdir -pv "$HOME/.config/emacs"
-mkdir -pv "$HOME/.config/nvim/autoload"
-mkdir -pv "$HOME/.config/nvim/plugged"
+mkdir -p "$HOME/.config/emacs"
+mkdir -p "$HOME/.config/nvim/autoload"
+mkdir -p "$HOME/.config/nvim/plugged"
 for d in */; do
     case "$d" in
         X/)
@@ -10,7 +10,7 @@ for d in */; do
                 rm -- "$HOME/.config/picom.conf"
             fi
             stow "$d" -t "$HOME"
-            unlink "$HOME/.config/picom.conf" && {
+            rm "$HOME/.config/picom.conf" && {
                 cp X/.config/picom.conf "$HOME/.config/picom.conf"
             }
             ;;
