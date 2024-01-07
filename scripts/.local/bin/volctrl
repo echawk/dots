@@ -43,11 +43,24 @@ pw_h() {
     esac
 }
 
+snd_h() {
+    command -v sndioctl || exit 1
+    [ -n "$2" ] && percent="$2"
+    case $1 in
+        i) lt_100 && sndioctl -f snd/default output.level=+0.${percent:-05} ;;
+        d) sndioctl -f snd/default output.level=-0.${percent:-05} ;;
+        m) sndioctl -f snd/default output.mute=! ;;
+        s) sndioctl -f snd/default output.level=0.${percent:-50} ;;
+        *) exit 1 ;;
+    esac
+}
+
 lt_100() {
     case $AUDIO in
         pulseaudio) volstat="$(pactl list sinks)" ;;
         alsa) volstat="$(amixer get Master)" ;; # ALSA only equivalent.
         pipewire) volstat="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)" ;;
+        sndio) volstat="$(sndioctl -f snd/default output.level)" ;;
         *) exit 1 ;;
     esac
 
@@ -56,6 +69,7 @@ lt_100() {
         alsa) vol=$(echo "$volstat" | grep -o "\[[0-9]\+%\]" | sed "s/[^0-9]*//g;1q") ;;
         jack2) exit 1 ;;
         pipewire) vol=$(echo "$volstat" | awk '{print $2 * 100}') ;;
+        sndio) vol=$(echo "$volstat" | awk -F= '{print int($2 * 100)}') ;;
         *) exit 1 ;;
     esac
 
@@ -75,5 +89,6 @@ case $AUDIO in
     alsa) a_h "$1" "$2" ;;
     jack) exit 1 ;;
     pipewire) pw_h "$1" "$2" ;; # pipewire can be used as a pulse/jack replacement, so there is really no need for its own stuff
+    sndio) snd_h "$1" "$2" ;;
     *) exit 1 ;;
 esac
