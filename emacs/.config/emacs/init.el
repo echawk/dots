@@ -75,8 +75,8 @@
 
 (setq me/delete-trailing-whitespace nil)
 
-(defmacro me/emacs-30-progn (&rest body)
-  (when (>= emacs-major-version 30)
+(defmacro me/emacs-N-progn (N &rest body)
+  (when (>= emacs-major-version N)
     `(progn ,@body)))
 
 (use-package emacs
@@ -613,7 +613,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (shell-command "vale sync")
   (when flymake-mode (flymake-vale-maybe-load)))
 
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package flymake-vale
    :if (executable-find "vale")
    :defer
@@ -726,7 +727,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                   (run-prolog t)))))))))
 
 ;; Custom snobol mode.
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package snobol-mode
    :vc (:url "https://github.com/ehawkvu/snobol-mode"
              :rev :newest)
@@ -795,7 +797,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package inf-clojure :defer)
 
 ;; Depends on clojure-mdoe
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package carp-mode
    :vc (:url "https://github.com/carp-lang/carp-emacs"
              :rev :newest)
@@ -845,7 +848,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 ;; https://github.com/phantomics/april/tree/master
 ;; anaphora is a dependency of jpt-apl-mode.
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package anaphora :defer)
  (use-package jpt-apl-mode
    :vc (:url "https://github.com/jthing/apl-mode"
@@ -863,7 +867,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; FIXME: fork erefactor & fix the warnings.
 (use-package erefactor :defer)
 (use-package emr :defer)
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package etrace
    :vc (:url "https://github.com/aspiers/etrace"
              :rev :newest)
@@ -879,7 +884,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package suggest :defer)
 (use-package package-lint :defer)
 
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package llama-cpp-comint
    :vc (:url "https://github.com/ehawkvu/llama-cpp-comint"
              :rev :newest)
@@ -899,7 +905,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
    (llama-cpp-num-cpus 8)))
 
 ;; Speed reading in Emacs.
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package spray
    :defer
    :vc (:url "https://github.com/emacsmirror/spray"
@@ -967,7 +974,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
     (add-to-list #'writeroom-local-effects func)))
 
 ;; Speech-to-text in Emacs.
-(me/emacs-30-progn
+(me/emacs-N-progn
+ 30
  (use-package whisper
    :defer
    :vc (:url "https://github.com/natrys/whisper.el"
