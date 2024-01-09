@@ -3,6 +3,7 @@
 mkdir -p "$HOME/.config/emacs"
 mkdir -p "$HOME/.config/nvim/autoload"
 mkdir -p "$HOME/.config/nvim/plugged"
+mkdir -p "$HOME/.local/bin/wrapper/"
 for d in */; do
     case "$d" in
         X/)
