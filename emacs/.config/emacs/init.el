@@ -302,14 +302,17 @@
 (use-package forge :defer)
 
 
+;; FIXME: move this code to the area where apheleia is!!
 (defun me/get-formatter-backend ()
   (or (when
-          (let ((aph-func (cdr (assoc major-mode apheleia-mode-alist))))
+          (let* ((aph-func (cdr (assoc major-mode apheleia-mode-alist)))
+                 (aph-func-int (cdr (assoc aph-func apheleia-formatters))))
             (and
              apheleia-mode
              aph-func
-             (or (fboundp (cdr (assoc aph-func apheleia-formatters)))
-                 (executable-find (car (cdr (assoc aph-func apheleia-formatters)))))))
+             (pcase aph-func-int
+               (fboundp t)
+               (listp   (executable-find (car aph-func-int))))))
         'apheleia)
       (when (and (fboundp #'eglot-managed-p)
                  (eglot-managed-p)
