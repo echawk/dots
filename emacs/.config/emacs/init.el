@@ -311,8 +311,8 @@
              apheleia-mode
              aph-func
              (pcase aph-func-int
-               (fboundp t)
-               (listp   (executable-find (car aph-func-int))))))
+               ((pred atom)  (fboundp aph-func-int))
+               ((pred listp) (executable-find (car aph-func-int))))))
         'apheleia)
       (when (and (fboundp #'eglot-managed-p)
                  (eglot-managed-p)
