@@ -1165,36 +1165,36 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :custom
   (exwm-workspace-number 4)
   (exwm-input-global-keys
-   `(([?\s-r] . exwm-reset)
-     ([?\s-w] . exwm-workspace-switch)
+   `((,(kbd "s-r") . exwm-reset)
+     (,(kbd "s-w") . exwm-workspace-switch)
 
-     ([?\s-f] . exwm-layout-toggle-fullscreen)
+     (,(kbd "s-f") . exwm-layout-toggle-fullscreen)
 
-     ([?\s-p] . (lambda (cmd)
-                  (interactive (list (read-shell-command "λ ")))
-                  (start-process-shell-command cmd nil cmd)))
+     (,(kbd "s-p") . (lambda (cmd)
+                       (interactive (list (read-shell-command "λ ")))
+                       (start-process-shell-command cmd nil cmd)))
 
-     ([?\s-,] . next-buffer)
-     ([?\s-.] . previous-buffer)
+     (,(kbd "s-,") . next-buffer)
+     (,(kbd "s-.") . previous-buffer)
 
-     ([?\s-d] . delete-window)
+     (,(kbd "s-d") . delete-window)
 
      ;; TODO: Consider making the window key binds available to non-exwm Emacs.
      ;; FIXME: ^^^ I'd like to use these binds everywhere.
-     ([?\s-v] . split-window-right)
-     ([?\s-s] . split-window-below)
+     (,(kbd "s-v") . split-window-right)
+     (,(kbd "s-s") . split-window-below)
 
-     ([?\s-h] . windmove-left)
-     ([?\s-l] . windmove-right)
-     ([?\s-j] . windmove-down)
-     ([?\s-k] . windmove-up)
+     (,(kbd "s-h") . windmove-left)
+     (,(kbd "s-l") . windmove-right)
+     (,(kbd "s-j") . windmove-down)
+     (,(kbd "s-k") . windmove-up)
 
-     ([?\s-H] . windmove-swap-states-left)
-     ([?\s-L] . windmove-swap-states-right)
-     ([?\s-J] . windmove-swap-states-down)
-     ([?\s-K] . windmove-swap-states-up)
+     (,(kbd "s-H") . windmove-swap-states-left)
+     (,(kbd "s-L") . windmove-swap-states-right)
+     (,(kbd "s-J") . windmove-swap-states-down)
+     (,(kbd "s-K") . windmove-swap-states-up)
 
-     ([?\s-Q] . kill-this-buffer)
+     (,(kbd "s-Q") . kill-this-buffer)
 
      ;; This handy little block makes it possible to switch to
      ;; the different workspaces by using s-<num>
