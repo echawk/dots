@@ -197,6 +197,7 @@
   (evil-want-integration t)
   (evil-want-keybinding nil)
   (evil-want-C-u-scroll t)
+  (evil-want-minibuffer t)
   (evil-undo-system 'undo-redo))
 
 (use-package evil-collection
