@@ -2,7 +2,7 @@
 # Basic Setup
 sxhkdrc=$(mktemp)
 cat "${HOME}/.config/sxhkd/${WM}sx" "${HOME}/.config/sxhkd/base" >"$sxhkdrc"
-which setxkbmap && setxkbmap -option caps:swapescape
+which setxkbmap && setxkbmap -option caps:escape
 
 # X settings
 if which xset; then
