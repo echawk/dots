@@ -190,30 +190,45 @@
   (global-set-key (kbd "C-h k") #'helpful-key)
   (global-set-key (kbd "C-h C-d") #'helpful-at-point))
 
-(use-package evil
-  :config
-  (evil-mode 1)
-  :custom
-  (evil-want-integration t)
-  (evil-want-keybinding nil)
-  (evil-want-C-u-scroll t)
-  (evil-want-minibuffer t)
-  (evil-undo-system 'undo-redo))
+(setq me/modal-system 'evil)
 
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
+(pcase me/modal-system
+  ('evil
+   (progn
+     (use-package evil
+       :config
+       (evil-mode 1)
+       :custom
+       (evil-want-integration t)
+       (evil-want-keybinding nil)
+       (evil-want-C-u-scroll t)
+       (evil-want-minibuffer t)
+       (evil-undo-system 'undo-redo))
 
-(use-package evil-commentary
-  :after evil
-  :config
-  (evil-commentary-mode))
+     (use-package evil-collection
+       :after evil
+       :config
+       (evil-collection-init))
 
-(use-package evil-lion
-  :after evil
-  :config
-  (evil-lion-mode))
+     (use-package evil-commentary
+       :after evil
+       :config
+       (evil-commentary-mode))
+
+     (use-package evil-lion
+       :after evil
+       :config
+       (evil-lion-mode))))
+
+  ('viper
+   (use-package viper
+     :ensure nil
+     :init
+     (setq viper-inhibit-startup-message t
+           viper-expert-level 3
+           viper-mode t)
+     :config
+     (viper-mode))))
 
 (use-package beframe
   :defer
