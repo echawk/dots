@@ -318,82 +318,9 @@
 (use-package forge :defer)
 
 
-;; FIXME: move this code to the area where apheleia is!!
-(defun me/get-formatter-backend ()
-  (or (when
-          (let* ((aph-func (cdr (assoc major-mode apheleia-mode-alist)))
-                 (aph-func-int (cdr (assoc aph-func apheleia-formatters))))
-            (and
-             apheleia-mode
-             aph-func
-             (pcase aph-func-int
-               ((pred atom)  (fboundp aph-func-int))
-               ((pred listp) (executable-find (car aph-func-int))))))
-        'apheleia)
-      (when (and (fboundp #'eglot-managed-p)
-                 (eglot-managed-p)
-                 (not
-                  (member :documentFormattingProvider
-                          eglot-ignored-server-capabilities)))
-        'eglot)
-      (when (and (treesit-available-p)
-                 (string-match "*-ts-*" (symbol-name major-mode)))
-        'treesit)
-      'indent))
-
-(defun me/format-buffer (&optional formatter)
-  "My custom format-buffer command. Integrates w/ Apheleia, Eglot & -TS- modes.
-
-The heirarchy is as follows:
-- `apheleia-format-buffer'
-- `eglot-format-buffer'
-- `treesit-indent-region'
-- `indent-region'
-
-Additionally, any of these functions can be requested explicity, by providing
-FORMATTER as the optional argument. FORMATTER is expected to be one of the
-following symbols:
-- \\='apheleia
-- \\='eglot
-- \\='treesit
-- \\='indent
-
-It will also remove any trailing whitespace from the end of any line from
-the file.
-"
-  (interactive)
-  (setq formatter
-        (if (not (eq nil formatter)) formatter (me/get-formatter-backend)))
-  (cl-flet
-      ((apheleia-fmt ()
-         (apheleia-format-buffer (cdr (assoc major-mode apheleia-mode-alist))))
-       (eglot-fmt ()
-         (eglot-format          (point-min) (point-max)))
-       (treesit-fmt ()
-         (treesit-indent-region (point-min) (point-max)))
-       (indent-fmt ()
-         (indent-region         (point-min) (point-max))))
-    (pcase formatter
-      ('apheleia (apheleia-fmt))
-      ('eglot    (eglot-fmt))
-      ('treesit  (treesit-fmt))
-      ('indent   (indent-fmt))))
-  (delete-trailing-whitespace (point-min) (point-max)))
-
+;;(make-variable-buffer-local
 ;;(setq me/apheleia-preferred-backend (me/get-formatter-backend))
 
-(advice-add
- #'apheleia-format-after-save
- :around
- (lambda (orig &rest args)
-   "Use my custom format-buffer command if applicable"
-   (let ((formatter (me/get-formatter-backend)))
-     (cond
-      ((boundp 'me/apheleia-preferred-backend)
-       (me/format-buffer me/apheleia-preferred-backend))
-      ((not (eq 'apheleia formatter))
-       (me/format-buffer formatter))
-      (t (apply orig args))))))
 
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
@@ -485,7 +412,93 @@ the file.
                             (sml-mode        . smlfmt)
                             (zig-mode        . zigfmt))
                           nil)
-    (add-to-list #'apheleia-mode-alist mode-formatter)))
+    (add-to-list #'apheleia-mode-alist mode-formatter))
+
+  ;; TODO: impelement a buffer local variable that can be used to
+  ;; override all of these checks.
+  (defun me/get-formatter-backend ()
+    "Returns an appropriate backend for formatting the current buffer.
+
+Will return one of the following symbols:
+- apheleia
+- eglot
+- treesit
+- indent
+
+"
+    (or (when
+            (let* ((aph-func (cdr (assoc major-mode apheleia-mode-alist)))
+                   (aph-func-int (cdr (assoc aph-func apheleia-formatters))))
+              (and
+               apheleia-mode
+               aph-func
+               (pcase aph-func-int
+                 ((pred atom)  (fboundp aph-func-int))
+                 ((pred listp) (executable-find (car aph-func-int))))))
+          'apheleia)
+        (when (and (fboundp #'eglot-managed-p)
+                   (eglot-managed-p)
+                   (not
+                    (member :documentFormattingProvider
+                            eglot-ignored-server-capabilities)))
+          'eglot)
+        (when (and (treesit-available-p)
+                   (string-match "*-ts-*" (symbol-name major-mode)))
+          'treesit)
+        'indent))
+
+  (defun me/format-buffer (&optional formatter)
+    "My custom format-buffer command. Integrates w/ Apheleia, Eglot & -TS- modes.
+
+The heirarchy is as follows:
+- `apheleia-format-buffer'
+- `eglot-format-buffer'
+- `treesit-indent-region'
+- `indent-region'
+
+Additionally, any of these functions can be requested explicity, by providing
+FORMATTER as the optional argument. FORMATTER is expected to be one of the
+following symbols:
+- \\='apheleia
+- \\='eglot
+- \\='treesit
+- \\='indent
+
+It will also remove any trailing whitespace from the end of any line from
+the file.
+"
+    (interactive)
+    (setq formatter
+          (if (not (eq nil formatter)) formatter (me/get-formatter-backend)))
+    (cl-flet
+        ((apheleia-fmt ()
+           (apheleia-format-buffer (cdr (assoc major-mode apheleia-mode-alist))))
+         (eglot-fmt ()
+           (eglot-format          (point-min) (point-max)))
+         (treesit-fmt ()
+           (treesit-indent-region (point-min) (point-max)))
+         (indent-fmt ()
+           (indent-region         (point-min) (point-max))))
+      (pcase formatter
+        ('apheleia (apheleia-fmt))
+        ('eglot    (eglot-fmt))
+        ('treesit  (treesit-fmt))
+        ('indent   (indent-fmt))))
+    (delete-trailing-whitespace (point-min) (point-max)))
+
+  (advice-add
+   #'apheleia-format-after-save
+   :around
+   (lambda (orig &rest args)
+     "Use my custom format-buffer command if applicable"
+     (let ((formatter (me/get-formatter-backend)))
+       (cond
+        ((boundp 'me/apheleia-preferred-backend)
+         (me/format-buffer me/apheleia-preferred-backend))
+        ((not (eq 'apheleia formatter))
+         (me/format-buffer formatter))
+        (t (apply orig args)))))))
+
 (use-package treesit
   ;; Need to make sure we don't try to install this from package.el
   :ensure nil
