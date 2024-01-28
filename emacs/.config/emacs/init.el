@@ -165,6 +165,14 @@
 (use-package async :defer)
 
 (use-package vertico
+  :custom
+  (vertico-cycle t)
+  :bind
+  (:map vertico-map
+        ("TAB"     . vertico-next)
+        ([tab]     . vertico-next)
+        ("S-TAB"   . vertico-previous)
+        ([backtab] . vertico-previous))
   :init
   (vertico-mode))
 
