@@ -11,7 +11,7 @@ export READER="zathura"   # mupdf
 export FUZZY="fzf"
 export WM="stumpwm"     # bspwm dwm i3 herbstluftwm
 export AUDIO="pipewire" # pulseaudio alsa
-export FILE="fff"
+#export FILE="fff"
 export DISTRO="$(grep "ID"  /etc/os-release | cut -d'=' -f2)" #arch, void, kiss/carbs
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
