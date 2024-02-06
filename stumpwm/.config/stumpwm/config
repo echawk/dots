@@ -207,8 +207,8 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 
 ;; FIXME: make this much prettier and contain actually useful info.
 
-;; (setf *mode-line-background-color* "#007755"
-;;       *mode-line-foreground-color* "#cdcdcd"
+(setf *mode-line-background-color* "#007755"
+      *mode-line-foreground-color* "#cdcdcd")
 ;;       *mode-line-timeout* 2)
 
 (setf *group-format* "%t")
