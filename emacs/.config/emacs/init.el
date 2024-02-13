@@ -1045,14 +1045,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :defer
   :custom
   (eradio-player '("mpv" "--no-video" "--no-terminal"))
-  (eradio-channels '(("def con - soma fm"  . "https://somafm.com/defcon256.pls")
-                     ("the trip - soma fm" . "https://somafm.com/thetrip.pls")
-                     ("dubstep - soma fm"  . "https://somafm.com/dubstep.pls")
-                     ("doomed - soma fm"  . "https://somafm.com/doomed.pls")
-                     ("darkzone - soma fm"  . "https://somafm.com/darkzone.pls")
-                     ("groove salad - soma fm"  . "https://somafm.com/groovesalad.pls")
-                     ("bossa - soma fm"  . "https://somafm.com/bossa.pls")
-                     ("i.s.l. - soma fm "  . "https://somafm.com/illstreet.pls"))))
+  (eradio-channels '(("def con - soma fm"      . "https://somafm.com/defcon256.pls")
+                     ("the trip - soma fm"     . "https://somafm.com/thetrip.pls")
+                     ("dubstep - soma fm"      . "https://somafm.com/dubstep.pls")
+                     ("doomed - soma fm"       . "https://somafm.com/doomed.pls")
+                     ("darkzone - soma fm"     . "https://somafm.com/darkzone.pls")
+                     ("groove salad - soma fm" . "https://somafm.com/groovesalad.pls")
+                     ("bossa - soma fm"        . "https://somafm.com/bossa.pls")
+                     ("isl - soma fm "         . "https://somafm.com/illstreet.pls"))))
 
 (use-package eww
   :defer
