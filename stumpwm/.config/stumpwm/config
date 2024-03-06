@@ -191,7 +191,7 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
   (unless (uiop:directory-exists-p
            (merge-pathnames ql-local-proj-dir "clx-truetype"))
     (uiop:chdir ql-local-proj-dir)
-    (uiop:run-program (concatenate "git clone " clx-truetype-git-repo))))
+    (uiop:run-program (concatenate 'string "git clone " clx-truetype-git-repo))))
 
 ;; Important note:
 ;; Whatever font you choose to use here, MUST be a TrueType font, and
