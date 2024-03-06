@@ -1,0 +1,36 @@
+;; -*- mode: lisp -*-
+
+(require 'asdf)
+(asdf:load-system :uiop)
+
+;; Make this stupid dummy package to make SBCL shut up.
+(defpackage :quicklisp-quickstart
+            (:use :cl)
+            (:export :install))
+(in-package :quicklisp-quickstart)
+(defun install () t)
+
+;; Switch back to cl-user package.
+(in-package :cl-user)
+
+;;; Install quicklisp if it is not already installed.
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (unless (probe-file quicklisp-init)
+    (uiop:run-program "curl -O https://beta.quicklisp.org/quicklisp.lisp"
+                      :output *standard-output*)
+    (load "quicklisp.lisp")
+    (quicklisp-quickstart:install)
+    (uiop:run-program "rm quicklisp.lisp"))
+
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+
+;; how to get the current directory always detectable by quicklisp
+#+quicklisp
+(push '*default-pathname-defaults* asdf:*central-registry*)
+
+;; https://github.com/fukamachi/qlot
+;; https://www.clpm.dev/
+;; https://medium.com/@MartinCracauer/static-type-checking-in-the-programmable-programming-language-lisp-79bb79eb068a
