@@ -214,7 +214,7 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
                 (concatenate 'string "fc-list '" font-str "'")
                 :output '(:string))))
              1))
-          '("SF Mono" "Liberation Mono")))))
+          '("SF Mono" "JetBrains Mono" "Liberation Mono")))))
 
   ;; TODO: add some checks for a few different fonts.
   (set-font (make-instance 'xft:font
