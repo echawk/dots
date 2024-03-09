@@ -187,28 +187,44 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
  *window-format* "%m%s%15t"
  *mouse-focus-policy* :click)
 
-;; Font setup.
-;; Need to clone the clx-truetype repo to ~/quicklisp/local-projects/
-;; git clone https://github.com/stumpwm/clx-truetype
-(let ((clx-truetype-git-repo "https://github.com/stumpwm/clx-truetype")
-      (ql-local-proj-dir (car quicklisp:*local-project-directories*)))
-  (unless (uiop:directory-exists-p
-           (merge-pathnames ql-local-proj-dir "clx-truetype"))
-    (uiop:chdir ql-local-proj-dir)
-    (uiop:run-program (concatenate 'string "git clone " clx-truetype-git-repo))))
-
 ;; Important note:
 ;; Whatever font you choose to use here, MUST be a TrueType font, and
 ;; **NOT** an OpenType font.
 (when module-dir-exists-p
+  ;; Font setup.
+  ;; Need to clone the clx-truetype repo to ~/quicklisp/local-projects/
+  ;; git clone https://github.com/stumpwm/clx-truetype
+  (let ((clx-truetype-git-repo "https://github.com/stumpwm/clx-truetype")
+        (ql-local-proj-dir (car quicklisp:*local-project-directories*)))
+    (unless (uiop:directory-exists-p
+             (merge-pathnames ql-local-proj-dir "clx-truetype"))
+      (uiop:chdir ql-local-proj-dir)
+      (uiop:run-program
+       (concatenate 'string "git clone " clx-truetype-git-repo))))
+
   (ql:quickload :clx-truetype)
   (load-module "ttf-fonts")
   (clx-truetype:cache-fonts)
-  (set-font (make-instance 'xft:font
-                           :family "SF Mono"
-                           :subfamily "Regular"
-                           :size 14
-                           :antialias t)))
+  (uiop:run-program "fc-cache")
+  (let ((font-family-str
+          (car
+           (remove-if-not
+            (lambda (font-str)
+              (>  
+               (length
+                (split-string
+                 (uiop:run-program
+                  (concatenate 'string "fc-list '" font-str "'")
+                  :output '(:string))))
+               0))
+            '("SF Mono" "Liberation Mono")))))
+
+    ;; TODO: add some checks for a few different fonts.
+    (set-font (make-instance 'xft:font
+                             :family font-family-str
+                             :subfamily "Regular"
+                             :size 14
+                             :antialias t))))
 
 ;; FIXME: make this much prettier and contain actually useful info.
 
