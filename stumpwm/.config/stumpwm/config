@@ -52,9 +52,7 @@
 (set-prefix-key (kbd "C-z"))
 
 ;; Ensure contrib modules can be found.
-(setq module-dir-exists-p
-      (uiop:directory-exists-p "/usr/share/stumpwm/contrib/"))
-(when module-dir-exists-p (set-module-dir module-dir-exists-p))
+(set-module-dir "/usr/share/stumpwm/contrib/")
 
 ;; FIXME: need to use these colors throughout this code...
 ;; Want to make the colors a little bit simpler.
@@ -190,41 +188,40 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; Important note:
 ;; Whatever font you choose to use here, MUST be a TrueType font, and
 ;; **NOT** an OpenType font.
-(when module-dir-exists-p
-  ;; Font setup.
-  ;; Need to clone the clx-truetype repo to ~/quicklisp/local-projects/
-  ;; git clone https://github.com/stumpwm/clx-truetype
-  (let ((clx-truetype-git-repo "https://github.com/stumpwm/clx-truetype")
-        (ql-local-proj-dir (car quicklisp:*local-project-directories*)))
-    (unless (uiop:directory-exists-p
-             (merge-pathnames ql-local-proj-dir "clx-truetype"))
-      (uiop:chdir ql-local-proj-dir)
-      (uiop:run-program
-       (concatenate 'string "git clone " clx-truetype-git-repo))))
+;; Font setup.
+;; Need to clone the clx-truetype repo to ~/quicklisp/local-projects/
+;; git clone https://github.com/stumpwm/clx-truetype
+(let ((clx-truetype-git-repo "https://github.com/stumpwm/clx-truetype")
+      (ql-local-proj-dir (car quicklisp:*local-project-directories*)))
+  (unless (uiop:directory-exists-p
+           (merge-pathnames ql-local-proj-dir "clx-truetype"))
+    (uiop:chdir ql-local-proj-dir)
+    (uiop:run-program
+     (concatenate 'string "git clone " clx-truetype-git-repo))))
 
-  (ql:quickload :clx-truetype)
-  (load-module "ttf-fonts")
-  (clx-truetype:cache-fonts)
-  (uiop:run-program "fc-cache")
-  (let ((font-family-str
-          (car
-           (remove-if-not
-            (lambda (font-str)
-              (>  
-               (length
-                (split-string
-                 (uiop:run-program
-                  (concatenate 'string "fc-list '" font-str "'")
-                  :output '(:string))))
-               1))
-            '("SF Mono" "Liberation Mono")))))
+(ql:quickload :clx-truetype)
+(load-module "ttf-fonts")
+(clx-truetype:cache-fonts)
+(uiop:run-program "fc-cache")
+(let ((font-family-str
+        (car
+         (remove-if-not
+          (lambda (font-str)
+            (>  
+             (length
+              (split-string
+               (uiop:run-program
+                (concatenate 'string "fc-list '" font-str "'")
+                :output '(:string))))
+             1))
+          '("SF Mono" "Liberation Mono")))))
 
-    ;; TODO: add some checks for a few different fonts.
-    (set-font (make-instance 'xft:font
-                             :family font-family-str
-                             :subfamily "Regular"
-                             :size 14
-                             :antialias t))))
+  ;; TODO: add some checks for a few different fonts.
+  (set-font (make-instance 'xft:font
+                           :family font-family-str
+                           :subfamily "Regular"
+                           :size 14
+                           :antialias t)))
 
 ;; FIXME: make this much prettier and contain actually useful info.
 
@@ -251,10 +248,9 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
   (mode-line))
 
 ;; System tray.
-(when module-dir-exists-p
-  (ql:quickload :xembed)
-  (load-module "stumptray")
-  (stumptray:stumptray))
+(ql:quickload :xembed)
+(load-module "stumptray")
+(stumptray:stumptray)
 
 ;; TODO: would like to move to the built-in clipboard manager, but
 ;; tbh qlipper seems to work pretty well ngl.
@@ -311,15 +307,14 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; prefix keys that I am using for other stuff here.
 
 ;; Beckon will teleport the mouse to the center of the target frame.
-(when module-dir-exists-p
-  (load-module "beckon")
-  (defcommand beckon-move-focus (dir) ((:string "Enter a direction: "))
-    (move-focus (intern (string-upcase dir) "KEYWORD"))
+(load-module "beckon")
+(defcommand beckon-move-focus (dir) ((:string "Enter a direction: "))
+  (move-focus (intern (string-upcase dir) "KEYWORD"))
 
-    ;; Only call beckon:beckon if there is a window in the other frame.
-    (when (frame-windows (current-group)
-                         (tile-group-current-frame (current-group)))
-      (beckon:beckon))))
+  ;; Only call beckon:beckon if there is a window in the other frame.
+  (when (frame-windows (current-group)
+                       (tile-group-current-frame (current-group)))
+    (beckon:beckon)))
 
 ;; Working on a better 'expose' - need to expose all windows in each
 ;; group and allow the user to select the window that they would like to
@@ -329,17 +324,10 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; (select-window-from-menu (flatten (mapcar #'sort-windows-by-number (screen-groups (current-screen)))) "%n %t")
 ;; (window-group (select-window-from-menu (flatten (mapcar #'sort-windows-by-number (screen-groups (current-screen)))) "%n %t"))
 
-(if module-dir-exists-p
-    (progn
-      (define-key *top-map* (kbd "s-h") "beckon-move-focus left")
-      (define-key *top-map* (kbd "s-j") "beckon-move-focus down")
-      (define-key *top-map* (kbd "s-k") "beckon-move-focus up")
-      (define-key *top-map* (kbd "s-l") "beckon-move-focus right"))
-    (progn
-      (define-key *top-map* (kbd "s-h") "move-focus left")
-      (define-key *top-map* (kbd "s-j") "move-focus down")
-      (define-key *top-map* (kbd "s-k") "move-focus up")
-      (define-key *top-map* (kbd "s-l") "move-focus right")))
+(define-key *top-map* (kbd "s-h") "beckon-move-focus left")
+(define-key *top-map* (kbd "s-j") "beckon-move-focus down")
+(define-key *top-map* (kbd "s-k") "beckon-move-focus up")
+(define-key *top-map* (kbd "s-l") "beckon-move-focus right")
 
 (define-key *top-map* (kbd "s-H") "move-window left")
 (define-key *top-map* (kbd "s-J") "move-window down")
