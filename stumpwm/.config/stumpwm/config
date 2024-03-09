@@ -216,7 +216,7 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
                  (uiop:run-program
                   (concatenate 'string "fc-list '" font-str "'")
                   :output '(:string))))
-               0))
+               1))
             '("SF Mono" "Liberation Mono")))))
 
     ;; TODO: add some checks for a few different fonts.
