@@ -313,24 +313,6 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; (select-window-from-menu (flatten (mapcar #'sort-windows-by-number (screen-groups (current-screen)))) "%n %t")
 ;; (window-group (select-window-from-menu (flatten (mapcar #'sort-windows-by-number (screen-groups (current-screen)))) "%n %t"))
 
-;; TODO: see if I can at all add in the group info to each window.
-;; TODO: see if this will work on multiple monitors...
-(defcommand custom-expose () ()
-  "Custom expose command, which lists all open windows managed by StumpWM."
-  (if-let ((sel-window
-            (select-window-from-menu
-             (flatten
-              (mapcar #'sort-windows-by-number
-                      (screen-groups (current-screen))))
-             "%n %t")))
-    (if-let ((sel-group (window-group sel-window)))
-      (progn
-        (switch-to-group sel-group)
-        (group-focus-window sel-group sel-window)
-        (beckon:beckon))
-      (throw 'error :abort))
-    (message "No Selected Window")))
-
 (if module-dir-exists-p
     (progn
       (define-key *top-map* (kbd "s-h") "beckon-move-focus left")
@@ -347,8 +329,6 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 (define-key *top-map* (kbd "s-J") "move-window down")
 (define-key *top-map* (kbd "s-K") "move-window up")
 (define-key *top-map* (kbd "s-L") "move-window right")
-
-(define-key *top-map* (kbd "s-'") "custom-expose")
 
 ;; TODO: make the split and move focus??
 ;; FIXME: make consistent w/ Emacs
