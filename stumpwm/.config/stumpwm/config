@@ -43,6 +43,8 @@
 
 ;; (run-shell-command ..)
 
+(require :uiop)
+
 (in-package :stumpwm)
 
 (setf *default-package* :stumpwm)
@@ -50,7 +52,9 @@
 (set-prefix-key (kbd "C-z"))
 
 ;; Ensure contrib modules can be found.
-(set-module-dir "/usr/share/stumpwm/contrib/")
+(setq module-dir-exists-p
+      (uiop:directory-exists-p "/usr/share/stumpwm/contrib/"))
+(when module-dir-exists-p (set-module-dir module-dir-exists-p))
 
 ;; FIXME: need to use these colors throughout this code...
 ;; Want to make the colors a little bit simpler.
@@ -196,14 +200,15 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; Important note:
 ;; Whatever font you choose to use here, MUST be a TrueType font, and
 ;; **NOT** an OpenType font.
-(ql:quickload :clx-truetype)
-(load-module "ttf-fonts")
-(clx-truetype:cache-fonts)
-(set-font (make-instance 'xft:font
-                         :family "SF Mono"
-                         :subfamily "Regular"
-                         :size 14
-                         :antialias t))
+(when module-dir-exists-p
+  (ql:quickload :clx-truetype)
+  (load-module "ttf-fonts")
+  (clx-truetype:cache-fonts)
+  (set-font (make-instance 'xft:font
+                           :family "SF Mono"
+                           :subfamily "Regular"
+                           :size 14
+                           :antialias t)))
 
 ;; FIXME: make this much prettier and contain actually useful info.
 
@@ -230,9 +235,10 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
   (mode-line))
 
 ;; System tray.
-(ql:quickload :xembed)
-(load-module "stumptray")
-(stumptray:stumptray)
+(when module-dir-exists-p
+  (ql:quickload :xembed)
+  (load-module "stumptray")
+  (stumptray:stumptray))
 
 ;; TODO: would like to move to the built-in clipboard manager, but
 ;; tbh qlipper seems to work pretty well ngl.
@@ -289,14 +295,15 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; prefix keys that I am using for other stuff here.
 
 ;; Beckon will teleport the mouse to the center of the target frame.
-(load-module "beckon")
-(defcommand beckon-move-focus (dir) ((:string "Enter a direction: "))
-  (move-focus (intern (string-upcase dir) "KEYWORD"))
+(when module-dir-exists-p
+  (load-module "beckon")
+  (defcommand beckon-move-focus (dir) ((:string "Enter a direction: "))
+    (move-focus (intern (string-upcase dir) "KEYWORD"))
 
-  ;; Only call beckon:beckon if there is a window in the other frame.
-  (when (frame-windows (current-group)
-                       (tile-group-current-frame (current-group)))
-    (beckon:beckon)))
+    ;; Only call beckon:beckon if there is a window in the other frame.
+    (when (frame-windows (current-group)
+                         (tile-group-current-frame (current-group)))
+      (beckon:beckon))))
 
 ;; Working on a better 'expose' - need to expose all windows in each
 ;; group and allow the user to select the window that they would like to
@@ -324,10 +331,17 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
       (throw 'error :abort))
     (message "No Selected Window")))
 
-(define-key *top-map* (kbd "s-h") "beckon-move-focus left")
-(define-key *top-map* (kbd "s-j") "beckon-move-focus down")
-(define-key *top-map* (kbd "s-k") "beckon-move-focus up")
-(define-key *top-map* (kbd "s-l") "beckon-move-focus right")
+(if module-dir-exists-p
+    (progn
+      (define-key *top-map* (kbd "s-h") "beckon-move-focus left")
+      (define-key *top-map* (kbd "s-j") "beckon-move-focus down")
+      (define-key *top-map* (kbd "s-k") "beckon-move-focus up")
+      (define-key *top-map* (kbd "s-l") "beckon-move-focus right"))
+    (progn
+      (define-key *top-map* (kbd "s-h") "move-focus left")
+      (define-key *top-map* (kbd "s-j") "move-focus down")
+      (define-key *top-map* (kbd "s-k") "move-focus up")
+      (define-key *top-map* (kbd "s-l") "move-focus right")))
 
 (define-key *top-map* (kbd "s-H") "move-window left")
 (define-key *top-map* (kbd "s-J") "move-window down")
