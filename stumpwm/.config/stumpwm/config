@@ -217,11 +217,12 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
           '("SF Mono" "JetBrains Mono" "Liberation Mono")))))
 
   ;; TODO: add some checks for a few different fonts.
-  (set-font (make-instance 'xft:font
-                           :family font-family-str
-                           :subfamily "Regular"
-                           :size 14
-                           :antialias t)))
+  (when font-family-str
+    (set-font (make-instance 'xft:font
+                             :family font-family-str
+                             :subfamily "Regular"
+                             :size 14
+                             :antialias t))))
 
 ;; FIXME: make this much prettier and contain actually useful info.
 
