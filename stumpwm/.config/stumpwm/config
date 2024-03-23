@@ -244,8 +244,8 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
        " | %d |"))
 ;; '(:eval (run-shell-command "clock" t))))
 
-(when *initializing*
-  (mode-line))
+(dolist (h (screen-heads (current-screen)))
+  (enable-mode-line (current-screen) h t))
 
 ;; System tray.
 (ql:quickload :xembed)
