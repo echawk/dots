@@ -51,6 +51,10 @@
 
 (set-prefix-key (kbd "C-z"))
 
+;; Ensure that we have access to quicklisp.
+#-QUICKLISP
+(load (merge-pathnames "quicklisp/setup.lisp" (user-homedir-pathname)))
+
 ;; Ensure contrib modules can be found.
 (set-module-dir "/usr/share/stumpwm/contrib/")
 
@@ -104,11 +108,6 @@
 ;;(swm-gaps:toggle-gaps)
 
 ;; (load-module "battery-portable")
-
-;; Ensure that we have access to quicklisp.
-#-QUICKLISP
-(load (merge-pathnames "quicklisp/setup.lisp" (user-homedir-pathname)))
-
 
 ;; Notifications via stumpwm.
 ;; (ql:quickload :xml-emitter)
