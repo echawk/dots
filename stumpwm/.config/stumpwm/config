@@ -224,10 +224,15 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
                              :antialias t))))
 
 ;; FIXME: make this much prettier and contain actually useful info.
+(let ((mode-line-colors
+        (cond
+          ((string= (machine-instance) "KISS")    '("#ee0000" "#000000"))
+          ((string= (machine-instance) "arch")    '("#005577" "#cdcdcd"))
+          ((string= (machine-instance) "OpenBSD") '("#dddd00" "#000000"))
+          (t                                      '("#007755" "#cdcdcd")))))
 
-(setf *mode-line-background-color* "#007755"
-      *mode-line-foreground-color* "#cdcdcd")
-;;       *mode-line-timeout* 2)
+  (setf *mode-line-background-color* (car  mode-line-colors)
+        *mode-line-foreground-color* (cadr mode-line-colors)))
 
 (setf *group-format* "%t")
 (setf *mode-line-timeout* 3)
