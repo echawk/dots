@@ -191,12 +191,14 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; Need to clone the clx-truetype repo to ~/quicklisp/local-projects/
 ;; git clone https://github.com/stumpwm/clx-truetype
 (let ((clx-truetype-git-repo "https://github.com/stumpwm/clx-truetype")
-      (ql-local-proj-dir (car quicklisp:*local-project-directories*)))
+      (ql-local-proj-dir (car quicklisp:*local-project-directories*))
+      (oldpwd            (uiop:getcwd)))
   (unless (uiop:directory-exists-p
            (merge-pathnames ql-local-proj-dir "clx-truetype"))
     (uiop:chdir ql-local-proj-dir)
     (uiop:run-program
-     (concatenate 'string "git clone " clx-truetype-git-repo))))
+     (concatenate 'string "git clone " clx-truetype-git-repo))
+    (uiop:chdir oldpwd)))
 
 (ql:quickload :clx-truetype)
 (load-module "ttf-fonts")
