@@ -24,10 +24,7 @@
       (package-install 'use-package))
   (require 'use-package)
   (setq use-package-always-ensure t
-        use-package-compute-statistics t)
-  (when (and (< emacs-major-version 30)
-             (not (package-installed-p 'vc-use-package)))
-    (package-vc-install "https://github.com/slotThe/vc-use-package")))
+        use-package-compute-statistics t))
 
 (defun me/straight-bootstrap ()
   "Function to bootstrap straight.el."
