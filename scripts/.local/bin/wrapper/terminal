@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 #[ -n "$XAUTHORITY" ] && {
-for term in st alacritty; do
+for term in alacritty st; do
     if command -v $term; then
         case $term in
             st) args="-f monospace:size=14" ;;
