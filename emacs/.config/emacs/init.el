@@ -622,7 +622,7 @@ the file.
 ;; https://github.com/tpeacock19/flymake-vale
 
 (defun me/make-vale-config ()
-  "Write a simple vale config to `.vale.ini' in the `default-directory'."
+  "Write a simple vale config to `.vale.ini' in `default-directory'."
   (interactive)
   (let ((vale-cfg (concat default-directory ".vale.ini")))
     (write-region
