@@ -941,25 +941,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package suggest :defer)
 (use-package package-lint :defer)
 
-(me/emacs-N-progn
- 30
- (use-package llama-cpp-comint
-   :vc (:url "https://github.com/ehawkvu/llama-cpp-comint"
-             :rev :newest)
-   :defer
-   :commands (run-llama-cpp llama-cpp-query-region)
-   :init
-   (global-set-key (kbd "C-c C-l C-c") #'run-llama-cpp)
-   (global-set-key (kbd "C-c C-l C-r") #'llama-cpp-query-region)
-   :custom
-   (llama-cpp-model-alist
-    '(
-      ("Guanaco-7B" "/home/ethan/AI/llama.cpp/build/bin/main"
-       "/home/ethan/AI/MODELS/gguf/guanaco-7b-uncensored.Q4_0.gguf")
-      ("Wizard-Vicuna-13B" "/home/ethan/AI/llama.cpp/build/bin/main"
-       "/home/ethan/AI/MODELS/gguf/Wizard-Vicuna-13B-Uncensored.Q4_0.gguf")
-      ))
-   (llama-cpp-num-cpus 8)))
 
 ;; Speed reading in Emacs.
 (me/emacs-N-progn
