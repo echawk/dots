@@ -166,6 +166,36 @@
   (vertico-mode)
   (vertico-multiform-mode))
 
+;; https://macowners.club/posts/from-ivy-to-vertico/
+;; https://github.com/minad/consult
+;; NOTE: need to investigate this package further, there is definitely more
+;; to configure here...
+(use-package consult
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :init
+  (setq xref-show-xrefs-function       #'consult-xref
+        xref-show-definitions-function #'consult-xref))
+
+;; https://github.com/oantolin/embark
+(use-package embark
+  :init
+
+  ;; Prefer a more minimal setup w/ using only the minibuffer & vertico.
+  (setq embark-indicators
+        '(embark-minimal-indicator  ; default is embark-mixed-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))
+  (setq embark-prompter #'embark-completing-read-prompter)
+
+  (add-to-list 'vertico-multiform-categories '(embark-keybinding grid))
+  :bind
+  (("C-;" . embark-act)
+   ("C-:" . embark-dwim)))
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
 (use-package marginalia
   :init
   (marginalia-mode))
