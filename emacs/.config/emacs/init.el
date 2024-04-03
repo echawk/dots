@@ -163,7 +163,8 @@
 
 (use-package vertico
   :init
-  (vertico-mode))
+  (vertico-mode)
+  (vertico-multiform-mode))
 
 (use-package marginalia
   :init
