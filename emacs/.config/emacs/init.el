@@ -1039,6 +1039,11 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :defer
   :hook (vterm-mode . (lambda () (display-line-numbers-mode 0))))
 
+(use-package eat
+  :after eshell
+  :config
+  (eat-eshell-mode))
+
 (use-package pdf-tools
   :defer
   :hook ((pdf-view-mode . (lambda () (display-line-numbers-mode 0)))
