@@ -174,7 +174,9 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setq xref-show-xrefs-function       #'consult-xref
-        xref-show-definitions-function #'consult-xref))
+        xref-show-definitions-function #'consult-xref)
+  :bind
+  (("C-x b" . consult-buffer)))
 
 ;; https://github.com/oantolin/embark
 (use-package embark
@@ -263,10 +265,37 @@
   :if (not (getenv "EMACS_IS_EXWM"))
   :custom
   (beframe-global-buffers '("*scratch*" "*Messages*" "*Backtrace*"))
-  :bind
-  (("C-x b" . beframe-switch-buffer))
+  ;; :bind
+  ;; (("C-x b" . beframe-switch-buffer))
   :init
-  (beframe-mode 1))
+  (beframe-mode 1)
+  :config
+  ;; Consult integration.
+  ;; https://protesilaos.com/emacs/beframe#h:1c2d3d64-aa7b-4585-a418-ccedbb548b38
+  (with-eval-after-load 'consult
+    (defface beframe-buffer
+      '((t :inherit font-lock-string-face))
+      "Face for `consult' framed buffers.")
+
+    (defun me/beframe-buffer-names-sorted (&optional frame)
+      "Return the list of buffers from `beframe-buffer-names' sorted by
+visibility.
+With optional argument FRAME, return the list of buffers of FRAME."
+      (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
+
+    (defvar beframe-consult-source
+      `(
+        :name     "Frame-specific buffers (current frame)"
+        :narrow   ?F
+        :category buffer
+        :face     beframe-buffer
+        :history  beframe-history
+        :items    ,#'me/beframe-buffer-names-sorted
+        :action   ,#'switch-to-buffer
+        :state    ,#'consult--buffer-state))
+
+    (add-to-list 'consult-buffer-sources 'beframe-consult-source))
+  )
 
 ;; (use-package doom-themes :defer)
 (use-package all-the-icons :defer)
