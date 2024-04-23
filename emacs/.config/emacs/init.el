@@ -480,6 +480,7 @@ Will return one of the following symbols:
 - indent
 
 "
+    (interactive)
     (or (when
             (let* ((aph-func (cdr (assoc major-mode apheleia-mode-alist)))
                    (aph-func-int (cdr (assoc aph-func apheleia-formatters))))
