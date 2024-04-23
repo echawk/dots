@@ -110,12 +110,14 @@
 ;; (load-module "battery-portable")
 
 ;; Notifications via stumpwm.
-;; (ql:quickload :xml-emitter)
-;; (ql:quickload :dbus)
-;; (load-module "notify")
-;; (setf notify:*notify-server-body-color* "^1") ;; red
-;; (notify:notify-server-on)
-
+(when (string= "Linux" (software-type))
+  (ql:quickload '(:xml-emitter :dbus))
+  (load-module "notify")
+  (setf notify:*notify-server-body-color* "^1") ;; red
+  (notify:notify-server-on)
+  (defcommand toggle-notify () ()
+    "Toggle notifications."
+    (notify:notify-server-toggle)))
 
 ;; control via sly.
 (ql:quickload :slynk)
