@@ -642,8 +642,27 @@ the file.
 ;; in programming modes while I am writing comments as well.
 (use-package cape
   :init
-  (setq cape-dict-file "/home/ethan/cape-test-dict")
+  (let* ((dict-file (concat user-emacs-directory "cape-dict"))
+         (hunspell-dict "/usr/share/hunspell/en_US.dic")
+         (hunspell-exists-p  (file-exists-p hunspell-dict))
+         (dict-file-exists-p (file-exists-p dict-file)))
+    (unless (or hunspell-exists-p dict-file-exists-p)
+      (unless dict-file-exists-p
+        ;; Generate the dictionary file.
+        (shell-command
+         (concat
+          "sed 's;/.*$;;'"
+          " " hunspell-dict " "
+          " | "
+          "grep -v '^[0-9]'"
+          " | "
+          "grep -E '....'"
+          " > "
+          dict-file)))
+      (setq cape-dict-file dict-file)))
+
   (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-sgml)
   (add-to-list 'completion-at-point-functions #'cape-emoji))
 
 
