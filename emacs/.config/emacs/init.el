@@ -949,15 +949,26 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :config
   (defalias 'flymake-hlint
     (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
-  (add-to-list 'flymake-diagnostic-functions 'flymake-hlint))
+  (add-to-list 'flymake-diagnostic-functions 'flymake-hlint)
 
-(use-package agda
-  :ensure nil
-  :defer
-  :if (executable-find "agda-mode")
-  :commands (agda2-mode)
-  :init
-  (load-file (shell-command-to-string "agda-mode locate")))
+  ;; Generate a capf backend...
+  (setq completion-at-point-functions
+        (append completion-at-point-functions
+                (list (cape-company-to-capf #'dante-company)))))
+
+;; (use-package agda
+;;   :ensure nil
+;;   :defer
+;;   :if (executable-find "agda-mode")
+;;   :commands (agda2-mode)
+;;   :init
+;;   (load-file (shell-command-to-string "agda-mode locate")))
+
+;; (setq completion-at-point-functions
+;;       (append
+;;        completion-at-point-functions
+;;        (mapcar #'cape-company-to-capf
+;;                (list #'dante-company))))
 
 ;; Enable prettify-symbols-mode in some languages
 (dolist (hook '(sly-mode-hook
