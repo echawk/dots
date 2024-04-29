@@ -741,46 +741,87 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (tuareg-indent-align-with-first-arg t)
   (tuareg-match-patterns-aligned t))
 
-(use-package bqn-mode :defer)
-(use-package crystal-mode :defer)
-(use-package d-mode :defer)
-(use-package elixir-mode :defer)
+;; IE: only install/require the code whenever I begin to edit a file
+;; with the associated file extension.
+(defmacro me/setup-language-package (file-extension major-mode &optional body)
+  "FIXME: write this docstring"
+  ;; NOTE: only use this for modes that you don't plan on configuring at all.
+  (let ((setup-fn-name
+         (intern
+          (concat
+           "setup-"
+           (symbol-name major-mode)
+           "-"
+           (symbol-name (gensym))))))
+    `(progn
+       (defun ,setup-fn-name ()
+         (unless (fboundp ',major-mode)
+           (use-package ,major-mode)
+           ,body)
+         (,major-mode))
+       (add-to-list
+        'auto-mode-alist
+        '(,file-extension . ,setup-fn-name)))))
+
+(me/setup-language-package "\\.bqn"   bqn-mode)
+(me/setup-language-package "\\.cr"    crystal-mode)
+(me/setup-language-package "\\.d"     d-mode)
+(me/setup-language-package "\\.fs"    fsharp-mode)
+(me/setup-language-package "\\.fut"   futhark-mode)
+(me/setup-language-package "\\.meson" meson-mode)
+(me/setup-language-package "\\.nim"   nim-mode)
+(me/setup-language-package "\\.go"    go-mode)
+(me/setup-language-package "\\.hy"    hy-mode)
+(me/setup-language-package "\\.fnl"   fennel-mode)
+(me/setup-language-package "\\.vala"  vala-mode)
+(me/setup-language-package "\\.vim"   vimrc-mode)
+(me/setup-language-package "\\.zig"   zig-mode)
+(me/setup-language-package "\\.ua"    uiua-mode)
+(me/setup-language-package
+ "\\.clj" clojure-mode (use-package inf-clojure :after clojure-mode))
+(me/setup-language-package
+ "\\.ex"  elixir-mode  (use-package inf-elixir :after elixir-mode))
+(me/setup-language-package "\\.lfe" lfe-mode)
+
 (use-package erlang :defer)
-(use-package fennel-mode :defer)
+;; .4th
 (use-package forth-mode :defer
   :init
   (setq forth-executable "gforth"))
-(use-package fsharp-mode :defer)
-(use-package futhark-mode :defer)
-(use-package go-mode :defer)
-(use-package hy-mode :defer)
+;; .idr
 (use-package idris-mode :defer
   :custom
   (idris-interpreter-path "idris2"))
-(use-package inf-elixir :defer)
-(use-package lfe-mode :defer)
+;; .lua
 (use-package lua-mode :defer
   :custom
   (lua-default-application "luajit"))
-(use-package meson-mode :defer)
-(use-package nim-mode :defer)
-(use-package python :defer)
+
+;; .rkt
+;; https://www.racket-mode.com/
+(use-package racket-mode
+  :defer
+  :hook (racket-mode . racket-xp-mode))
+
+;; .rb
 (use-package ruby-mode :defer
   :init
   (let ((gem-bindir (concat (getenv "GEM_PATH") "/bin/")))
     (when (file-exists-p gem-bindir)
       (setq exec-path (cons gem-bindir exec-path)))))
+(use-package inf-ruby :defer
+  :after ruby-mode
+  :hook (ruby-mode . inf-ruby-minor-mode))
+
 (use-package shen-mode :defer
   :mode ("\\.shen$" . shen-mode)
   :custom
   (inferior-shen-program "shen-sbcl"))
+;; .sml
 (use-package sml-mode :defer
   :custom
   (sml-program-name "hamlet"))
 (use-package sml-basis :defer)
-(use-package vala-mode :defer)
-(use-package vimrc-mode :defer)
-(use-package zig-mode :defer)
 
 (use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
@@ -899,20 +940,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
 
-(use-package clojure-mode :defer)
-(use-package inf-clojure :defer)
-
-;; Depends on clojure-mdoe
-(me/emacs-N-progn
- 30
- (use-package carp-mode
-   :vc (:url "https://github.com/carp-lang/carp-emacs"
-             :rev :newest)
-   :defer
-   :commands (carp-mode run-carp)
-   :mode ("\\.carp$" . carp-mode)
-   :config
-   (require 'inf-carp-mode)))
 
 (use-package haskell-mode
   :defer
@@ -944,9 +971,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                 clojure-mode-hook)
               nil)
   (add-hook hook #'prettify-symbols-mode))
-
-(use-package uiua-mode :defer)
-(use-package uiua-ts-mode :defer)
 
 (use-package j-mode :defer
   :mode ("\\.ij[rstp]$" . j-mode)
