@@ -101,13 +101,14 @@
 
     ;; Assert that everything is filled out in the object.
     (cl-assert
-     (and
-      (not (string-empty-p email-address))
-      (not (string-empty-p imap-address))
-      (not (string-empty-p smtp-address))
-      (not (string-empty-p imap-port))
-      (not (string-empty-p smtp-port))
-      (not (string-empty-p password-command))))
+     (not
+      (or
+       (string-empty-p email-address)
+       (string-empty-p imap-address)
+       (string-empty-p smtp-address)
+       (string-empty-p imap-port)
+       (string-empty-p smtp-port)
+       (string-empty-p password-command))))
 
     (let ((process-environment
            (append
