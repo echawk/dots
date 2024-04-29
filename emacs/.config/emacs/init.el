@@ -152,10 +152,9 @@
 
   ;; Don't error if we can't load the custom file
   (load custom-file 'noerror)
-  (setq-default evil-indent-convert-tabs nil
-                indent-tabs-mode nil
-                tab-width 4
-                evil-shift-round nil)
+  ;; NOTE: move this to evil configuration...
+  (setq-default indent-tabs-mode nil
+                tab-width 4)
   :bind
   (("<escape>" . keyboard-escape-quit)))
 
@@ -233,7 +232,9 @@
        (evil-want-keybinding nil)
        (evil-want-C-u-scroll t)
        (evil-want-minibuffer t)
-       (evil-undo-system 'undo-redo))
+       (evil-undo-system 'undo-redo)
+       (evil-shift-round nil)
+       (evil-indent-convert-tabs nil))
 
      (use-package evil-collection
        :after evil
