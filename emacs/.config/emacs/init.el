@@ -775,6 +775,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (me/setup-language-package
  "\\.ex"  elixir-mode  (use-package inf-elixir :after elixir-mode))
 (me/setup-language-package "\\.lfe" lfe-mode)
+(me/setup-language-package
+ "\\.sml" sml-mode
+ (progn
+   (setq sml-program-name "hamlet")
+   (use-package sml-basis :after sml-mode)))
+(me/setup-language-package "\\.lua" lua-mode)
 
 (use-package erlang :defer)
 ;; .4th
@@ -785,10 +791,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package idris-mode :defer
   :custom
   (idris-interpreter-path "idris2"))
-;; .lua
-(use-package lua-mode :defer
-  :custom
-  (lua-default-application "luajit"))
 
 ;; .rkt
 ;; https://www.racket-mode.com/
@@ -810,11 +812,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :mode ("\\.shen$" . shen-mode)
   :custom
   (inferior-shen-program "shen-sbcl"))
-;; .sml
-(use-package sml-mode :defer
-  :custom
-  (sml-program-name "hamlet"))
-(use-package sml-basis :defer)
 
 (use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
