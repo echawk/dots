@@ -878,8 +878,10 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; Better scheme editing.
 (use-package geiser :defer
   :custom
-  (geiser-active-implementations '(chez)))
-(use-package geiser-chez :after geiser)
+  (geiser-active-implementations '(guile3)))
+(use-package geiser-guile
+  :after geiser
+  :custom (geiser-guile-binary "guile3"))
 (use-package macrostep :defer
   :bind
   (:map macrostep-keymap
