@@ -694,12 +694,6 @@ the file.
   :defer
   :after flymake)
 
-;; TODO: consider rm'ing this pkg, since vale can do this?
-(use-package flymake-proselint
-  :if (executable-find "proselint")
-  :defer
-  :hook (flymake-mode . flymake-proselint-setup))
-
 ;; https://github.com/tpeacock19/flymake-vale
 
 (defun me/make-vale-config ()
