@@ -773,7 +773,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (me/setup-language-package
  "\\.clj" clojure-mode (use-package inf-clojure :after clojure-mode))
 (me/setup-language-package
- "\\.ex"  elixir-mode  (use-package inf-elixir :after elixir-mode))
+ "\\.exs?" elixir-mode (use-package inf-elixir :after elixir-mode))
 (me/setup-language-package "\\.lfe" lfe-mode)
 (me/setup-language-package
  "\\.sml" sml-mode
@@ -782,16 +782,16 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
    (use-package sml-basis :after sml-mode)))
 (me/setup-language-package "\\.lua" lua-mode)
 
-(use-package erlang :defer)
-;; .4th
-(use-package forth-mode :defer
-  :init
-  (setq forth-executable "gforth"))
-;; .idr
-(use-package idris-mode :defer
-  :custom
-  (idris-interpreter-path "idris2"))
+(me/setup-language-package "\\.4th" forth-mode (setq forth-executable "gforth"))
+(me/setup-language-package "\\.idr" idris-mode (setq idris-interpreter-path "idris2"))
 
+(me/setup-language-package
+ "\\.shen" shen-mode (setq inferior-shen-program "shen-sbcl"))
+
+(me/setup-language-package
+ "\\.ij[rstp]$" j-mode (setq j-console-cmd "/usr/lib/j9/bin/jconsole"))
+
+(use-package erlang :defer)
 ;; .rkt
 ;; https://www.racket-mode.com/
 (use-package racket-mode
@@ -807,11 +807,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package inf-ruby :defer
   :after ruby-mode
   :hook (ruby-mode . inf-ruby-minor-mode))
-
-(use-package shen-mode :defer
-  :mode ("\\.shen$" . shen-mode)
-  :custom
-  (inferior-shen-program "shen-sbcl"))
 
 (use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
@@ -974,10 +969,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                 clojure-mode-hook)
               nil)
   (add-hook hook #'prettify-symbols-mode))
-
-(use-package j-mode :defer
-  :mode ("\\.ij[rstp]$" . j-mode)
-  :custom (j-console-cmd "/usr/lib/j9/bin/jconsole"))
 
 ;; https://github.com/phantomics/april/tree/master
 ;; anaphora is a dependency of jpt-apl-mode.
