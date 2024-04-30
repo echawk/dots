@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+temp="$(mktemp)"
+
+for cmd in battery.lisp internet.lisp volume.lisp; do
+    cmd_path="$(command -v "$cmd")"
+    # This is fine.
+    # shellcheck disable=2181
+    if [ $? -eq 0 ]; then
+        sed "/^#!/d;/^(main)/d" "$cmd_path" > "$temp"
+        file_exe="${cmd%.*}.exe"
+        sbcl --load "$temp" \
+            --eval "(setq uiop:*image-entry-point* #'cl-user::main)" \
+            --eval "(uiop:dump-image \"$file_exe\" :executable t)"
+        mv -f "$file_exe" "$(dirname "$cmd_path")"
+    fi
+done
+rm "$temp"
