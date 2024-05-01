@@ -285,6 +285,7 @@
       ;; Load our just generated config file.
       (load-file mu4e-setup-config-file))))
 
+(provide 'mu4e-setup)
 
 ;; Final usage should look like below:
 ;; (require 'mu4e-setup)
