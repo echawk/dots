@@ -18,8 +18,8 @@
       (concat "mbsync -a -c " mu4e-setup-mbsync-file))
 (setq mu4e-setup-msmtp-cmd
       (list "msmtp"
-            (list "--read-envelope-from"
-                  (concat " -C " mu4e-setup-msmtp-file))))
+            "--read-envelope-from"
+            (concat " -C " mu4e-setup-msmtp-file)))
 
 (setq mu4e-setup-default-process-environment
       (append
@@ -128,7 +128,7 @@
       (mu4e-setup--append-to-file
        (shell-command-to-string
         (concat
-         "sed '/PassCmd/s/.*/PassCmd \"" password-command "\"/'"
+         "sed '/PassCmd/s;.*;PassCmd \"" password-command "\";'"
          " < " mu4e-setup-dir "/mutt-wizard/share/mbsync-temp"
          " | "
          "envsubst"))
@@ -138,7 +138,7 @@
       (mu4e-setup--append-to-file
        (shell-command-to-string
         (concat
-         "sed '/passwordeval/s/.*/passwordeval \"" password-command "\"/'"
+         "sed '/passwordeval/s;.*;passwordeval \"" password-command "\";'"
          " < " mu4e-setup-dir "/mutt-wizard/share/msmtp-temp"
          " | "
          "envsubst"))
@@ -147,8 +147,7 @@
       ;; Ensure this directory exists before we run mbsync.
       (shell-command (concat "mkdir -p " mu4e-setup-maildir "/" email-address)))))
 
-(cl-defmethod mu4e-setup--email-profile-add-to-mu4e-contexts
-  ((obj mu4e-setup-email-profile))
+(defun mu4e-setup--email-profile-add-to-mu4e-contexts (obj)
   (with-slots
       ((email-address :email-address)
        (smtp-address  :smtp-address)
@@ -207,8 +206,9 @@
       (error
        (concat "\"`" cmd "` needs to be present in $PATH."))))
 
-  (unless (boundp email-profiles-list)
-    (error "mu4e-setup-email-profiles isn't bound!"))
+  ;; Remove our old msmtp & mbsync file
+  (shell-command (concat "rm " mu4e-setup-msmtp-file))
+  (shell-command (concat "rm " mu4e-setup-mbsync-file))
 
   (dolist (email-profile email-profiles-list)
     (mu4e-setup--email-profile-setup email-profile))
@@ -239,15 +239,14 @@
 (defun mu4e-setup--setup-config-file (email-profiles-list)
   (shell-command (concat "rm " mu4e-setup-config-file))
   (shell-command (concat "touch " mu4e-setup-config-file))
-  (mu4e-setup--append-to-file
-   (prin1-to-string
+  (with-temp-file mu4e-setup-config-file
     (prin1
      `(progn
         ;; Default configuration for mu4e here - can be overridden by
         ;; your own config - just set the variables to a different value.
         (setq message-send-mail-function 'message-send-mail-with-sendmail
               message-sendmail-f-is-evil 't
-              message-sendmail-extra-arguments ,(cdr mu4e-setup-msmtp-cmd)
+              message-sendmail-extra-arguments ',(cdr mu4e-setup-msmtp-cmd)
               sendmail-program                 ,(car mu4e-setup-msmtp-cmd))
 
         (setq mu4e-change-filenames-when-moving 't
@@ -258,15 +257,17 @@
         ;; compare the two lists to see if we have any new email profiles to
         ;; setup.
         (setq mu4e-setup-current-email-profiles-list
-              ,email-profiles-list)
+              ',email-profiles-list)
 
         ;; Ensure that each of the email profiles is a context in mu4e.
         (mapcar #'mu4e-setup--email-profile-add-to-mu4e-contexts
-                mu4e-setup-current-email-profiles-list))))
-   mu4e-setup-config-file))
+                mu4e-setup-current-email-profiles-list))
+     (current-buffer))))
 
 (defun mu4e-setup-configure ()
   "Configure mu4e to use the emails listed in `mu4e-setup-email-profiles-list'."
+  (unless (boundp 'mu4e-setup-email-profiles-list)
+    (error "mu4e-setup-email-profiles-list isn't bound!"))
   (if (file-exists-p mu4e-setup-config-file)
       (progn
         (load-file mu4e-setup-config-file)
