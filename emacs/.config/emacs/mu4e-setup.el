@@ -270,14 +270,13 @@
   (if (file-exists-p mu4e-setup-config-file)
       (progn
         (load-file mu4e-setup-config-file)
-        ;; TODO: check to make sure that our old email list is the same as
-        ;; our current email list
-        ;; (equal mu4e-setup-current-email-profiles-list mu4e-setup-email-profiles-list)
-        ;; If not, then
-        ;; (progn
-        ;;   (shell-command (concat "rm " mu4e-setup-config-file))
-        ;;   (mu4e-setup-configure))
-        )
+        (unless
+            (equal mu4e-setup-current-email-profiles-list
+                   mu4e-setup-email-profiles-list)
+
+          ;; Remove our configuration file and re-setup mu4e-setup
+          (shell-command (concat "rm " mu4e-setup-config-file))
+          (mu4e-setup-configure)))
     (progn
       (mu4e-setup--configure-email-profiles mu4e-setup-email-profiles-list)
       (mu4e-setup--setup-config-file        mu4e-setup-email-profiles-list)
