@@ -154,30 +154,50 @@
        (smtp-address  :smtp-address)
        (smtp-port  :smtp-port))
       obj
+    (let
+        ((sent-folder
+          (concat "/" email-address "/"
+                  (cond
+                   ((string= smtp-address "smtp.gmail.com") "[Gmail].Sent Mail")
+                   (t                                       "Sent"))))
+         (spam-folder
+          (concat "/" email-address "/"
+                  (cond
+                   ((string= smtp-address "smtp.gmail.com") "[Gmail].Spam")
+                   (t                                       "Spam"))))
+         (trash-folder
+          (concat "/" email-address "/"
+                  (cond
+                   ((string= smtp-address "smtp.gmail.com") "[Gmail].Trash")
+                   (t                                       "Trash"))))
+         (drafts-folder
+          (concat "/" email-address "/"
+                  (cond
+                   ((string= smtp-address "smtp.gmail.com") "[Gmail].Drafts")
+                   (t                                       "Drafts")))))
 
-    (add-to-list
-     mu4e-contexts
-     (make-mu4e-context
-      :name email-address
-      :match-func
-      (lambda (msg)
-        (when msg
-          (string-prefix-p (concat "/" email-address)
+      (add-to-list
+       mu4e-contexts
+       (make-mu4e-context
+        :name email-address
+        :match-func
+        (lambda (msg)
+          (when msg
+            (string-prefix-p (concat "/" email-address)
+                             (mu4e-message-field msg :maildir))))
 
-                           (mu4e-message-field msg :maildir))))
+        ;; Now to save the generated context into the contexts file
+        :vars
+        '((user-mail-address     . email-address)
 
-      ;; Now to save the generated context into the contexts file
-      ;; FIXME: add check for gmail... since it's "special"
-      :vars
-      '((user-mail-address     . email-address)
+          (smtpmail-smtp-server  . smtp-address)
+          (smtpmail-smtp-service . smtp-port)
+          (smtpmail-stream-type  . ssl)
 
-        (smtpmail-smtp-server  . smtp-address)
-        (smtpmail-smtp-service . smtp-port)
-        (smtpmail-stream-type  . ssl)
-
-        (mu4e-drafts-folder    . (concat "/" email-address "/Drafts"))
-        (mu4e-sent-folder      . (concat "/" email-address "/Sent"))
-        (mu4e-trash-folder     . (concat "/" email-address "/Trash")))))))
+          (mu4e-sent-folder      . sent-folder)
+          (mu4e-spam-folder      . spam-folder)
+          (mu4e-trash-folder     . trash-folder)
+          (mu4e-drafts-folder    . drafts-folder)))))))
 
 
 (defun mu4e-setup--configure-email-profiles (email-profiles-list)
