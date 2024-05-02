@@ -1324,7 +1324,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (defun me/mu4e-have-dependencies ()
   "Return t if all dependencies for mu4e are installed, nil otherwise."
   (and
-   (file-exists-p me/mu4e-site-elisp-dir)
    (executable-find "msmtp")
    (executable-find "mbsync")))
 
