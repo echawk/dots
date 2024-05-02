@@ -22,7 +22,8 @@
 
 (setq mu4e-setup-config-file  (concat mu4e-setup-dir "mu4e-config.el"))
 (setq mu4e-setup-mbsync-file  (concat mu4e-setup-dir "mbsyncrc"))
-(setq mu4e-setup-msmtp-file   (concat mu4e-setup-dir "msmtp-config"))
+;; msmtp doesn't play nice, hence the reason it is disabled by default.
+(setq mu4e-setup-msmtp-file   (concat (getenv "HOME") "/.config/msmtp/config"))
 
 (setq mu4e-setup-auth-sources-file (concat mu4e-setup-dir "authinfo"))
 
@@ -32,9 +33,7 @@
       (concat "mbsync -c " mu4e-setup-mbsync-file " -a"))
 
 ;; Only set this if mu4e-setup-use-msmtp-p is t
-(setq mu4e-setup-msmtp-cmd
-      (list "msmtp"
-            (concat " -C " mu4e-setup-msmtp-file " --read-envelope-from")))
+(setq mu4e-setup-msmtp-cmd "msmtp")
 
 (setq mu4e-setup-cert-file
       (car
@@ -296,10 +295,10 @@
         ;; Default configuration for mu4e here - can be overridden by
         ;; your own config - just set the variables to a different value.
         (if mu4e-setup-use-msmtp-p
-            (setq message-send-mail-function #'message-send-mail-with-sendmail
-                  message-sendmail-f-is-evil 't
-                  message-sendmail-extra-arguments ',(cdr mu4e-setup-msmtp-cmd)
-                  sendmail-program                 ,(car mu4e-setup-msmtp-cmd))
+            (setq sendmail-program           mu4e-setup-msmtp-cmd
+                  send-mail-function         #'sendmail-send-it
+                  message-sendmail-extra-arguments '("--read-envelope-from")
+                  message-sendmail-f-is-evil        t)
           (setq message-send-mail-function #'smtpmail-send-it))
 
         (setq mu4e-change-filenames-when-moving 't
