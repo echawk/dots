@@ -36,6 +36,18 @@
       (list "msmtp"
             (concat " -C " mu4e-setup-msmtp-file " --read-envelope-from")))
 
+(setq mu4e-setup-cert-file
+      (car
+       (seq-filter
+        #'file-exists-p
+        '("/etc/ssl/cert.pem"
+          "/etc/ssl/certs/ca-certificates.crt"
+          "/etc/pki/tls/certs/ca-bundle.crt"
+          "/etc/ssl/ca-bundle.pem"
+          "/etc/pki/tls/cacert.pem"
+          "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
+          "/usr/local/share/ca-certificates/"))))
+
 (setq mu4e-setup-default-process-environment
       (append
        process-environment
@@ -45,18 +57,7 @@
         ;; FIXME: allow this to be configured...
         "master=Master"
         "slave=Slave"
-        (concat
-         "sslcert="
-         (car
-          (seq-filter
-           #'file-exists-p
-           '("/etc/ssl/cert.pem"
-             "/etc/ssl/certs/ca-certificates.crt"
-             "/etc/pki/tls/certs/ca-bundle.crt"
-             "/etc/ssl/ca-bundle.pem"
-             "/etc/pki/tls/cacert.pem"
-             "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
-             "/usr/local/share/ca-certificates/"))))
+        (concat "sslcert=" mu4e-setup-cert-file)
         ;; FIXME: have this be detected
         "imapssl=IMAPS"
         "maxmes=0")))
@@ -150,7 +151,9 @@
          "login"
          email-address
          "password"
-         (shell-command-to-string password-command)
+         (string-trim (shell-command-to-string password-command))
+         "cert"
+         mu4e-setup-cert-file
          "\n")
         " ")
        mu4e-setup-auth-sources-file)
@@ -229,7 +232,7 @@
 
           (smtpmail-smtp-server  . ,smtp-address)
           (smtpmail-smtp-service . ,smtp-port)
-          (smtpmail-stream-type  . ssl)
+          (smtpmail-stream-type  . starttls)
 
           (mu4e-sent-folder      . ,sent-folder)
           (mu4e-spam-folder      . ,spam-folder)
