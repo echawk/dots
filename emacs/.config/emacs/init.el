@@ -1321,3 +1321,48 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                (number-sequence 0 9))))
   )
 
+(defun me/mu4e-have-dependencies ()
+  "Return t if all dependencies for mu4e are installed, nil otherwise."
+  (and
+   (file-exists-p me/mu4e-site-elisp-dir)
+   (executable-find "msmtp")
+   (executable-find "mbsync")))
+
+(use-package mu4e
+  :defer
+  :ensure nil
+  :if (me/mu4e-have-dependencies)
+  :config
+  (setq mu4e-setup-use-msmtp-p t)
+  (load-file (concat user-emacs-directory "mu4e-setup.el"))
+
+  (setq mu4e-setup-email-profiles-list
+        (list
+
+         (mu4e-setup-email-profile
+          :email-address "ethan.hawk@valpo.edu"
+          :imap-address "imap.gmail.com"
+          :imap-port "993"
+          :smtp-address "smtp.gmail.com"
+          :smtp-port "587"
+          :password-command "cat /home/ethan/.config/lsps/gmail")
+
+         (mu4e-setup-email-profile
+          :email-address "masterdragoon17@hotmail.com"
+          :imap-address "outlook.office365.com"
+          :imap-port    "993"
+          :smtp-address "smtp-mail.outlook.com"
+          :smtp-port "587"
+          :password-command "cat /home/ethan/.config/lsps/masterdragoon17")))
+
+  (mu4e-setup-configure)
+
+  (setq mail-user-agent               'mu4e-user-agent
+        user-full-name                "Ethan Hawk"
+        mu4e-compose-context-policy   'ask-if-none
+        mu4e-context-policy           'pick-first
+        mu4e-update-interval          (* 3 60)
+        mu4e-completing-read-function #'completing-read
+        mu4e-read-option-use-builtin  nil)
+
+  :commands (mu4e))
