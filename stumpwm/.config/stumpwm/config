@@ -110,7 +110,8 @@
 ;; (load-module "battery-portable")
 
 ;; Notifications via stumpwm.
-(when (string= "Linux" (software-type))
+#+LINUX
+(progn
   (ql:quickload '(:xml-emitter :dbus))
   (load-module "notify")
   (setf notify:*notify-server-body-color* "^1") ;; red
