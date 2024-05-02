@@ -145,13 +145,19 @@
        (string-join
         (list
          "machine"
-         imap-address
+         smtp-address
          "port"
-         imap-port
+         smtp-port
          "login"
          email-address
          "password"
-         (string-trim (shell-command-to-string password-command))
+         (concat
+          "\""
+          (string-replace
+           "\""
+           "\\\""
+           (string-trim (shell-command-to-string password-command)))
+          "\"")
          "cert"
          mu4e-setup-cert-file
          "\n")
@@ -248,9 +254,12 @@
        (concat "\"`" cmd "` needs to be present in $PATH."))))
 
   ;; Remove our old msmtp, mbsync, and auth-sources file
-  (shell-command (concat "rm " mu4e-setup-msmtp-file))
-  (shell-command (concat "rm " mu4e-setup-mbsync-file))
-  (shell-command (concat "rm " mu4e-setup-auth-sources-file))
+  (dolist (file (list
+                 mu4e-setup-msmtp-file
+                 mu4e-setup-mbsync-file
+                 mu4e-setup-auth-sources-file))
+    (when (file-exists-p file)
+      (shell-command (concat "rm " file))))
 
   (dolist (email-profile email-profiles-list)
     (mu4e-setup--email-profile-setup email-profile))
