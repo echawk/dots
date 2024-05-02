@@ -5,6 +5,18 @@
 ;; such as POP support, but this config is really just to make it easier
 ;; to up email.
 
+;; FIXME: msmtp simply cannot handle having it's config file in a different
+;; location than ".config/msmtp/config" for whatever reason, at least on linux
+;; it is driving me nuts.
+
+;; I want to investigate using the built in smtp client for emacs, sincce
+;; that is would hopefully be less likey to break compared to msmtp.
+
+;; Default to this value being nil.
+(setq mu4e-setup-use-msmtp-p  (if (boundp 'mu4e-setup-use-msmtp-p)
+                                  mu4e-setup-use-msmtp-p
+                                nil))
+
 (setq mu4e-setup-maildir      (concat (getenv "HOME") "/.local/share/mail"))
 (setq mu4e-setup-dir          (concat user-emacs-directory "mu4e-setup/"))
 
@@ -12,14 +24,17 @@
 (setq mu4e-setup-mbsync-file  (concat mu4e-setup-dir "mbsyncrc"))
 (setq mu4e-setup-msmtp-file   (concat mu4e-setup-dir "msmtp-config"))
 
+(setq mu4e-setup-auth-sources-file (concat mu4e-setup-dir "authinfo"))
+
 (setq mu4e-setup-mutt-wizard-repo "https://github.com/LukeSmithxyz/mutt-wizard")
 
 (setq mu4e-setup-mbsync-cmd
-      (concat "mbsync -a -c " mu4e-setup-mbsync-file))
+      (concat "mbsync -c " mu4e-setup-mbsync-file " -a"))
+
+;; Only set this if mu4e-setup-use-msmtp-p is t
 (setq mu4e-setup-msmtp-cmd
       (list "msmtp"
-            "--read-envelope-from"
-            (concat " -C " mu4e-setup-msmtp-file)))
+            (concat " -C " mu4e-setup-msmtp-file " --read-envelope-from")))
 
 (setq mu4e-setup-default-process-environment
       (append
@@ -88,7 +103,7 @@
     :initarg :password-command :initform "" :type string
     :documentation "A command that when ran returns the account's passowrd.")))
 
-(cl-defmethod mu4e-setup--email-profile-setup ((obj mu4e-setup-email-profile))
+(defun mu4e-setup--email-profile-setup (obj)
   (with-slots
       ((email-address :email-address)
        (imap-address  :imap-address)
@@ -124,6 +139,22 @@
              ;;FIXME: this *technically* isn't correct
              (concat "login="    email-address)))))
 
+      ;; authinfo config
+      (mu4e-setup--append-to-file
+       (string-join
+        (list
+         "machine"
+         imap-address
+         "port"
+         imap-port
+         "login"
+         email-address
+         "password"
+         (shell-command-to-string password-command)
+         "\n")
+        " ")
+       mu4e-setup-auth-sources-file)
+
       ;; mbsync config
       (mu4e-setup--append-to-file
        (shell-command-to-string
@@ -132,6 +163,13 @@
          " < " mu4e-setup-dir "/mutt-wizard/share/mbsync-temp"
          " | "
          "envsubst"))
+       mu4e-setup-mbsync-file)
+
+      ;; This is so stupid, but mbsycnc *REFUSES* to be smart.
+      (mu4e-setup--append-to-file
+	   "
+
+"
        mu4e-setup-mbsync-file)
 
       ;; msmtp config
@@ -176,7 +214,7 @@
                    (t                                       "Drafts")))))
 
       (add-to-list
-       mu4e-contexts
+       'mu4e-contexts
        (make-mu4e-context
         :name email-address
         :match-func
@@ -187,16 +225,16 @@
 
         ;; Now to save the generated context into the contexts file
         :vars
-        '((user-mail-address     . email-address)
+        `((user-mail-address     . ,email-address)
 
-          (smtpmail-smtp-server  . smtp-address)
-          (smtpmail-smtp-service . smtp-port)
+          (smtpmail-smtp-server  . ,smtp-address)
+          (smtpmail-smtp-service . ,smtp-port)
           (smtpmail-stream-type  . ssl)
 
-          (mu4e-sent-folder      . sent-folder)
-          (mu4e-spam-folder      . spam-folder)
-          (mu4e-trash-folder     . trash-folder)
-          (mu4e-drafts-folder    . drafts-folder)))))))
+          (mu4e-sent-folder      . ,sent-folder)
+          (mu4e-spam-folder      . ,spam-folder)
+          (mu4e-trash-folder     . ,trash-folder)
+          (mu4e-drafts-folder    . ,drafts-folder)))))))
 
 
 (defun mu4e-setup--configure-email-profiles (email-profiles-list)
@@ -206,15 +244,16 @@
       (error
        (concat "\"`" cmd "` needs to be present in $PATH."))))
 
-  ;; Remove our old msmtp & mbsync file
+  ;; Remove our old msmtp, mbsync, and auth-sources file
   (shell-command (concat "rm " mu4e-setup-msmtp-file))
   (shell-command (concat "rm " mu4e-setup-mbsync-file))
+  (shell-command (concat "rm " mu4e-setup-auth-sources-file))
 
   (dolist (email-profile email-profiles-list)
     (mu4e-setup--email-profile-setup email-profile))
 
   ;; Sync w/ mbsync
-  (shell-command mu4e-setup-mbsync-cmd)
+  ;;(shell-command mu4e-setup-mbsync-cmd)
 
   ;; Remove old mu cache.
   (let ((mu-cache-dir (concat (getenv "HOME") "/.cache/mu/")))
@@ -244,10 +283,12 @@
      `(progn
         ;; Default configuration for mu4e here - can be overridden by
         ;; your own config - just set the variables to a different value.
-        (setq message-send-mail-function 'message-send-mail-with-sendmail
-              message-sendmail-f-is-evil 't
-              message-sendmail-extra-arguments ',(cdr mu4e-setup-msmtp-cmd)
-              sendmail-program                 ,(car mu4e-setup-msmtp-cmd))
+        (if mu4e-setup-use-msmtp-p
+            (setq message-send-mail-function #'message-send-mail-with-sendmail
+                  message-sendmail-f-is-evil 't
+                  message-sendmail-extra-arguments ',(cdr mu4e-setup-msmtp-cmd)
+                  sendmail-program                 ,(car mu4e-setup-msmtp-cmd))
+          (setq message-send-mail-function #'smtpmail-send-it))
 
         (setq mu4e-change-filenames-when-moving 't
               mu4e-get-mail-command             ,mu4e-setup-mbsync-cmd
@@ -258,6 +299,9 @@
         ;; setup.
         (setq mu4e-setup-current-email-profiles-list
               ',email-profiles-list)
+
+        ;; Add our custom auth sources file to the auth-sources variable.
+        (add-to-list 'auth-sources ,mu4e-setup-auth-sources-file)
 
         ;; Ensure that each of the email profiles is a context in mu4e.
         (mapcar #'mu4e-setup--email-profile-add-to-mu4e-contexts
