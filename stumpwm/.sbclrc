@@ -5,8 +5,8 @@
 
 ;; Make this stupid dummy package to make SBCL shut up.
 (defpackage :quicklisp-quickstart
-            (:use :cl)
-            (:export :install))
+  (:use :cl)
+  (:export :install))
 (in-package :quicklisp-quickstart)
 (defun install () t)
 
