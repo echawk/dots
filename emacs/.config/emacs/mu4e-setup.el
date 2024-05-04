@@ -93,6 +93,9 @@
 
 (require 'eieio)
 
+;; TODO: add in support for specifying whether the connection should use
+;; 'none', 'ssl', or 'starttls' - If you were to use davmail, you don't need
+;; to use the ssl code, and can just use the plain stuff.
 (defclass mu4e-setup-email-profile ()
   ((email-address
     :initarg :email-address :initform "" :type string
@@ -149,6 +152,9 @@
              ;;FIXME: this *technically* isn't correct
              (concat "login="    email-address)))))
 
+      ;; FIXME: make this work better - if passwords have symbols in them
+      ;; such as double quotes and whatnot this current method will not
+      ;; work. May need to investigate using `princ'?
       ;; authinfo config
       (mu4e-setup--append-to-file
        (string-join
@@ -337,6 +343,7 @@
       (progn
         (load-file mu4e-setup-config-file)
         (unless
+            ;; Ensure that the user hasn't added/removed any email configurations.
             (equal mu4e-setup-current-email-profiles-list
                    mu4e-setup-email-profiles-list)
 
