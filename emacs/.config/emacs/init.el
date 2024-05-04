@@ -1333,6 +1333,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :if (me/mu4e-have-dependencies)
   :config
   (setq mu4e-setup-use-msmtp-p t)
+  (setq mu4e-setup-mbsync-use-master-slave-p t)
   (load-file (concat user-emacs-directory "mu4e-setup.el"))
 
   (setq mu4e-setup-email-profiles-list
