@@ -12,10 +12,18 @@
 ;; I want to investigate using the built in smtp client for emacs, sincce
 ;; that is would hopefully be less likey to break compared to msmtp.
 
-;; Default to this value being nil.
-(setq mu4e-setup-use-msmtp-p  (if (boundp 'mu4e-setup-use-msmtp-p)
-                                  mu4e-setup-use-msmtp-p
-                                nil))
+
+(defcustom mu4e-setup-use-msmtp-p
+  (if (boundp 'mu4e-setup-use-msmtp-p)
+      mu4e-setup-use-msmtp-p
+    nil)
+  "Set to `t' if you would like to use msmtp instead of `smtpmail-send-it'.")
+
+(defcustom mu4e-setup-mbsync-use-master-slave-p
+  (if (boundp 'mu4e-setup-mbsync-use-master-slave-p)
+      mu4e-setup-mbsync-use-master-slave-p
+    nil)
+  "Set to `t' if mbsync uses the Master/Slave terminology.")
 
 (setq mu4e-setup-maildir      (concat (getenv "HOME") "/.local/share/mail"))
 (setq mu4e-setup-dir          (concat user-emacs-directory "mu4e-setup/"))
@@ -32,7 +40,6 @@
 (setq mu4e-setup-mbsync-cmd
       (concat "mbsync -c " mu4e-setup-mbsync-file " -a"))
 
-;; Only set this if mu4e-setup-use-msmtp-p is t
 (setq mu4e-setup-msmtp-cmd "msmtp")
 
 (setq mu4e-setup-cert-file
@@ -53,9 +60,12 @@
        (list
         (concat "maildir="  mu4e-setup-maildir)
         (concat "msmtplog=" mu4e-setup-dir "msmtp.log")
-        ;; FIXME: allow this to be configured...
-        "master=Master"
-        "slave=Slave"
+        (concat "master="   (if mu4e-setup-mbsync-use-master-slave-p
+                                "Master"
+                              "Far"))
+        (concat "slave="    (if mu4e-setup-mbsync-use-master-slave-p
+                                "Slave"
+                              "Near"))
         (concat "sslcert=" mu4e-setup-cert-file)
         ;; FIXME: have this be detected
         "imapssl=IMAPS"
