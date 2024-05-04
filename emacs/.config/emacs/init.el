@@ -319,7 +319,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
      res))
 
 (setq me/modeline-left-side-sexps
-      '((propertize (if evil-mode (symbol-name evil-state) "") 'face 'italic)
+      '((propertize (if (and (boundp 'evil-mode) evil-mode) (symbol-name evil-state) "") 'face 'italic)
         ;; Need to do a check for the *-ts-mode modes.
         (let ((icon  (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
           (if (not (eq major-mode icon))
