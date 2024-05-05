@@ -1336,6 +1336,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :ensure nil
   :if (me/mu4e-have-dependencies)
   :config
+
+  ;; Allow selecting files with dired.
+  ;; https://www.djcbsoftware.nl/code/mu/mu4e/Dired.html
+  ;; Keybind is 'C-c RET C-a' once files are marked.
+  (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
+
   (setq mu4e-setup-use-msmtp-p t)
   (setq mu4e-setup-mbsync-use-master-slave-p t)
   (load-file (concat user-emacs-directory "mu4e-setup.el"))
