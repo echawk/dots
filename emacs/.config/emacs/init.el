@@ -111,6 +111,10 @@
   ;; Don't ask for confirmation when opening large files.
   (large-file-warning-threshold nil)
 
+  ;; I almost NEVER want to see the warnings buffer.
+  (warning-minimum-level :emergency)
+  ;; Now if only I could also disable the *Compile-Log* buffer...
+
   ;; Native Compilation.
   (package-native-compile (>= emacs-major-version 28))
   (native-comp-async-report-warnings-errors (not (>= emacs-major-version 28)))
