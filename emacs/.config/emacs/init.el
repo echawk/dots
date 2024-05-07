@@ -1202,6 +1202,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 (use-package realgud :defer)
 
+;; http://yummymelon.com/devnull/announcing-casual-an-opinionated-porcelain-for-emacs-calc.html
+;; https://legends2k.github.io/note/emacs_calc/
+(use-package casual
+  :after calc
+  :config
+  (define-key calc-mode-map (kbd "C-c o") #'casual-main-menu))
+
 (defun me/make-exwm-script ()
   "Create `exwm` script in `HOME/.local/bin/`."
   (let ((exwm-script (concat (getenv "HOME") "/.local/bin/exwm")))
