@@ -156,7 +156,6 @@
 
   ;; Don't error if we can't load the custom file
   (load custom-file 'noerror)
-  ;; NOTE: move this to evil configuration...
   (setq-default indent-tabs-mode nil
                 tab-width 4)
   :bind
@@ -223,6 +222,7 @@
   (global-set-key (kbd "C-h k") #'helpful-key)
   (global-set-key (kbd "C-h C-d") #'helpful-at-point))
 
+;; TODO: experiment with not using vim, and trying out Vanilla emacs binds...
 (setq me/modal-system 'evil)
 
 (pcase me/modal-system
