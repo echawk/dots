@@ -1139,6 +1139,32 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                      ("bossa - soma fm"        . "https://somafm.com/bossa.pls")
                      ("isl - soma fm "         . "https://somafm.com/illstreet.pls"))))
 
+;; NOTE: They keys get bound, but they are captured by evil-mode.
+(use-package yeetube
+  :defer
+  :config
+  (defun me/open-yt-under-point ()
+    (interactive)
+    (let ((url (thing-at-point 'url)))
+      (if (string-match "youtube.com" url)
+          (yeetube-search url))))
+
+  ;; Simple bit of advice to allow for youtube links to be automatically
+  ;; searched for via yeetube.
+  (advice-add
+   #'browse-url
+   :around
+   (lambda (orig &rest args)
+     (if (string-match "youtube.com" (car args))
+         (yeetube-search (car args))
+       (apply orig args))))
+
+  :bind
+  (:map yeetube-mode-map
+        ("RET"     . yeetube-play)
+        ("d"       . yeetube-download-video)
+        ("/"       . yeetube-search)))
+
 (use-package eww
   :defer
   ;; Uncomment below for emacs to behave as the default web browser.
