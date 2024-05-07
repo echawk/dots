@@ -696,14 +696,19 @@ the file.
   :defer
   :after flymake)
 
-;; https://github.com/tpeacock19/flymake-vale
+;; https://github.com/emacs-languagetool/flymake-languagetool
+;; https://github.com/emacs-languagetool
+;; https://valentjn.github.io/ltex/index.html
+;; https://old.reddit.com/r/emacs/comments/1b1s7wk/grammarly_in_emacs/
 
-(defun me/make-vale-config ()
-  "Write a simple vale config to `.vale.ini' in `default-directory'."
-  (interactive)
-  (let ((vale-cfg (concat default-directory ".vale.ini")))
-    (write-region
-     "StylesPath = styles
+(me/emacs-N-progn
+ 30
+ (defun me/make-vale-config ()
+   "Write a simple vale config to `.vale.ini' in `default-directory'."
+   (interactive)
+   (let ((vale-cfg (concat default-directory ".vale.ini")))
+     (write-region
+      "StylesPath = styles
 
 MinAlertLevel = suggestion
 
@@ -711,13 +716,11 @@ Packages = proselint, write-good, alex, Readability, Joblint
 
 [*]
 BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
-     nil
-     vale-cfg))
-  (shell-command "vale sync")
-  (when flymake-mode (flymake-vale-maybe-load)))
+      nil
+      vale-cfg))
+   (shell-command "vale sync")
+   (when flymake-mode (flymake-vale-maybe-load)))
 
-(me/emacs-N-progn
- 30
  (use-package flymake-vale
    :if (executable-find "vale")
    :defer
