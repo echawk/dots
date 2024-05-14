@@ -439,6 +439,8 @@ With optional argument FRAME, return the list of buffers of FRAME."
        bibtex-mode) "texlab")
      (vala-mode     "vala-language-server"))))
 
+(use-package consult-eglot :after eglot)
+
 ;; NOTE: Can't defer this package because it won't add in the custom formatters.
 
 
