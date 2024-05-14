@@ -644,6 +644,7 @@ the file.
 ;; markdown mode - it'd be interesting to have it be dynamically enabled
 ;; in programming modes while I am writing comments as well.
 (use-package cape
+  :hook ((LaTeX-mode . (lambda () (add-to-list 'completion-at-point-functions #'cape-tex))))
   :init
   (let* ((dict-file (concat user-emacs-directory "cape-dict"))
          (hunspell-dict "/usr/share/hunspell/en_US.dic")
