@@ -798,22 +798,23 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (me/setup-language-package
  "\\.ij[rstp]$" j-mode (setq j-console-cmd "/usr/lib/j9/bin/jconsole"))
 
+;; .rb
+(me/setup-language-package
+ "\\.rb" ruby-mode
+ (progn
+   (let ((gem-bindir (concat (getenv "GEM_PATH") "/bin/")))
+     (when (file-exists-p gem-bindir)
+       (setq exec-path (cons gem-bindir exec-path))))
+   (use-package inf-ruby :defer
+     :after ruby-mode
+     :hook (ruby-mode . inf-ruby-minor-mode))))
+
 (use-package erlang :defer)
 ;; .rkt
 ;; https://www.racket-mode.com/
 (use-package racket-mode
   :defer
   :hook (racket-mode . racket-xp-mode))
-
-;; .rb
-(use-package ruby-mode :defer
-  :init
-  (let ((gem-bindir (concat (getenv "GEM_PATH") "/bin/")))
-    (when (file-exists-p gem-bindir)
-      (setq exec-path (cons gem-bindir exec-path)))))
-(use-package inf-ruby :defer
-  :after ruby-mode
-  :hook (ruby-mode . inf-ruby-minor-mode))
 
 (use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
