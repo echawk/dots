@@ -1,0 +1,68 @@
+#!/usr/bin/awk -f
+BEGIN {
+    audio_backend = ENVIRON["AUDIO"]
+
+    if (audio_backend == "pipewire") {
+        cmd = "wpctl get-volume @DEFAULT_AUDIO_SINK@"
+        mute_str = "MUTED"
+        volume_re = "Volume:"
+    } else if (audio_backend == "alsa") {
+        cmd = "amixer get Master"
+        mute_str = "off"
+        volume_re = "\[[0-9]+\%\]"
+    } else if (audio_backend == "pulseaudio") {
+        cmd = "pactl list sinks"
+        mute_str = "Mute: yes"
+        volume_re = "\[\t\]+Volume:"
+    } else if (audio_backend == "sndio") {
+        cmd = "sndioctl -f snd/default"
+        mute_str = "mute=1"
+        volume_re = "output.level"
+    }
+
+    # Check to see if we are muted first.
+    muted = 0
+    while ((cmd | getline cmd_out) > 0) {
+        if (cmd_out ~ mute_str) {
+            muted = 1
+        }
+    }
+    # Close 'cmd' so we can read from it again.
+    close(cmd)
+
+    if (muted) {
+        printf "<x"
+    } else {
+        while ((cmd | getline cmd_out) > 0) {
+            if (cmd_out ~ volume_re) {
+                if (audio_backend == "pipewire") {
+                    split(cmd_out, arr, " ")
+                    vol = arr[2] * 100
+                } else if (audio_backend == "alsa") {
+                    split(cmd_out, arr, " ")
+                    vol = arr[5]
+                    # Apparently this is the only way AWK can do this.
+                    gsub(/[%]/, "", vol)
+                    gsub("\\[","",vol)
+                    gsub("\\]","",vol)
+                } else if (audio_backend == "pulseaudio") {
+                    split(cmd_out, arr, " ")
+                    vol = arr[5]
+                    gsub(/[%]/, "", vol)
+                } else if (audio_backend == "sndio") {
+                    split(cmd_out, arr, "=")
+                    vol = arr[2] * 100
+                }
+                if (vol > 70) {
+                    icon = "<))"
+                } else if (vol < 30) {
+                    icon = "<  "
+                } else {
+                    icon = "<) "
+                }
+                printf icon " " vol "%"
+                exit 0
+            }
+        }
+    }
+}
