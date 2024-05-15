@@ -1,0 +1,18 @@
+#!/usr/bin/awk -f
+BEGIN {
+	ARGV[1] = "/sys/class/power_supply/BAT0/status"
+	ARGC = 2
+}
+
+$0 ~ /Discharging/  { status = "[<-]" }
+$0 ~ /Not charging/ { status = "[?!]" }
+$0 ~ /Charging/     { status = "[->]" }
+$0 ~ /Unknown/      { status = "[~~]" }
+$0 ~ /Full/         { status = "[==]" }
+
+END {
+	"acpi -b" | getline cmd_out
+	split(cmd_out, a, ",")
+	printf status a[2] " - " a[3]
+}
+
