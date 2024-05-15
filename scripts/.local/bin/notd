@@ -1,0 +1,21 @@
+#!/bin/sh
+# Depends: xnotify, tiramisu, dbus
+
+# Check if process already exist
+pidof xnotify && exit 1
+pidof tiramisu && exit 1
+
+# Kill all subprocesses when SIGINT is received.
+trap 'kill $(jobs -p)' INT
+
+# Create notification fifo
+export XNOTIFY_FIFO="/tmp/xnotify$DISPLAY.fifo"
+rm -f $XNOTIFY_FIFO
+mkfifo $XNOTIFY_FIFO
+xnotify 0<>$XNOTIFY_FIFO &
+
+# Listen  to dbus
+tiramisu -o "$(printf '#source\t#summary: #body')" > $XNOTIFY_FIFO &
+
+# Need to wait so we can trap signals.
+wait
