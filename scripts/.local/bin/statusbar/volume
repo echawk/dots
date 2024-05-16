@@ -5,19 +5,19 @@ BEGIN {
     if (audio_backend == "pipewire") {
         cmd = "wpctl get-volume @DEFAULT_AUDIO_SINK@"
         mute_str = "MUTED"
-        volume_re = "Volume:"
+        volume_re = /Volume:/
     } else if (audio_backend == "alsa") {
         cmd = "amixer get Master"
         mute_str = "off"
-        volume_re = "\[[0-9]+\%\]"
+        volume_re = /\[[0-9]+%\]/
     } else if (audio_backend == "pulseaudio") {
         cmd = "pactl list sinks"
         mute_str = "Mute: yes"
-        volume_re = "\[\t\]+Volume:"
+        volume_re = /\[\t\]+Volume:/
     } else if (audio_backend == "sndio") {
         cmd = "sndioctl -f snd/default"
         mute_str = "mute=1"
-        volume_re = "output.level"
+        volume_re = /output.level/
     }
 
     # Check to see if we are muted first.
