@@ -60,7 +60,7 @@ BEGIN {
                 } else {
                     icon = "<) "
                 }
-                printf icon " " vol "%"
+                printf "%s", (icon " " vol "%")
                 exit 0
             }
         }
