@@ -13,6 +13,6 @@ $0 ~ /Full/         { status = "[==]" }
 END {
 	"acpi -b" | getline cmd_out
 	split(cmd_out, a, ",")
-	printf status a[2] " - " a[3]
+	printf "%s", (status a[2] " -" a[3])
 }
 
