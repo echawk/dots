@@ -263,7 +263,15 @@
            viper-expert-level 3
            viper-mode t)
      :config
-     (viper-mode))))
+     (viper-mode)))
+
+  ('god
+   (use-package god-mode
+     :init
+     (global-set-key (kbd "<escape>") #'god-local-mode)
+     :bind
+     (:map god-local-mode-map
+           ("i" . god-local-mode)))))
 
 (use-package beframe
   :defer
