@@ -26,30 +26,30 @@ XF86MonBrightnessDown
 XF86MonBrightnessUp
 	bri i
 
-alt + Return
+super + Return
 	terminal
 
 # Start Applications
 alt + d
 	launcher
 
-alt + e
+super + e
 	em
 
-alt + shift + e
+super + shift + e
 	emacs
 
 alt + ctrl + x
 	xkill
 
-alt + z
+super + z
 	lockscreen
 
-alt + shift + z
+super + shift + z
 	dmenuexit.sh
 
 #MISC
-alt + b
+super + b
 	$BROWSER
 
 Print
@@ -58,14 +58,8 @@ Print
 shift + Print
 	maimpick
 
-alt + u
-	pkill -USR1 redshift
-
-alt + m
-	terminal -e neomutt
-
-alt + shift + m
-	mbsync -a
+super + m
+	emacs -f mu4e
 
 alt + semicolon
 	expose
