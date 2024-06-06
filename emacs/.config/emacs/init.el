@@ -76,6 +76,8 @@
   (when (>= emacs-major-version N)
     `(progn ,@body)))
 
+
+(setq me/modal-system 'evil)
 (use-package emacs
   :hook ((prog-mode . display-fill-column-indicator-mode)
          (before-save . (lambda ()
@@ -211,7 +213,9 @@
 
 (use-package which-key
   :config
-  (which-key-mode))
+  (which-key-mode)
+  (when (= me/modal-system 'god)
+    (which-key-enable-god-mode-support)))
 
 (use-package helpful
   :defer
@@ -223,7 +227,6 @@
   (global-set-key (kbd "C-h C-d") #'helpful-at-point))
 
 ;; TODO: experiment with not using vim, and trying out Vanilla emacs binds...
-(setq me/modal-system 'evil)
 
 (pcase me/modal-system
   ('evil
