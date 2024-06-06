@@ -442,6 +442,9 @@ With optional argument FRAME, return the list of buffers of FRAME."
   (load-file me/eglot-quickload-file)
   (me/eglot-enable-everything)
   :config
+  ;; Don't log *anything*. If there are problems, it's easy enough to comment
+  ;; this line out.
+  (fset #'jsonrpc--log-event #'ignore)
   (me/add-to-eglot-server-programs
    '((crystal-mode  "crystalline")
      (d-mode        "serve-d")
