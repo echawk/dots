@@ -269,12 +269,17 @@
      (viper-mode)))
 
   ('god
-   (use-package god-mode
-     :init
-     (global-set-key (kbd "<escape>") #'god-local-mode)
-     :bind
-     (:map god-local-mode-map
-           ("i" . god-local-mode)))))
+   (progn
+     (use-package god-mode
+       :init
+       (global-set-key (kbd "<escape>") #'god-local-mode)
+       :bind
+       (:map god-local-mode-map
+             ("i" . god-local-mode)))
+     ;; TODO: add a keybind to bring up vundo menu.
+     (use-package vundo
+       :defer
+       :commands (vundo)))))
 
 (use-package beframe
   :defer
