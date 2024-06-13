@@ -159,9 +159,7 @@
   ;; Don't error if we can't load the custom file
   (load custom-file 'noerror)
   (setq-default indent-tabs-mode nil
-                tab-width 4)
-  :bind
-  (("<escape>" . keyboard-escape-quit)))
+                tab-width 4))
 
 (use-package async :defer)
 
