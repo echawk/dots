@@ -31,6 +31,8 @@
 #+quicklisp
 (push '*default-pathname-defaults* asdf:*central-registry*)
 
+;; TODO: figure out how to incorporate ql-https
+
 ;; https://github.com/fukamachi/qlot
 ;; https://www.clpm.dev/
 ;; https://medium.com/@MartinCracauer/static-type-checking-in-the-programmable-programming-language-lisp-79bb79eb068a
