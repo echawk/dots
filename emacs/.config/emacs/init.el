@@ -273,6 +273,8 @@
      (use-package god-mode
        :init
        (global-set-key (kbd "<escape>") #'god-local-mode)
+       :config
+       (god-mode-all)
        :bind
        (:map god-local-mode-map
              ("i" . god-local-mode)))
@@ -339,7 +341,12 @@ With optional argument FRAME, return the list of buffers of FRAME."
      res))
 
 (setq me/modeline-left-side-sexps
-      '((propertize (if (and (boundp 'evil-mode) evil-mode) (symbol-name evil-state) "") 'face 'italic)
+      '((pcase me/modal-system
+          ('god
+           (if (bound-and-true-p god-local-mode) "✝️" "🍦"))
+          ('evil
+           (if (and (boundp 'evil-mode) evil-mode) (symbol-name evil-state) ""))
+          (_ ""))
         ;; Need to do a check for the *-ts-mode modes.
         (let ((icon  (all-the-icons-icon-for-mode major-mode :height 1.0 :v-adjust -0.1)))
           (if (not (eq major-mode icon))
