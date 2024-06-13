@@ -1204,6 +1204,10 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   ;; (setq browse-url-browser-function 'eww-browse-url)
   :hook (eww-mode . visual-line-mode))
 
+(use-package elpher
+  :defer
+  :hook (elpher-mode . visual-line-mode))
+
 (use-package google-translate :defer)
 
 (use-package ement :defer)
