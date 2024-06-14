@@ -1,6 +1,13 @@
 #!/bin/sh
 # Depends: xnotify, tiramisu, dbus
 
+case $1 in
+    stop)
+          pkill -2 notd
+          exit 0
+          ;;
+esac
+
 # Check if process already exist
 pidof xnotify && exit 1
 pidof tiramisu && exit 1
@@ -12,7 +19,7 @@ trap 'kill $(jobs -p)' INT
 export XNOTIFY_FIFO="/tmp/xnotify$DISPLAY.fifo"
 rm -f $XNOTIFY_FIFO
 mkfifo $XNOTIFY_FIFO
-xnotify 0<>$XNOTIFY_FIFO &
+xnotify 0<> $XNOTIFY_FIFO &
 
 # Listen  to dbus
 tiramisu -o "$(printf '#source\t#summary: #body')" > $XNOTIFY_FIFO &
