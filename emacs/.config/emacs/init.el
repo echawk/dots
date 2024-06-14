@@ -212,7 +212,7 @@
 (use-package which-key
   :config
   (which-key-mode)
-  (when (= me/modal-system 'god)
+  (when (eq me/modal-system 'god)
     (which-key-enable-god-mode-support)))
 
 (use-package helpful
@@ -339,7 +339,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
 (setq me/modeline-left-side-sexps
       '((pcase me/modal-system
           ('god
-           (if (bound-and-true-p god-local-mode) "✝️" "🍦"))
+           (if (bound-and-true-p god-local-mode) " ✝️" " 🍦"))
           ('evil
            (if (and (boundp 'evil-mode) evil-mode) (symbol-name evil-state) ""))
           (_ ""))
