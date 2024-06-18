@@ -1,0 +1,5 @@
+#!/usr/bin/emacs --script
+
+(dolist (arg argv)
+  (when (file-exists-p arg)
+    (move-file-to-trash arg)))
