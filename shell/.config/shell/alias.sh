@@ -6,7 +6,7 @@ alias ls='ls --color=auto'
 alias ytpladl='youtube-dl --extract-audio --audio-format mp3 -o "%(title)s.%(ext)s"' #change to function
 alias ranger="fff"
 #alias sudo="doas"
-alias rm="trash -v"
+alias rm="trash"
 alias diff="diff --color=auto"
 alias grep="grep --color=auto"
 
