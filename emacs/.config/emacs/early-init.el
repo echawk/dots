@@ -91,8 +91,6 @@
        'modus-vivendi
      'modus-operandi)))
 
-(me/set-theme)
-
 ;; https://github.com/haji-ali/elcron
 ;; Every 1/4 hour, reset the theme.
 (run-with-timer 0 (* 15 60) 'me/set-theme)
