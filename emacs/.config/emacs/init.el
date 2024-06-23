@@ -168,6 +168,10 @@
   (vertico-mode)
   (vertico-multiform-mode))
 
+(use-package ctrlf
+  :config
+  (ctrlf-mode))
+
 ;; https://macowners.club/posts/from-ivy-to-vertico/
 ;; https://github.com/minad/consult
 ;; NOTE: need to investigate this package further, there is definitely more
