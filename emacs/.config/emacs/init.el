@@ -77,7 +77,7 @@
     `(progn ,@body)))
 
 
-(setq me/modal-system 'evil)
+(setq me/modal-system 'god)
 (use-package emacs
   :hook ((prog-mode . display-fill-column-indicator-mode)
          (before-save . (lambda ()
