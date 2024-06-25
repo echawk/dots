@@ -196,6 +196,7 @@
   (setq embark-prompter #'embark-completing-read-prompter)
 
   (add-to-list 'vertico-multiform-categories '(embark-keybinding grid))
+  (setq prefix-help-command #'embark-prefix-help-command)
   :bind
   (("C-;" . embark-act)
    ("C-:" . embark-dwim)))
