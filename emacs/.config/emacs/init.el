@@ -653,6 +653,7 @@ the file.
 
   (corfu-auto-prefix 2)  ;; Set the minimum prefix for completion.
   (corfu-auto-delay 0.0) ;; Disable delay for completions.
+  (corfu-quit-no-match    'separator)
   (corfu-quit-at-boundary 'separator)
   (corfu-echo-documentation 0.25) ;; Echo documentation.
 
