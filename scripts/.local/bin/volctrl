@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# FIXME:allow for specifying the backend as an argument (mainly
+# useful for freebsd where software may have multiple different backends)..
+
 #usage:
 #volctrl i/d/m  (increase/decrease/mute)
 
@@ -55,12 +58,25 @@ snd_h() {
     esac
 }
 
+mixer_h() {
+    command -v mixer || exit 1
+    [ -n "$2" ] && percent="$2"
+    case $1 in
+        i) lt_100 && mixer vol=+${percent:-05}%;;
+        d) mixer vol=-${percent:-05}%;;
+        m) mixer vol.mute=toggle;;
+        s) mixer vol=${percent:-50};;
+        *) exit 1;;
+    esac
+}
+
 lt_100() {
     case $AUDIO in
         pulseaudio) volstat="$(pactl list sinks)" ;;
         alsa) volstat="$(amixer get Master)" ;; # ALSA only equivalent.
         pipewire) volstat="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)" ;;
         sndio) volstat="$(sndioctl -f snd/default output.level)" ;;
+        mixer) volstat="$(mixer vol)" ;;
         *) exit 1 ;;
     esac
 
@@ -70,6 +86,7 @@ lt_100() {
         jack2) exit 1 ;;
         pipewire) vol=$(echo "$volstat" | awk '{print $2 * 100}') ;;
         sndio) vol=$(echo "$volstat" | awk -F= '{print int($2 * 100)}') ;;
+        mixer) vol=$(echo "$volstat" | awk -F"[=:]" '/volume/{print int($2*100)}');;
         *) exit 1 ;;
     esac
 
@@ -90,5 +107,6 @@ case $AUDIO in
     jack) exit 1 ;;
     pipewire) pw_h "$1" "$2" ;; # pipewire can be used as a pulse/jack replacement, so there is really no need for its own stuff
     sndio) snd_h "$1" "$2" ;;
+    mixer) mixer_h "$1" "$2";;
     *) exit 1 ;;
 esac
