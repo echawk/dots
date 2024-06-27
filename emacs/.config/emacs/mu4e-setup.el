@@ -13,6 +13,8 @@
 ;; that is would hopefully be less likey to break compared to msmtp.
 
 
+(require 'eieio)
+
 (defcustom mu4e-setup-use-msmtp-p
   (if (boundp 'mu4e-setup-use-msmtp-p)
       mu4e-setup-use-msmtp-p
@@ -90,8 +92,6 @@
         (shell-command
          (concat "git clone " mu4e-setup-mutt-wizard-repo))
       (shell-command "cd mutt-wizard; git pull"))))
-
-(require 'eieio)
 
 ;; TODO: add in support for specifying whether the connection should use
 ;; 'none', 'ssl', or 'starttls' - If you were to use davmail, you don't need
