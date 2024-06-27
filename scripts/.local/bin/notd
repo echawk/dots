@@ -17,12 +17,12 @@ trap 'kill $(jobs -p)' INT
 
 # Create notification fifo
 export XNOTIFY_FIFO="/tmp/xnotify$DISPLAY.fifo"
-rm -f $XNOTIFY_FIFO
-mkfifo $XNOTIFY_FIFO
-xnotify 0<> $XNOTIFY_FIFO &
+rm -f "$XNOTIFY_FIFO"
+mkfifo "$XNOTIFY_FIFO"
+xnotify 0<> "$XNOTIFY_FIFO" &
 
 # Listen  to dbus
-tiramisu -o "$(printf '#source\t#summary: #body')" > $XNOTIFY_FIFO &
+tiramisu -o "$(printf '#source\t#summary: #body')" > "$XNOTIFY_FIFO" &
 
 # Need to wait so we can trap signals.
 wait
