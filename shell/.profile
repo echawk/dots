@@ -19,5 +19,5 @@ if [ -e "$HOME/.ssh/" ]; then
 fi
 
 # Start up X11 if we are on tty1
-xcmd="$(command -v sx || echo "$(command -v startx)")"
+xcmd="$(command -v sx || command -v startx)"
 [ -z "$DISPLAY" ] && [ "$(tty)" = /dev/tty1 ] && "$xcmd"
