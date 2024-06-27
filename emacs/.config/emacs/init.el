@@ -26,25 +26,6 @@
   (setq use-package-always-ensure t
         use-package-compute-statistics t))
 
-(defun me/straight-bootstrap ()
-  "Function to bootstrap straight.el."
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-        (bootstrap-version 5))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-          (url-retrieve-synchronously
-           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-           'slient 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-  (straight-use-package 'use-package)
-  (setq straight-use-package-by-default t
-        straight-check-for-modifications nil
-        straight-vc-git-default-clone-depth 1))
-
 (defun me/quelpa-bootstrap ()
   "Function to bootstrap quelpa."
   (me/package-bootstrap)
@@ -67,7 +48,6 @@
 (let ((pkg-system 'package-el))
   (pcase pkg-system
     ('package-el (me/package-bootstrap))
-    ('straight (me/straight-bootstrap))
     ('quelpa (me/quelpa-bootstrap))))
 
 (setq me/delete-trailing-whitespace nil)
