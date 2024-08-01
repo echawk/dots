@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+if ! [ -e xmonad ]; then
+    git clone https://github.com/xmonad/xmonad
+else
+    cd xmonad; git pull; cd $OLDPWD
+fi
+if ! [ -e xmonad-contrib ]; then
+    git clone https://github.com/xmonad/xmonad-contrib
+else
+    cd xmonad-contrib; git pull; cd $OLDPWD
+fi
+
+cat > cabal.project << EOF
+packages: */*.cabal
+EOF
+
+cabal update
+cabal install --force-reinstalls --package-env=. --lib base xmonad xmonad-contrib
+cabal install --force-reinstalls --package-env=. xmonad
