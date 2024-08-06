@@ -884,13 +884,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                   (run-prolog t)))))))))
 
 ;; Custom snobol mode.
-(me/emacs-N-progn
- 30
- (use-package snobol-mode
-   :vc (:url "https://github.com/ehawkvu/snobol-mode"
-             :rev :newest)
-   :defer
-   :mode ("\\.sno" . snobol-mode)))
+(use-package snobol-mode
+  :ensure nil
+  :init
+  (unless (package-installed-p (intern "snobol-mode"))
+    (package-vc-install "https://github.com/echawk/snobol-mode"
+                        :last-release))
+  :mode ("\\.sno" . snobol-mode))
 
 ;; Better scheme editing.
 (use-package geiser :defer
