@@ -1,0 +1,12 @@
+#!/bin/sh
+
+mkdir -p scripts
+
+links="
+https://codeberg.org/jouni/mpv_sponsorblock_minimal/raw/branch/master/sponsorblock_minimal.lua
+https://raw.githubusercontent.com/jgreco/mpv-youtube-quality/master/youtube-quality.lua
+"
+cd scripts
+for link in $links; do
+    curl -LO "$link"
+done
