@@ -18,11 +18,11 @@
 ;; Directories that contain desktop files
 (defparameter +system-desktop-files-dir+ #P"/usr/share/applications/")
 (defparameter +user-desktop-files-dir+
-              (concatenate 'string (namestring (uiop:xdg-data-home)) "applications/"))
+  (concatenate 'string (namestring (uiop:xdg-data-home)) "applications/"))
 
 ;; The standard configuration file for xdg-open
 (defparameter +mimeappslist+
-              (concatenate 'string (namestring (uiop:xdg-config-home)) "mimeapps.list"))
+  (concatenate 'string (namestring (uiop:xdg-config-home)) "mimeapps.list"))
 
 ;; These files are tab separated value files, with the first collumn
 ;; being the regular expression, and the second column being the command
@@ -81,15 +81,14 @@
   "Return the first regex rule from *REGEX-RULES-FILE* that matches URI."
   (let* ((rules (read-regex-rules))
          (matched-rule
-          (car
-           (remove-if-not
-            (lambda (regex) (cl-ppcre:scan regex uri))
-            (mapcar #'car rules)))))
-    (first
-     (remove-if-not
-      (lambda (rule)
-        (string= matched-rule (car rule)))
-      rules))))
+           (car
+            (remove-if-not
+             (lambda (regex) (cl-ppcre:scan regex uri))
+             (mapcar #'car rules)))))
+    (some
+     (lambda (rule)
+       (string= matched-rule (car rule)))
+     rules)))
 
 (defun find-matching-mime-rule (mimestring)
   "Return the first mime rule from *MIME-RULES-FILE* that matches MIMESTRING."
@@ -102,23 +101,22 @@
 
 (defun find-matching-mimeapp-rule (mimestring)
   "Return the first rule from +MIMEAPPSLIST+ which matches MIMESTRING."
-  (first
-   (remove-if-not
-    (lambda (rule) (string= mimestring (car rule)))
-    (read-mimeapp-list))))
+  (some
+   (lambda (rule) (string= mimestring (car rule)))
+   (read-mimeapp-list)))
 
-(defun determine-desktop-file-path (desktop-file)
+
+(defun get-desktop-file-path (desktop-file)
   "Return the absolute file path of DESKTOP-FILE.
 Preference is given for files within +USER-DESKTOP-FILES-DIR+."
   (when desktop-file
-    (first
-     (remove-if-not
-      #'identity
-      (list
-       (uiop:file-exists-p
-        (merge-pathnames +user-desktop-files-dir+   desktop-file))
-       (uiop:file-exists-p
-        (merge-pathnames +system-desktop-files-dir+ desktop-file)))))))
+    (some
+     #'identity
+     (list
+      (uiop:file-exists-p
+       (merge-pathnames +user-desktop-files-dir+   desktop-file))
+      (uiop:file-exists-p
+       (merge-pathnames +system-desktop-files-dir+ desktop-file))))))
 
 (defun get-command-from-desktop-file (desktop-file-path)
   "Return the command contained in DESKTOP-FILE-PATH."
@@ -135,10 +133,10 @@ Preference is given for files within +USER-DESKTOP-FILES-DIR+."
   "Return the proper command from a given MIMESTRING searching
 +MIMEAPPLIST+ for the appropriate desktop file."
   (get-command-from-desktop-file
-   (determine-desktop-file-path
+   (get-desktop-file-path
     (second (find-matching-mimeapp-rule mimestring)))))
 
-(defun determine-command (uri mimestring)
+(defun get-command (uri mimestring)
   "Return a symbol determining which config file we should look at
 for a particular MIMESTRING."
   (first
@@ -172,11 +170,9 @@ for a particular MIMESTRING."
 
 (defun open-uri (uri)
   "Open URI with the appropriate program in the background."
-  (let* ((command (determine-command uri (mimes:mime uri))))
+  (let* ((command (get-command uri (mimes:mime uri))))
     (when command
-      (uiop:run-program
-       command
-       :wait   nil))))
+      (uiop:run-program command :wait nil))))
 
 (defun main ()
   (dolist (arg (uiop:command-line-arguments))
