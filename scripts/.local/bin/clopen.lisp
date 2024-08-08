@@ -136,6 +136,31 @@ Preference is given for files within +USER-DESKTOP-FILES-DIR+."
    (get-desktop-file-path
     (second (find-matching-mimeapp-rule mimestring)))))
 
+(defun get-mimetypes-from-desktop-file (desktop-file-path)
+  "Return a list of valid mimetypes within DESKTOP-FILE-PATH."
+  (when desktop-file-path
+    (uiop:split-string
+     (cl-ppcre:regex-replace
+      "^MimeType="
+      (first
+       (remove-if-not
+        (lambda (line) (cl-ppcre:scan "^MimeType=" line))
+        (uiop:read-file-lines desktop-file-path)))
+      "")
+     :separator '(#\;))))
+
+(defun find-matching-system-command (mimestring)
+  "Search +SYSTEM-DESKTOP-FILES-DIR+ for a desktop file which supports
+MIMESTRING."
+  (get-command-from-desktop-file
+   (first
+    (remove-if-not
+     (lambda (desktop-file)
+       (some
+        (lambda (hay) (string= mimestring hay))
+        (get-mimetypes-from-desktop-file desktop-file)))
+     (uiop:directory-files +system-desktop-files-dir+)))))
+
 (defun get-command (uri mimestring)
   "Return a symbol determining which config file we should look at
 for a particular MIMESTRING."
@@ -163,10 +188,12 @@ for a particular MIMESTRING."
         (find-matching-mimeapp-command mimestring)
         uri))
 
-     ;; FIXME: implement the system mime list stuff.
-     )
-    )
-   ))
+     ;; TODO: make this a little bit neater?
+     ;; TODO: also make this whole process a bit lazier (w.r.t evaluation)
+     (cl-ppcre:regex-replace
+      "%[fFuU]"
+      (find-matching-system-command mimestring)
+      uri)))))
 
 (defun open-uri (uri)
   "Open URI with the appropriate program in the background."
