@@ -85,10 +85,11 @@
             (remove-if-not
              (lambda (regex) (cl-ppcre:scan regex uri))
              (mapcar #'car rules)))))
-    (some
-     (lambda (rule)
-       (string= matched-rule (car rule)))
-     rules)))
+    (first
+     (remove-if-not
+      (lambda (rule)
+        (string= matched-rule (car rule)))
+      rules))))
 
 (defun find-matching-mime-rule (mimestring)
   "Return the first mime rule from *MIME-RULES-FILE* that matches MIMESTRING."
@@ -101,22 +102,23 @@
 
 (defun find-matching-mimeapp-rule (mimestring)
   "Return the first rule from +MIMEAPPSLIST+ which matches MIMESTRING."
-  (some
-   (lambda (rule) (string= mimestring (car rule)))
-   (read-mimeapp-list)))
-
+  (first
+   (remove-if-not
+    (lambda (rule) (string= mimestring (car rule)))
+    (read-mimeapp-list))))
 
 (defun get-desktop-file-path (desktop-file)
   "Return the absolute file path of DESKTOP-FILE.
 Preference is given for files within +USER-DESKTOP-FILES-DIR+."
   (when desktop-file
-    (some
-     #'identity
-     (list
-      (uiop:file-exists-p
-       (merge-pathnames +user-desktop-files-dir+   desktop-file))
-      (uiop:file-exists-p
-       (merge-pathnames +system-desktop-files-dir+ desktop-file))))))
+    (first
+     (remove-if-not
+      #'identity
+      (list
+       (uiop:file-exists-p
+        (merge-pathnames +user-desktop-files-dir+   desktop-file))
+       (uiop:file-exists-p
+        (merge-pathnames +system-desktop-files-dir+ desktop-file)))))))
 
 (defun get-command-from-desktop-file (desktop-file-path)
   "Return the command contained in DESKTOP-FILE-PATH."
