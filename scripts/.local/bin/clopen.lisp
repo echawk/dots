@@ -13,7 +13,7 @@
 
 ;; :trivial-mimes - Tiny library to determine mimetypes.
 ;; :cl-ppcre - Standard CL regex library.
-(ql:quickload '(:trivial-mimes :cl-ppcre) :silent t)
+(ql:quickload '(:trivial-mimes :cl-ppcre :bordeaux-threads) :silent t)
 
 ;; Directories that contain desktop files
 (defparameter +system-desktop-files-dir+ #P"/usr/share/applications/")
@@ -204,7 +204,11 @@ for a particular MIMESTRING."
       (uiop:run-program command :wait nil))))
 
 (defun main ()
-  (dolist (arg (uiop:command-line-arguments))
-    (open-uri arg)))
+  ;; Join each of the threads.
+  (mapcar #'bordeaux-threads-2:join-thread
+          ;; Make a separate thread for each of the arguments.
+          (mapcar (lambda (arg)
+                    (bordeaux-threads-2:make-thread (lambda () (open-uri arg))))
+                  (uiop:command-line-arguments))))
 
 (main)
