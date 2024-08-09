@@ -1,8 +1,10 @@
-#!/usr/bin/env sbcl --script
+#!/usr/bin/sbcl --script
 
 ;; Simple program to get TOTP codes.
 ;; Expects account tokens to be in ~/.config/totp/
 ;; ex: `echo "mysecrettoken" > ~/.config/totp/github_personal`
+
+;; FIXME: allow generating totp codes using only the terminal
 
 (require :uiop)
 
