@@ -29,17 +29,13 @@ XF86MonBrightnessUp
 super + Return
 	terminal
 
-# Start Applications
-alt + d
-	launcher
-
 super + e
 	em
 
 super + shift + e
 	emacs
 
-alt + ctrl + x
+super + ctrl + x
 	xkill
 
 super + z
@@ -61,10 +57,7 @@ shift + Print
 super + m
 	emacs -f mu4e
 
-alt + semicolon
-	expose
-
-alt + p
-	shopen "$(xclip -o)"
+super + |
+	clopen.lisp "$(xclip -o)"
 
 # vim: ft=sxhkdrc
