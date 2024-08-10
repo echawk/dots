@@ -3,12 +3,19 @@
 (require 'asdf)
 (asdf:load-system :uiop)
 
-;; Make this stupid dummy package to make SBCL shut up.
+;; Make these stupid dummy package to make SBCL shut up.
 (defpackage :quicklisp-quickstart
   (:use :cl)
   (:export :install))
 (in-package :quicklisp-quickstart)
 (defun install () t)
+
+(defpackage :ql-dist
+  (:use :cl)
+  (:export :install-dist :find-dist))
+(in-package :ql-dist)
+(defun install-dist (arg1 arg2 arg3) (list arg1 arg2 arg3))
+(defun find-dist (str) str)
 
 ;; Switch back to cl-user package.
 (in-package :cl-user)
@@ -25,7 +32,11 @@
     (uiop:run-program "rm quicklisp.lisp"))
 
   (when (probe-file quicklisp-init)
-    (load quicklisp-init)))
+    (load quicklisp-init))
+
+  ;; Also install the ultralisp dist while we are at it...
+  (unless (ql-dist:find-dist "ultralisp")
+    (ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)))
 
 ;; how to get the current directory always detectable by quicklisp
 #+quicklisp
