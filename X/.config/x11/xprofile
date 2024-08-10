@@ -10,6 +10,7 @@ if which xset; then
     xset b off &
 fi
 which xhost && xhost +local: & # allow chroots to connect to the X server
+which xhost && xhost + &
 
 # One Time Run
 which bri && bri set 35
