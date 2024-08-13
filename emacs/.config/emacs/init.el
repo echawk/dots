@@ -560,6 +560,7 @@ the file.
         ('indent   (indent-fmt))))
     (delete-trailing-whitespace (point-min) (point-max)))
 
+  ;; FIXME: seems to have strange behavior at times...
   (advice-add
    #'apheleia-format-after-save
    :around
@@ -662,6 +663,7 @@ the file.
   :hook ((LaTeX-mode . (lambda () (add-to-list 'completion-at-point-functions #'cape-tex))))
   :init
   (let* ((dict-file (concat user-emacs-directory "cape-dict"))
+         ;; FIXME: make this work cross platform...
          (hunspell-dict "/usr/share/hunspell/en_US.dic")
          (hunspell-exists-p  (file-exists-p hunspell-dict))
          (dict-file-exists-p (file-exists-p dict-file)))
@@ -899,6 +901,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package geiser-guile
   :after geiser
   :custom (geiser-guile-binary "guile3"))
+;; FIXME: rm these keybinds
 (use-package macrostep :defer
   :bind
   (:map macrostep-keymap
