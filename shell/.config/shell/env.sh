@@ -1,16 +1,26 @@
 # potentially change the order of $PATH to have '.local' stuff to be first
 export PATH="$(find "$HOME/.local/bin/" -type d | tr '\n' ':' | sed 's/:*$//'):$PATH"
-[ -d "$HOME/.dotnet/" ] && PATH="$PATH:$HOME/.dotnet"
-[ -d "$HOME/.dotnet/tools" ] && PATH="$PATH:$HOME/.dotnet/tools"
+[ -d "$HOME/.dotnet/" ]             && PATH="$PATH:$HOME/.dotnet"
+[ -d "$HOME/.dotnet/tools" ]        && PATH="$PATH:$HOME/.dotnet/tools"
+[ -d "$HOME/.local/share/npm/bin" ] && PATH="$PATH:$HOME/.local/share/npm/bin"
 
-export EDITOR="nvim" # emacs, vis
+# enable homebrew if we are on macOS
+case "$(uname)" in
+    Darwin)
+        if command -v brew > /dev/null; then
+            eval "$(/opt/homebrew/bin/brew/shellenv)"
+        fi
+        ;;
+esac
+
+#export EDITOR="nvim" # emacs, vis
 export PAGER="less"
-export MANPAGER="nvim +Man!"
-export BROWSER="chromium" # firefox brave luakit chromium
-export READER="zathura"   # mupdf
+export BROWSER="brave" # firefox brave luakit chromium
+export READER="emacs"   # mupdf zathura
 export FUZZY="fzf"
 export WM="stumpwm"     # bspwm dwm i3 herbstluftwm
 
+# FIXME: make this check for the OS as well.
 if command -v wpctl; then
     export AUDIO="pipewire"
 elif command -v pactl; then
@@ -29,21 +39,7 @@ export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_RUNTIME_DIR="${HOME}/.cache/runtime"
 export XDG_STATE_HOME="${HOME}/.local/state"
 
-export CHROME_FLAGS="
---ignore-gpu-blocklist
---use-gl=desktop
---enable-zero-copy
---disable-gpu-driver-bug-workarounds
---disable-gpu-driver-workarounds
---enable-accelerated-video-decode
---enable-accelerated-mjpeg-decode
---enable-features=VaapiVideoDecoder,CanvasOopRasterization
---enable-gpu-compositing
---enable-gpu-rasterization
---enable-oop-rasterization
---canvas-oop-rasterization
---enable-raw-draw
-"
+export CHROME_FLAGS="--ignore-gpu-blocklist --enable-features=VaapiVideoDecoder,CanvasOopRasterization"
 
 # X
 #export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
@@ -51,12 +47,16 @@ export _JAVA_AWT_WM_NONREPARENTING=1 # Fix for Java applications in dwm
 export MOZ_USE_XINPUT2="1"           # Mozilla smooth scrolling/touchpads.
 
 # Build Flags
-export KISS_TMPDIR="/tmp/kiss"
-export MAKEFLAGS=-j16
-export SAMUFLAGS=-j16
-export CFLAGS="-O3 -march=native -mtune=native "
-export CXXFLAGS="$CFLAGS"
-export CMAKE_GENERATOR="Ninja"
+case "$(uname)" in
+    Linux)
+        #export KISS_TMPDIR="/tmp/kiss"
+        export MAKEFLAGS=-j12
+        export SAMUFLAGS=-j12
+        export CFLAGS="-O3 -march=native -mtune=native "
+        export CXXFLAGS="$CFLAGS"
+        export CMAKE_GENERATOR="Ninja"
+        ;;
+esac
 
 # Programming Langs
 export GOPATH="$XDG_DATA_HOME/go"
