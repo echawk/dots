@@ -38,6 +38,7 @@ extra_ps1_info() {
 test_microphone() {
     arecord -vvv -f dat /dev/null
 }
+# arecord -vvv --device="hw:5,0" -f dat /dev/null
 
 command -v opam > /dev/null 2>&1 && eval $(opam env)
 
@@ -56,7 +57,7 @@ case "$0" in
 esac
 
 #vi mode for text input
-set -o vi
+#set -o vi
 # get rid of the history file
 unset HISTFILE
 # https://unix.stackexchange.com/questions/72086/ctrl-s-hang-terminal-emulator
