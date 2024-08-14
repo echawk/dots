@@ -5,20 +5,24 @@ case "$-" in
 esac
 [ -f "$XDG_CONFIG_HOME/shell/alias.sh" ] && . "$XDG_CONFIG_HOME/shell/alias.sh"
 
-export PATH=/var/db/kiss/repos/kiss-personal/bin:/usr/lib/ccache/bin:$PATH
-export KISS_SU=doas
-export KISS_STRIP=0
+case "$(uname)" in
+    Linux)
+        export PATH=/var/db/kiss/repos/kiss-personal/bin:/usr/lib/ccache/bin:$PATH
+        export KISS_SU=doas
+        export KISS_STRIP=0
 
-export KISS_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kiss-timer-hook"
-export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-tex/kiss-tex-hook"
-export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-mangz-hook"
+        export KISS_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kiss-timer-hook"
+        export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-tex/kiss-tex-hook"
+        export KISS_HOOK="$KISS_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kiss-mangz-hook"
 
-export KW_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kw-lsp-hook"
-export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-lang-hook"
-export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-llvm"
-export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-emacs"
+        export KW_HOOK="/var/db/kiss/repos/kiss-personal/hooks/kw-lsp-hook"
+        export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-lang-hook"
+        export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-llvm"
+        export KW_HOOK="$KW_HOOK:/var/db/kiss/repos/kiss-personal/hooks/kw-emacs"
 
-KISS_PATH="$HOME/.cache/kiss/hold:$KISS_PATH"
+        KISS_PATH="$HOME/.cache/kiss/hold:$KISS_PATH"
+        ;;
+esac
 
 # special funtion to make it obvious when you are inside of a git repo; print out the name of the branch
 parse_git_branch() {
