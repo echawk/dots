@@ -2,18 +2,8 @@
 alias cp="cp -i"
 alias df='df -h'
 alias more=less
-alias ls='ls --color=auto'
 alias ytpladl='youtube-dl --extract-audio --audio-format mp3 -o "%(title)s.%(ext)s"' #change to function
-alias ranger="fff"
-#alias sudo="doas"
 alias rm="trash"
-alias diff="diff --color=auto"
-alias grep="grep --color=auto"
-
-alias vi='nvim -u /dev/null'
-alias icd="cd \$(shfm)"
-
-alias skiss="/usr/bin/sudo kiss"
 
 # git aliases
 alias gplog="git log --all --graph --decorate --stat"
