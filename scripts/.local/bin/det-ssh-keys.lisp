@@ -198,6 +198,9 @@ and the public key being second."
       (uiop:delete-file-if-exists pub-key-path)
 
       (ssh-keys:write-key-to-path (first  keys-lst) priv-key-path)
-      (ssh-keys:write-key-to-path (second keys-lst) pub-key-path))))
+      (ssh-keys:write-key-to-path (second keys-lst) pub-key-path)
+
+      (uiop:run-program (concatenate 'string "chmod 0600 " priv-key-path))
+      (uiop:run-program (concatenate 'string "chmod 0600 " pub-key-path)))))
 
 (main)
