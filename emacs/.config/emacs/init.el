@@ -56,6 +56,10 @@
   (when (>= emacs-major-version N)
     `(progn ,@body)))
 
+;; OS specific settings.
+(pcase system-type
+  ('darwin
+   (setq mac-command-modifier 'control)))
 
 (setq me/modal-system nil)
 (use-package emacs
