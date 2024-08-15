@@ -134,7 +134,7 @@ Sums the value of all of the characters in STR and divides them by N."
 (defun get-seed-string ()
   "Return a string that is 'good enough' to seed ironclad with."
   (declare (optimize (safety 3)))
-  (let* ((iters 50)
+  (let* ((iters 32)
          (master-pass   (get-master-pass-gui))
          (password-prof (get-lesspass-prof-gui))
 
@@ -150,7 +150,9 @@ Sums the value of all of the characters in STR and divides them by N."
                  :do (setf (lesspass:counter-of password-prof)
                            (* i step))
                  :collect
-                 (lesspass:generate-password password-prof master-pass)))))
+                 (subseq
+                  (lesspass:generate-password password-prof master-pass)
+                 (- i 1) i)))))
 
 (defun generate-deterministic-keys (seed-string)
   "Will deterministically generate a ssh key pair from SEED-STRING.
