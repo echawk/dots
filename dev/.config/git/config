@@ -1,0 +1,26 @@
+[core]
+	attributesfile = ~/.config/git/attributes
+
+[credential]
+	helper = cache --timeout=7200
+
+[pull]
+	rebase = true
+
+[user]
+	name = Ethan
+	email = ethan.hawk@valpo.edu
+
+[safe]
+	directory = *
+[merge]
+	conflictStyle = zdiff3
+
+[diff "common-lisp"]
+	xfuncname="^\\((def\\S+\\s+\\S+)"
+
+[diff "elisp"]
+	xfuncname="^\\((((def\\S+)|use-package)\\s+\\S+)"
+
+[url "ssh://git@github.com"]
+	insteadOf = https://github.com
