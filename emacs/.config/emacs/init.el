@@ -1155,6 +1155,10 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
         ("d"       . yeetube-download-video)
         ("/"       . yeetube-search)))
 
+(use-package media-thumbnail
+  :defer
+  :hook (dired-mode . media-thumbnail-dired-mode))
+
 (use-package eww
   :defer
   ;; Uncomment below for emacs to behave as the default web browser.
