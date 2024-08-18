@@ -1026,8 +1026,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; Refactoring mode:
 ;; https://github.com/Wilfred/emacs-refactor
 
-;; FIXME: fork erefactor & fix the warnings.
-(use-package erefactor :defer)
 (use-package emr :defer)
 (me/emacs-N-progn
  30
