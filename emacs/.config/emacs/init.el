@@ -100,6 +100,9 @@
   ;; I almost NEVER want to see the warnings buffer.
   (warning-minimum-level :emergency)
   ;; Now if only I could also disable the *Compile-Log* buffer...
+  (compilation-window-height 0)
+  ;; Prevent any buffer from making a new window
+  ;;(display-buffer-alist '(("\\.*" . (display-buffer-no-window))))
 
   ;; Native Compilation.
   (package-native-compile (>= emacs-major-version 28))
