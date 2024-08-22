@@ -166,7 +166,8 @@
   (setq xref-show-xrefs-function       #'consult-xref
         xref-show-definitions-function #'consult-xref)
   :bind
-  (("C-x b" . consult-buffer)))
+  (("C-x b" . consult-buffer)
+   ("M-g i" . consult-imenu)))
 
 ;; https://github.com/oantolin/embark
 (use-package embark
