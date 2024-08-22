@@ -184,7 +184,9 @@
   (setq prefix-help-command #'embark-prefix-help-command)
   :bind
   (("C-;" . embark-act)
-   ("C-:" . embark-dwim)))
+   ("C-:" . embark-dwim))
+  (:map embark-general-map
+        ("Dw" . define-word-at-point)))
 
 (use-package embark-consult
   :hook
