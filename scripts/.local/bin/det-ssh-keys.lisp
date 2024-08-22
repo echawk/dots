@@ -140,19 +140,10 @@ Sums the value of all of the characters in STR and divides them by N."
 
          ;; Get the step value from the master password since that information
          ;; is also secret, thus making it more secure against brute forcing.
-         (step (get-step-size-from-string
-                master-pass iters)))
-    (apply 'concatenate 'string
-           (loop :for i :from 1 :to iters
-                 ;; Ensure that the counter of the lesspass prof is some
-                 ;; pseudo-random value. Each different value for the
-                 ;; counter *will* change the password.
-                 :do (setf (lesspass:counter-of password-prof)
-                           (* i step))
-                 :collect
-                 (subseq
-                  (lesspass:generate-password password-prof master-pass)
-                 (- i 1) i)))))
+         (counter (get-step-size-from-string
+                   master-pass iters)))
+    (setf (lesspass:counter-of password-prof) counter)
+    (lesspass:generate-password password-prof master-pass)))
 
 (defun generate-deterministic-keys (seed-string)
   "Will deterministically generate a ssh key pair from SEED-STRING.
