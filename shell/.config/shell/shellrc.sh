@@ -59,7 +59,7 @@ case "$0" in
         PS1="\fo\fg[$USER\fw \$(basename \"\$PWD\")\fg]\fb \$(extra_ps1_info)\fg% "
         ;;
     *zsh)
-        PS1="%n@%m %1~ %#"
+        PS1="%n@%m %1~ # "
         ;;
 esac
 
