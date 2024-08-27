@@ -10,8 +10,6 @@
 
 (load (merge-pathnames (user-homedir-pathname) ".sbclrc"))
 
-;; :trivial-mimes - Tiny library to determine mimetypes.
-;; :cl-ppcre - Standard CL regex library.
 (ql:quickload '(:clx) :silent t)
 
 (let* ((dis (xlib:open-default-display))
