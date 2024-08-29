@@ -104,6 +104,9 @@
   ;; Prevent any buffer from making a new window
   ;;(display-buffer-alist '(("\\.*" . (display-buffer-no-window))))
 
+  ;; Better buffer naming.
+  (uniquify-buffer-name-style 'post-forward)
+
   ;; Native Compilation.
   (package-native-compile (>= emacs-major-version 28))
   (native-comp-async-report-warnings-errors (not (>= emacs-major-version 28)))
