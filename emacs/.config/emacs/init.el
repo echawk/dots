@@ -159,6 +159,10 @@
   :config
   (ctrlf-mode))
 
+(use-package page-break-lines
+  :config
+  (global-page-break-lines-mode))
+
 ;; https://macowners.club/posts/from-ivy-to-vertico/
 ;; https://github.com/minad/consult
 ;; NOTE: need to investigate this package further, there is definitely more
