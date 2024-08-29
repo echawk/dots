@@ -70,6 +70,17 @@ mixer_h() {
     esac
 }
 
+mac_h() {
+    command -v osascript || exit 1
+    [ -n "$2" ] && percent="$2"
+    case $1 in
+        i) lt_100 && osascript -e "set volume output volume ((output volume of (get volume settings)) + ${percent:-5})";;
+        d) osascript -e "set volume output volume ((output volume of (get volume settings)) - ${percent:-5})";;
+        m) osascript -e "set volume muted not (output muted of (get volume settings))";;
+        s) osascript -e "set volume output volume ${percent}";;
+    esac
+}
+
 lt_100() {
     case $AUDIO in
         pulseaudio) volstat="$(pactl list sinks)" ;;
@@ -77,6 +88,7 @@ lt_100() {
         pipewire) volstat="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)" ;;
         sndio) volstat="$(sndioctl -f snd/default output.level)" ;;
         mixer) volstat="$(mixer vol)" ;;
+        mac) volstat="$(osascript -e "output volume of (get volume settings)")";;
         *) exit 1 ;;
     esac
 
@@ -87,6 +99,7 @@ lt_100() {
         pipewire) vol=$(echo "$volstat" | awk '{print $2 * 100}') ;;
         sndio) vol=$(echo "$volstat" | awk -F= '{print int($2 * 100)}') ;;
         mixer) vol=$(echo "$volstat" | awk -F"[=:]" '/volume/{print int($2*100)}');;
+        mac) vol="$volstat";;
         *) exit 1 ;;
     esac
 
@@ -108,5 +121,6 @@ case $AUDIO in
     pipewire) pw_h "$1" "$2" ;; # pipewire can be used as a pulse/jack replacement, so there is really no need for its own stuff
     sndio) snd_h "$1" "$2" ;;
     mixer) mixer_h "$1" "$2";;
+    mac) mac_h "$1" "$2";;
     *) exit 1 ;;
 esac
