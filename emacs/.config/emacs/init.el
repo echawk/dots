@@ -989,9 +989,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (add-to-list 'flymake-diagnostic-functions 'flymake-hlint)
 
   ;; Generate a capf backend...
-  (setq completion-at-point-functions
-        (append completion-at-point-functions
-                (list (cape-company-to-capf #'dante-company)))))
+  (add-to-list completion-at-point-functions
+               (cape-company-to-capf #'dante-company)))
 
 ;; (use-package agda
 ;;   :ensure nil
