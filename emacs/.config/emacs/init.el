@@ -59,7 +59,15 @@
 ;; OS specific settings.
 (pcase system-type
   ('darwin
-   (setq mac-command-modifier 'control)))
+   (setq mac-command-modifier 'control)
+   ;; Emacs on macOS has now crash too many times with no reason for me to
+   ;; feel comfortable disabling this.
+   (setq auto-save-default t))
+  (_
+   (setq auto-save-default nil)
+   )
+  )
+
 
 (setq me/modal-system nil)
 (use-package emacs
@@ -93,7 +101,6 @@
 
   ;; Don't use file backups.
   (backup-inhibited t)
-  (auto-save-default nil)
   ;; Don't ask for confirmation when opening large files.
   (large-file-warning-threshold nil)
 
