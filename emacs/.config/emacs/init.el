@@ -62,7 +62,8 @@
    (setq mac-command-modifier 'control)
    ;; Emacs on macOS has now crash too many times with no reason for me to
    ;; feel comfortable disabling this.
-   (setq auto-save-default t))
+   (setq auto-save-default t
+         auto-save-timeout 30))
   (_
    (setq auto-save-default nil)
    )
