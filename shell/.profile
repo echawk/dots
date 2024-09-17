@@ -29,7 +29,7 @@ if [ -e "$HOME/.ssh/" ]; then
         eval "$(ssh-agent -s)"
         find "$HOME/.ssh" -name '*.pub' \
             | sed "s/.pub$//" \
-            | xargs -I{} ssh-add {}
+            | xargs -I{} ssh-add {} >/dev/null 2>&1
     fi
 fi
 
