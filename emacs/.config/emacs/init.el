@@ -204,7 +204,8 @@
   (("C-;" . embark-act)
    ("C-:" . embark-dwim))
   (:map embark-general-map
-        ("Dw" . define-word-at-point)))
+        ("Dw" . define-word-at-point)
+        ("Cp" . kill-ring-save)))
 
 (use-package embark-consult
   :hook
