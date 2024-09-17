@@ -12,6 +12,11 @@
 ;; I want to investigate using the built in smtp client for emacs, sincce
 ;; that is would hopefully be less likey to break compared to msmtp.
 
+;; https://www.tomica.net/blog/2020/12/sending-mail-using-multiple-mu4e-contexts-in-emacs/
+;; https://fanpengkong.com/post/emacs-email/emacs-email/
+;; https://tushartyagi.com/blog/configure-mu4e-and-msmtp/
+;; https://systemcrafters.net/emacs-mail/compose-and-send-email/
+;; https://www.reddit.com/r/linuxquestions/comments/asjaw4/msmtp_account_default_not_found_no_configuration/
 
 (require 'eieio)
 
