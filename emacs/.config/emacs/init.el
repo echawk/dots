@@ -861,9 +861,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package erlang :defer)
 ;; .rkt
 ;; https://www.racket-mode.com/
-(use-package racket-mode
-  :defer
-  :hook (racket-mode . racket-xp-mode))
+;; (use-package racket-mode
+;;   :defer
+;;   :hook (racket-mode . racket-xp-mode))
 
 (use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
@@ -927,10 +927,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; Better scheme editing.
 (use-package geiser :defer
   :custom
-  (geiser-active-implementations '(guile3)))
+  (geiser-active-implementations '(guile3 racket)))
 (use-package geiser-guile
   :after geiser
   :custom (geiser-guile-binary "guile3"))
+(use-package geiser-racket
+  :after geiser)
 ;; FIXME: rm these keybinds
 (use-package macrostep :defer
   :bind
