@@ -174,6 +174,10 @@
   :config
   (global-page-break-lines-mode))
 
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
+
 ;; https://macowners.club/posts/from-ivy-to-vertico/
 ;; https://github.com/minad/consult
 ;; NOTE: need to investigate this package further, there is definitely more
