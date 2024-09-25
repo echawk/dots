@@ -75,6 +75,10 @@
                               "Near"))
         (concat "sslcert=" mu4e-setup-cert-file)
         ;; FIXME: have this be detected
+        ;; FIXME: need to integrate the :smtp-mail-type into this
+        ;; -or- have our own variable fr setting the imapssl type.
+        ;; this is only really needed for davmail though.
+        ;; for Davmail, we need to set this variable to 'None'
         "imapssl=IMAPS"
         "maxmes=0")))
 
@@ -117,6 +121,9 @@
    (smtp-port
     :initarg :smtp-port :initform "" :type string
     :documentation "The port for the smtp address.")
+   (smtp-stream-type
+    :initarg :stmp-stream-type :initform "starttls" :type string
+    :documentation "The type of stream for smtp. Defaults to `starttls'.")
    (password-command
     :initarg :password-command :initform "" :type string
     :documentation "A command that when ran returns the account's passowrd.")))
@@ -216,9 +223,10 @@
 
 (defun mu4e-setup--email-profile-add-to-mu4e-contexts (obj)
   (with-slots
-      ((email-address :email-address)
-       (smtp-address  :smtp-address)
-       (smtp-port  :smtp-port))
+      ((email-address    :email-address)
+       (smtp-address     :smtp-address)
+       (smtp-port        :smtp-port)
+       (smtp-stream-type :smtp-stream-type))
       obj
     (let
         ((sent-folder
@@ -258,7 +266,7 @@
 
           (smtpmail-smtp-server  . ,smtp-address)
           (smtpmail-smtp-service . ,smtp-port)
-          (smtpmail-stream-type  . starttls)
+          (smtpmail-stream-type  . ,(intern smtp-stream-type))
 
           (mu4e-sent-folder      . ,sent-folder)
           (mu4e-spam-folder      . ,spam-folder)
