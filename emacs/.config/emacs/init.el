@@ -175,10 +175,9 @@
   (global-page-break-lines-mode))
 
 (use-package exec-path-from-shell
-  :if (memq window-system '(mac ns x))
   :config
   (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID"))
-    (add-to-list exec-path-from-shell-variables var))
+    (add-to-list 'exec-path-from-shell-variables var))
   (exec-path-from-shell-initialize))
 
 ;; https://macowners.club/posts/from-ivy-to-vertico/
