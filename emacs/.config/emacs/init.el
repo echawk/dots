@@ -776,6 +776,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
              :rev :newest)
    :hook (flymake-mode . flymake-vale-load)))
 
+(use-package symbol-overlay
+  :hook (prog-mode . symbol-overlay-mode))
+
+(use-package casual-symbol-overlay
+  :after symbol-overlay
+  :bind (:map prog-mode-map
+              ("C-c o" . casual-symbol-overlay-tmenu)))
+
 
 (use-package tuareg
   :defer
