@@ -274,9 +274,12 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 
 ;; TODO: add in keybind to open up Emacs w/ slynk connected.
 
-;; (run-shell-command
-;;  (format nil "emacs --eval (sly-connect 'localhost' ~a)"
-;;          *slynk-port-number*))
+;; (progn
+;;   (unless *slynk-server-p*
+;;     (start-slynk))
+;;   (run-shell-command
+;;    (format nil "emacs --eval \"(sly-connect 'localhost' ~a)\""
+;;            *slynk-port-number*)))
 
 ;; FIXME: add in more commands into the top map - I'd like to
 ;; avoid the prefix key as much as possible - should have
