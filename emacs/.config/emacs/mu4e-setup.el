@@ -122,7 +122,7 @@
     :initarg :smtp-port :initform "" :type string
     :documentation "The port for the smtp address.")
    (smtp-stream-type
-    :initarg :stmp-stream-type :initform "starttls" :type string
+    :initarg :smtp-stream-type :initform "starttls" :type string
     :documentation "The type of stream for smtp. Defaults to `starttls'.")
    (password-command
     :initarg :password-command :initform "" :type string
