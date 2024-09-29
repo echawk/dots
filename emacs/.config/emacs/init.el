@@ -56,27 +56,6 @@
   (when (>= emacs-major-version N)
     `(progn ,@body)))
 
-;; OS specific settings.
-(pcase system-type
-  ('darwin
-   (setq mac-command-modifier 'control)
-   ;; Emacs on macOS has now crash too many times with no reason for me to
-   ;; feel comfortable disabling this.
-   (setq auto-save-default t
-         auto-save-timeout 30))
-  ;; Only use this package on macOS. Otherwise things on Linux and BSD
-  ;; behave very very incorrectly. Linux does not have the weird shell
-  ;; issues that macOS has so this package hurts *far* more than it helps.
-  (use-package exec-path-from-shell
-    :config
-    (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID"))
-      (add-to-list 'exec-path-from-shell-variables var))
-    (exec-path-from-shell-initialize))
-
-  (_
-   (setq auto-save-default nil)
-   )
-  )
 
 
 (setq me/modal-system nil)
@@ -145,6 +124,29 @@
    (remq 'process-kill-buffer-query-function
          kill-buffer-query-functions))
   :config
+  ;; OS specific settings.
+  (cond
+   ((eq system-type 'darwin)
+    (progn
+      (setq mac-command-modifier 'control)
+      ;; Emacs on macOS has now crash too many times with no reason for me to
+      ;; feel comfortable disabling this.
+      (setq auto-save-default t
+            auto-save-timeout 30))
+    ;; Only use this package on macOS. Otherwise things on Linux and BSD
+    ;; behave very very incorrectly. Linux does not have the weird shell
+    ;; issues that macOS has so this package hurts *far* more than it helps.
+    (use-package exec-path-from-shell
+      :config
+      (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID"))
+        (add-to-list 'exec-path-from-shell-variables var))
+      (exec-path-from-shell-initialize)))
+   (t
+    (progn
+      (setq auto-save-default nil))
+    )
+   )
+
   ;; Automatically update buffers when contents change on disk.
   (global-auto-revert-mode)
   ;; Don't ask to spell out 'yes'
