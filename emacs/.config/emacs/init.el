@@ -64,6 +64,15 @@
    ;; feel comfortable disabling this.
    (setq auto-save-default t
          auto-save-timeout 30))
+  ;; Only use this package on macOS. Otherwise things on Linux and BSD
+  ;; behave very very incorrectly. Linux does not have the weird shell
+  ;; issues that macOS has so this package hurts *far* more than it helps.
+  (use-package exec-path-from-shell
+    :config
+    (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID"))
+      (add-to-list 'exec-path-from-shell-variables var))
+    (exec-path-from-shell-initialize))
+
   (_
    (setq auto-save-default nil)
    )
@@ -173,12 +182,6 @@
 (use-package page-break-lines
   :config
   (global-page-break-lines-mode))
-
-(use-package exec-path-from-shell
-  :config
-  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID"))
-    (add-to-list 'exec-path-from-shell-variables var))
-  (exec-path-from-shell-initialize))
 
 ;; https://macowners.club/posts/from-ivy-to-vertico/
 ;; https://github.com/minad/consult
