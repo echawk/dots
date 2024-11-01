@@ -26,7 +26,13 @@ if [ -e "$HOME/.ssh/" ]; then
 fi
 
 case "$sys" in
-    Darwin);;
+    Darwin)
+        # If we have a venv in $HOME, source it.
+        # useful on macos.
+        if [ -e "$HOME/.venv/" ]; then
+            . "$HOME/.venv/bin/activate"
+        fi
+        ;;
     *)
         # Enable wifi if possible
         [ -e "$HOME"/.local/bin/wctl ] && sh "$HOME"/.local/bin/wctl enable
