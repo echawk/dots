@@ -5,14 +5,6 @@ sys="$(uname)"
 # Ensure we source system /etc/profile, if it exists
 [ -f /etc/profile ] && . /etc/profile
 
-case "$sys" in
-    Darwin);;
-    *)
-        # Enable wifi if possible
-        [ -e "$HOME"/.local/bin/wctl ] && sh "$HOME"/.local/bin/wctl enable
-        ;;
-esac
-
 # source my environment shell script
 [ -f "$HOME"/.config/shell/env.sh ]        && . "$HOME"/.config/shell/env.sh
 
@@ -36,6 +28,9 @@ fi
 case "$sys" in
     Darwin);;
     *)
+        # Enable wifi if possible
+        [ -e "$HOME"/.local/bin/wctl ] && sh "$HOME"/.local/bin/wctl enable
+
         # Start up X11 if we are on tty1
         xcmd="$(command -v sx || command -v startx)"
         [ -z "$DISPLAY" ] && [ "$(tty)" = /dev/tty1 ] && "$xcmd"
