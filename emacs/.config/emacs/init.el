@@ -804,6 +804,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (tuareg-indent-align-with-first-arg t)
   (tuareg-match-patterns-aligned t))
 
+(use-package utop
+  :after tuareg
+  :hook ((tuareg-mode . utop-minor-mode))
+  :custom
+  (utop-command "opam exec -- dune utop . -- -emacs"))
+
 ;; IE: only install/require the code whenever I begin to edit a file
 ;; with the associated file extension.
 (defmacro me/setup-language-package (file-extension major-mode &optional body)
