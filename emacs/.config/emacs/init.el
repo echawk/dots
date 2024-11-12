@@ -941,6 +941,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 ;; Better scheme editing.
 (use-package geiser :defer
+  :defer
   :custom
   (geiser-active-implementations '(guile3 racket)))
 (use-package geiser-guile
