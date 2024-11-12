@@ -1023,13 +1023,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (add-to-list completion-at-point-functions
                (cape-company-to-capf #'dante-company)))
 
-;; (use-package agda
-;;   :ensure nil
-;;   :defer
-;;   :if (executable-find "agda-mode")
-;;   :commands (agda2-mode)
-;;   :init
-;;   (load-file (shell-command-to-string "agda-mode locate")))
+(use-package agda
+  :ensure nil
+  :defer
+  :if (executable-find "agda-mode")
+  :commands (agda2-mode)
+  :init
+  (load-file (shell-command-to-string "agda-mode locate")))
 
 ;; (setq completion-at-point-functions
 ;;       (append
