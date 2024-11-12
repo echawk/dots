@@ -948,7 +948,11 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :after geiser
   :custom (geiser-guile-binary "guile3"))
 (use-package geiser-racket
-  :after geiser)
+  :after geiser
+  :hook (geiser-mode .
+                     (lambda ()
+                       (require 'agda2-mode)
+                       (set-input-method "Agda"))))
 ;; FIXME: rm these keybinds
 (use-package macrostep :defer
   :bind
