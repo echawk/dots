@@ -35,19 +35,13 @@
              lesspass:uppercase
              lesspass:digits
              lesspass:symbols)
-           ;; 32 is right at the point of diminishing returns.
-           ;; If we go too much higher than 32, then we start to run out
-           ;; of entropy for the lesspass calculation.
-           ;; If we go too low, then our seed string to ironclad will
-           ;; be shorter, and thus *hypothetically* easier to crack.
-
-           ;; With the algorithm in this file, we will end up with
-           ;; a string of length 1600 - this should be reasonably secure
-           ;; as a seed. Maybe not perfect, but even with the setup now
-           ;; it takes ~ 15 seconds to generate a keypair. Any extra length
-           ;; would make this process slower.
+           ;; 32 is the proper length for us to get a valid openssh key
+           ;; as output - if we make the string too long, we will get
+           ;; ssh keys which are too large for openssh to appropriately use.
            :length 32
            ;; The counter here is just set to 1 to make the constructor happy :)
+           ;; It is eventually set to a different value below using
+           ;; `get-step-size-from-string`.
            :counter 1)))
     (ltk:with-ltk ()
       (let* ((site-entry  (make-instance 'ltk:entry :width 30))
@@ -121,15 +115,18 @@
 (defun get-step-size-from-string (str n)
   "Return a pseudo random number for a given STR.
 
-Sums the value of all of the characters in STR and divides them by N."
+Sums the squares of all of the 'char-int' values for each char in STR,
+then floor divides by N."
+
   (let* ((entropy (reduce
                    #'+
                    (mapcar
                     (lambda (ch)
                       (expt (char-int ch) 2))
-                    (coerce str 'list))))
-         (step (floor (coerce (/ entropy n) 'float) 1)))
-    step))
+                    (coerce str 'list)))))
+    ;; Divide entropy by N, coercing to a float so we
+    ;; can then floor divide by 1.
+    (floor (coerce (/ entropy n) 'float) 1)))
 
 (defun get-seed-string ()
   "Return a string that is 'good enough' to seed ironclad with."
@@ -140,6 +137,7 @@ Sums the value of all of the characters in STR and divides them by N."
 
          ;; Get the step value from the master password since that information
          ;; is also secret, thus making it more secure against brute forcing.
+         ;; FIXME: maybe make the counter hard coded?
          (counter (get-step-size-from-string
                    master-pass iters)))
     (setf (lesspass:counter-of password-prof) counter)
@@ -191,6 +189,8 @@ and the public key being second."
       (ssh-keys:write-key-to-path (first  keys-lst) priv-key-path)
       (ssh-keys:write-key-to-path (second keys-lst) pub-key-path)
 
+      ;; TODO: see if there is a library to perform the chmod, since this
+      ;; restricts this program to only running on *nix.
       (uiop:run-program (concatenate 'string "chmod 0600 " priv-key-path))
       (uiop:run-program (concatenate 'string "chmod 0600 " pub-key-path)))))
 
