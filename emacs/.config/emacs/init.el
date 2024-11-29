@@ -123,6 +123,11 @@
   (kill-buffer-query-functions
    (remq 'process-kill-buffer-query-function
          kill-buffer-query-functions))
+
+  ;; I really really cannot stand how eldoc thinks its the most important
+  ;; package that likes to take over buffers that I am referring to.
+  (eldoc-echo-area-prefer-doc-buffer nil)
+  (eldoc-idle-delay 0)
   :config
   ;; OS specific settings.
   (cond
