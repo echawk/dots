@@ -971,7 +971,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
         ("C-c C-e" . macrostep-expand)
         ("C-c C-u" . macrostep-collapse)
         ("C-c C-q" . macrostep-collapse-all)))
-(use-package macrostep-geiser :defer)
+(use-package macrostep-geiser
+  :after geiser-mode
+  :hook ((geiser-mode . macrostep-geiser-setup)))
 ;; https://scripter.co/emacs-lisp-advice-combinators/
 (use-package srfi :defer
   :config
