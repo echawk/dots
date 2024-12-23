@@ -20,7 +20,7 @@
   (xlib:window-map-state win)
 
   ;; Execute whatever arguments we were given.
-  (uiop:run-program (apply #'concatenate 'string (uiop:command-line-arguments)))
+  (uiop:run-program (format nil "~{~A ~}" (mapcar #'identity (uiop:command-line-arguments))))
 
   ;; Re-map the window and force it to sync w/ the X server.
   (xlib:map-window win)
