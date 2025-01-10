@@ -209,6 +209,8 @@ for a particular MIMESTRING."
           ;; Make a separate thread for each of the arguments.
           (mapcar (lambda (arg)
                     (bordeaux-threads-2:make-thread (lambda () (open-uri arg))))
-                  (uiop:command-line-arguments))))
+                  (uiop:command-line-arguments)))
+  ;; End the main thread.
+  (bordeaux-threads-2:thread-yield))
 
 (main)
