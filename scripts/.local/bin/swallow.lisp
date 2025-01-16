@@ -20,7 +20,11 @@
   (xlib:window-map-state win)
 
   ;; Execute whatever arguments we were given.
-  (uiop:run-program (format nil "~{~A ~}" (mapcar #'identity (uiop:command-line-arguments))))
+  (uiop:run-program
+   (format nil "~{~A ~}"
+           ;; Escape any arguments that have spaces since UIOP expects this.
+           (mapcar (lambda (s) (if (search " " s) (uiop:escape-shell-token s) s))
+                   (uiop:command-line-arguments))))
 
   ;; Re-map the window and force it to sync w/ the X server.
   (xlib:map-window win)
