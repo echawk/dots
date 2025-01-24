@@ -119,6 +119,10 @@
 
   (use-dialog-box nil)
 
+
+  ;; Make minibuffer less stuttery.
+  (read-minibuffer-restore-windows nil)
+
   ;; Don't prompt when trying to kill a buffer with a live process.
   (kill-buffer-query-functions
    (remq 'process-kill-buffer-query-function
@@ -154,6 +158,8 @@
 
   ;; Automatically update buffers when contents change on disk.
   (global-auto-revert-mode)
+  ;; Always highlight the current line.
+  (global-hl-line-mode)
   ;; Don't ask to spell out 'yes'
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; utf-8
