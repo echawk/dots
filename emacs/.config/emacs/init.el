@@ -119,6 +119,9 @@
 
   (use-dialog-box nil)
 
+  ;; Don't wrap lines
+  (truncate-lines t)
+
 
   ;; Make minibuffer less stuttery.
   (read-minibuffer-restore-windows nil)
