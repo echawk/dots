@@ -186,6 +186,22 @@
 
 (use-package async :defer)
 
+;; Faster scrolling for emacs
+(me/emacs-N-progn
+ 29
+ (use-package ultra-scroll
+   :ensure nil
+   :init
+   (unless (package-installed-p (intern "ultra-scroll"))
+     (package-vc-install
+      '(ultra-scroll :vc-backend Git
+                     :url "https://github.com/jdtsmith/ultra-scroll")))
+
+   (setq scroll-conservatively 101
+         scroll-margin 0)
+   :config
+   (ultra-scroll-mode 1)))
+
 (use-package vertico
   :init
   (vertico-mode)
