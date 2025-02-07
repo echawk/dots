@@ -91,6 +91,19 @@
        'modus-vivendi
      'modus-operandi)))
 
+(defun me/set-font ()
+  "Set Emacs's font for different systems."
+  (pcase system-type
+    (darwin
+     (if (member "Victor Mono" (font-family-list))
+         (progn
+           (set-face-attribute 'default nil :font "Victor Mono-14")
+           (set-face-attribute 'font-lock-comment-face nil :slant 'italic :font "Victor Mono-14"))
+       (message "'Victor Mono' is not installed. Run: brew install --cask font-victor-mono")))))
+
+;; Set the font.
+(me/set-font)
+
 ;; https://github.com/haji-ali/elcron
 ;; Every 1/4 hour, reset the theme.
 (run-with-timer 0 (* 15 60) 'me/set-theme)
