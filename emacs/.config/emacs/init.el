@@ -9,22 +9,6 @@
 ;; absolutely required at init time.  Because of this, my init time hovers
 ;; around 0.5 to 1 second.  This could be reduced if you don't use evil.
 
-;; First, finish up the visuals.
-
-;; TODO: add heirarchy list here with my font preferences for linux.
-(defun me/set-font ()
-  "Set Emacs's font for different systems."
-  (pcase system-type
-    (darwin
-     (if (member "Victor Mono" (font-family-list))
-         (progn
-           (set-face-attribute 'default nil :font "Victor Mono-14")
-           (set-face-attribute 'font-lock-comment-face nil :slant 'italic :font "Victor Mono-14"))
-       (message "'Victor Mono' is not installed. Run: brew install --cask font-victor-mono")))))
-
-;; Set the font.
-(me/set-font)
-
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))

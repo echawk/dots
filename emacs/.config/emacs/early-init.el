@@ -84,6 +84,26 @@
     (or (<= curr-hour 6)
         (>= curr-hour (+ 12 8)))))
 
+;; TODO: add heirarchy list here with my font preferences for linux.
+(defun me/set-font ()
+  "Set Emacs's font for different systems."
+  (pcase system-type
+    (darwin
+     (if (member "Victor Mono" (font-family-list))
+         (progn
+           (set-face-attribute 'default nil :font "Victor Mono-14")
+           (set-face-attribute 'font-lock-comment-face nil :slant 'italic :font "Victor Mono-14"))
+       (message "'Victor Mono' is not installed. Run: brew install --cask font-victor-mono")))))
+
+(advice-add
+ #'load-theme
+ :around
+ (lambda (orig &rest args)
+   "Ensure that my custom fonts are always applied *correctly* anytime we set the theme."
+   (progn
+     (apply orig args)
+     (me/set-font))))
+
 (defun me/set-theme ()
   "Set the theme based on the time of day."
   (load-theme
