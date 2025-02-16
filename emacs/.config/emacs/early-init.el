@@ -88,7 +88,7 @@
 (defun me/set-font ()
   "Set Emacs's font for different systems."
   (pcase system-type
-    (darwin
+    ('darwin
      (if (member "Victor Mono" (font-family-list))
          (progn
            (set-face-attribute 'default nil :font "Victor Mono-14")
