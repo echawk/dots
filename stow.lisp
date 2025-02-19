@@ -30,7 +30,6 @@
           do (push (mapcar (lambda (lst) (nth i lst)) lists) result))
     (nreverse result)))
 
-
 (defun walk (dir &key (ignore nil))
   "Walk DIR and collect files that do not contain the substring IGNORE in their pathname."
   (let ((files '()))
@@ -45,9 +44,6 @@
            (push actual-path files)))))
     files))
 
-
-;; Below will get all of our "prefix-dirs"
-;; (uiop:subdirectories current-dir)
 
 (defun get-target-dir-path (file-path prefix-dir target-dir)
   "Given a FILE-PATH and a PREFIX-DIR, which is typically set to the
@@ -65,26 +61,6 @@ dotfiles repo, return a pathname that is located in the users home directory.
                     (namestring target-dir)
                     (subseq file-str (length prefix-str)))))))
 
-;; (let ((ex-path #P"/Users/ethan/Downloads/dots/X/.config/picom.conf"))
-;;   (get-target-dir-path ex-path current-dir))
-
-;; (pathname "/Users/ethan/.config/sx/sxrc")
-
-;; (osicat:make-link ())
-
-;; Honestly I'm pretty close to having this script done. And to think it's
-;; less than 100 lines of CL!
-
-;; We first need to get a list of all of the files/directories that we
-;; have to create and pair them with their appropriate prefix.
-
-;; Then, we get the path that the files will actually have on disk as a symlink
-;; First, we check to make sure that all of the requisite directories exist on
-;; disk, if a directory does *not* exist on disk, we make it and it's parents.
-;; This ensures that when we go to symlink files, there are no issues.
-;; Then, if the file does not already exist on disk, we use osicat:make-link
-;; to make a symlink from the current directory, *to* the new one.
-
 (defun make-link (from to)
   (if (osicat:file-exists-p to)
       (format t "File '~a' already exists on the file system. Refusing to symlink '~a' to that path.~%" to from)
@@ -93,14 +69,10 @@ dotfiles repo, return a pathname that is located in the users home directory.
        :target from
        :hard nil)))
 
-;;(make-link "/Users/ethan/tmp/a.py" "/Users/ethan/tmp/b.py")
-
 (defun make-dir (dir)
   (if (osicat:file-exists-p dir)
       (format t "Directory '~a' already exists on the file system.~%" dir)
       (sb-unix:unix-mkdir (namestring dir) #o777 )))
-
-;;(make-dir #P"/Users/ethan/tmp/ttt/a")
 
 (defun stow-dir-into-target (dir target)
   (let* ((files-to-symlink (walk dir :ignore ".git/"))
