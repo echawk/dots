@@ -1,6 +1,11 @@
 #!/bin/sh -e
 [ $(basename $PWD) = dots ] || exit 1
 
+if ! command -v sbcl; then
+    echo "SBCL must be installed for the dotfiles to be properly installed!"
+    exit 1
+fi
+
 sbcl --load "$PWD/dev/.sbclrc" \
      --load stow.lisp \
      --eval "(stow:stow)" \
