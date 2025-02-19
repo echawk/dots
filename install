@@ -1,22 +1,12 @@
 #!/bin/sh -e
 [ $(basename $PWD) = dots ] || exit 1
-mkdir -p "$HOME/.config/emacs"
-mkdir -p "$HOME/.config/nvim/autoload"
-mkdir -p "$HOME/.config/nvim/plugged"
-mkdir -p "$HOME/.local/bin/wrapper/"
-mkdir -p "$HOME/.local/bin/statusbar/"
-mkdir -p "$HOME/.config/xmonad"
-for d in */; do
-    case "$d" in
-        X/)
-        if [ -e "$HOME/.config/picom.conf" ]; then
-            rm -- "$HOME/.config/picom.conf"
-        fi
-        stow "$d" -t "$HOME"
-        rm "$HOME/.config/picom.conf" && {
-            cp X/.config/picom.conf "$HOME/.config/picom.conf"
-        }
-        ;;
-        *) stow "$d" -t "$HOME" ;;
-    esac
-done
+
+sbcl --load "$PWD/dev/.sbclrc" \
+     --load stow.lisp \
+     --eval "(stow:stow)" \
+     --eval "(quit)"
+
+# Picom behaves strangely if the file is a symlink.
+if [ -e "$HOME/.config/picom.conf" ]; then
+    rm "$HOME/.config/picom.conf" && cp X/.config/picom.conf "$HOME/.config/picom.conf"
+fi
