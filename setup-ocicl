@@ -1,0 +1,47 @@
+#!/bin/sh -ex
+
+origdir="$PWD"
+tempdir="$(mktemp -d)"
+
+cd "$tempdir"
+
+HOME=/dev/null git clone --depth 1 https://github.com/ocicl/ocicl
+cd ocicl
+sed "$d" setup.lisp > _
+mv -f _ setup.lisp
+sbcl --no-userinit --load setup.lisp
+
+sh -c "$PWD/ocicl setup"
+
+cd "$origdir"
+
+rm -rf "${tempdir:?Something went wrong!}"
+
+# FIXME: make the below code work in my .sbclrc...
+# ;; (if (probe-file ocicl-runtime-file)
+# ;;     (load ocicl-runtime-file)
+# ;;     (progn
+# ;;       ;; I don't really want to fuss with the setup instructions for windows...
+# ;;       (let ((temp-dir
+# ;;               (string-trim '(#\Newline)
+# ;;                            (uiop:run-program "mktemp -d" :output :string))))
+# ;;         (uiop:with-current-directory (temp-dir)
+# ;;           (progn
+# ;;             (unless (uiop:file-exists-p "ocicl")
+# ;;               (uiop:run-program
+# ;;                (concatenate
+# ;;                 'string
+# ;;                 "sh -c "
+# ;;                 "'"
+# ;;                 "HOME=/dev/null "
+# ;;                 "git clone --depth 1 "
+# ;;                 "https://github.com/ocicl/ocicl"
+# ;;                 "'"
+# ;;                 )))
+# ;;             (uiop:with-current-directory
+# ;;                 ((merge-pathnames "ocicl" (uiop:getcwd)))
+# ;;               (uiop:run-program "sed -i '/(sb-ext:quit)/d' setup.lisp")
+# ;;               (load (merge-pathnames "setup.lisp" (uiop:getcwd)))
+# ;;               (uiop:run-program "ocicl setup")))
+# ;;           (uiop:run-program (concatenate 'string "rm -vrf " temp-dir))))
+# ;;       (load ocicl-runtime-file)))
