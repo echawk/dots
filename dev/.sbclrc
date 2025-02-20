@@ -47,3 +47,16 @@
 ;; https://github.com/fukamachi/qlot
 ;; https://www.clpm.dev/
 ;; https://medium.com/@MartinCracauer/static-type-checking-in-the-programmable-programming-language-lisp-79bb79eb068a
+
+;; Setup OCICL if we have the binary...
+(when (uiop:file-exists-p
+       (merge-pathnames ".local/bin/ocicl" (user-homedir-pathname)))
+  #-OCICL
+  (let ((ocicl-runtime-file
+          (merge-pathnames ".local/share/ocicl/ocicl-runtime.lisp"
+                           (user-homedir-pathname))))
+    (load ocicl-runtime-file)
+    #+OCICL (asdf:initialize-source-registry
+             (list :source-registry (list :directory (uiop:getcwd))
+                   :inherit-configuration))))
+
