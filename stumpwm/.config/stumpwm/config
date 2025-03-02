@@ -15,6 +15,7 @@
 ;; https://github.com/tslight/stumpwm/
 ;; https://github.com/CakeML/cakeml/releases/download/v2184/cake-x64-64.tar.gz
 ;; https://github.com/Izder456/StumpWM-Config
+;; https://github.com/aartaka/nyxt-config?ref=blog.yosemitesam.ch
 
 ;; Since I'm already an Emacs fan, it naturally makes sense to move
 ;; on from dwm and its friends onto greener, lispier pastures.
@@ -60,17 +61,22 @@
   (set-module-dir
    (if (uiop:directory-exists-p system-module-dir)
        system-module-dir
-       (let ((local-mod-dir (merge-pathnames
-                             (car ql:*local-project-directories*)
-                             (user-homedir-pathname)))
-             (oldpwd        (uiop:getcwd)))
-         (uiop:run-program
-          (concatenate 'string "mkdir -p " (namestring local-mod-dir)))
-         (uiop:chdir local-mod-dir)
-         (uiop:run-program
-          "git clone --depth 1 https://github.com/stumpwm/stumpwm-contrib")
-         (uiop:chdir oldpwd)
-         (merge-pathnames "stumpwm-contrib" local-mod-dir)))))
+       (let* ((local-mod-dir (merge-pathnames
+                              (car ql:*local-project-directories*)
+                              (user-homedir-pathname)))
+              (oldpwd        (uiop:getcwd))
+              (stump-contrib-dir
+                (merge-pathnames "stumpwm-contrib" local-mod-dir)))
+         (if (uiop:directory-exists-p stump-contrib-dir)
+             stump-contrib-dir
+             (progn
+               (uiop:run-program
+                (concatenate 'string "mkdir -p " (namestring local-mod-dir)))
+               (uiop:chdir local-mod-dir)
+               (uiop:run-program
+                "git clone --depth 1 https://github.com/stumpwm/stumpwm-contrib")
+               (uiop:chdir oldpwd)
+               stump-contrib-dir))))))
 
 ;; FIXME: need to use these colors throughout this code...
 ;; Want to make the colors a little bit simpler.
@@ -225,7 +231,7 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
         (car
          (remove-if-not
           (lambda (font-str)
-            (>  
+            (>
              (length
               (split-string
                (uiop:run-program
