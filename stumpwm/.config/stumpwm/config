@@ -56,7 +56,21 @@
 (load (merge-pathnames "quicklisp/setup.lisp" (user-homedir-pathname)))
 
 ;; Ensure contrib modules can be found.
-(set-module-dir "/usr/share/stumpwm/contrib/")
+(let ((system-module-dir #P"/usr/share/stumpwm/contrib/"))
+  (set-module-dir
+   (if (uiop:directory-exists-p system-module-dir)
+       system-module-dir
+       (let ((local-mod-dir (merge-pathnames
+                             (car ql:*local-project-directories*)
+                             (user-homedir-pathname)))
+             (oldpwd        (uiop:getcwd)))
+         (uiop:run-program
+          (concatenate 'string "mkdir -p " (namestring local-mod-dir)))
+         (uiop:chdir local-mod-dir)
+         (uiop:run-program
+          "git clone --depth 1 https://github.com/stumpwm/stumpwm-contrib")
+         (uiop:chdir oldpwd)
+         (merge-pathnames "stumpwm-contrib" local-mod-dir)))))
 
 ;; FIXME: need to use these colors throughout this code...
 ;; Want to make the colors a little bit simpler.
