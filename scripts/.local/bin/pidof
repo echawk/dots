@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+ps axc -o command,pid | awk "/$1/ {print \$2}"
