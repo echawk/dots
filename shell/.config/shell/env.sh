@@ -7,7 +7,7 @@ export PATH="$(find "$HOME/.local/bin/" -type d | tr '\n' ':' | sed 's/:*$//'):$
 # enable homebrew if we are on macOS
 case "$(uname)" in
     Darwin)
-        eval "$(/opt/homebrew/bin/brew shellenv)"
+        eval "$(/opt/homebrew/bin/brew shellenv >/dev/null 2>&1)"
         ;;
 esac
 
