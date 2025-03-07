@@ -10,18 +10,21 @@ sys="$(uname)"
 
 # Ensure my ssh identities get added to my environment.
 if [ -e "$HOME/.ssh/" ]; then
-    # Always kill the current ssh agent if it is running.
-    # This is particularly useful on macOS.
-    if command -v pgrep >/dev/null && command -v pkill >/dev/null; then
-        if pgrep ssh-agent >/dev/null; then
-            pkill ssh-agent >/dev/null
+    export SSH_AUTH_SOCK="${XDG_CACHE_HOME}/ssh/agent"
+    mkdir -p "${XDG_CACHE_HOME}/ssh/"
+    # Check for pgrep. May replace with a personal shell script later.
+    if command -v pgrep >/dev/null; then
+        # Check if ssh-agent is running.
+        if ! pgrep ssh-agent >/dev/null; then
+            # Check if we even have access to ssh-agent
+            if command -v ssh-agent > /dev/null 2>&1; then
+                ssh-agent -a "$SSH_AUTH_SOCK"
+                find "$HOME/.ssh" -name '*.pub' \
+                    | sed "s/.pub$//" \
+                    | xargs -I{} ssh-add {} >/dev/null 2>&1
+            fi
         fi
-    fi
-    if command -v ssh-agent > /dev/null 2>&1; then
-        eval "$(ssh-agent -s)"
-        find "$HOME/.ssh" -name '*.pub' \
-            | sed "s/.pub$//" \
-            | xargs -I{} ssh-add {} >/dev/null 2>&1
+        export SSH_AGENT_PID="$(pidof ssh-agent)"
     fi
 fi
 
