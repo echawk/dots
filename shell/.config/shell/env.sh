@@ -58,6 +58,12 @@ case "$(uname)" in
         export CXXFLAGS="$CFLAGS"
         export CMAKE_GENERATOR="Ninja"
         ;;
+    Darwin)
+        if command -v brew; then
+            export CPPFLAGS="-I$(brew --prefix)/include"
+            export LDFLAGS="-L$(brew --prefix)/lib"
+        fi
+        ;;
 esac
 
 # Programming Langs
