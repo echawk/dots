@@ -210,7 +210,10 @@
 
 (use-package ctrlf
   :config
-  (ctrlf-mode))
+  (ctrlf-mode)
+  :custom
+  (ctrlf-default-search-style 'regexp)
+  (ctrlf-alternate-search-style 'fuzzy-regexp))
 
 (use-package page-break-lines
   :config
