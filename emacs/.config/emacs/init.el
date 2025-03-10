@@ -9,12 +9,11 @@
 ;; absolutely required at init time.  Because of this, my init time hovers
 ;; around 0.5 to 1 second.  This could be reduced if you don't use evil.
 
-(require 'package)
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-
 (defun me/package-bootstrap ()
   "Function to bootstrap package.el."
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+
   (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents))
