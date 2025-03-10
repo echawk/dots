@@ -99,7 +99,7 @@
   ;; Now if only I could also disable the *Compile-Log* buffer...
   (compilation-window-height 0)
   ;; Prevent any buffer from making a new window
-  ;;(display-buffer-alist '(("\\.*" . (display-buffer-no-window))))
+  (display-buffer-alist '(("\\.*" . (display-buffer-no-window))))
 
   ;; Better buffer naming.
   (uniquify-buffer-name-style 'post-forward)
