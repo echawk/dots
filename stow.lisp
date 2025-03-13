@@ -62,17 +62,14 @@ dotfiles repo, return a pathname that is located in the users home directory.
                     (subseq file-str (length prefix-str)))))))
 
 (defun make-link (from to)
-  (if (osicat:file-exists-p to)
+  (if (uiop:file-exists-p to)
       (format t "File '~a' already exists on the file system. Refusing to symlink '~a' to that path.~%" to from)
-      (osicat:make-link
-       to
-       :target from
-       :hard nil)))
+      (uiop:run-program (format nil "~{~A ~}" `("ln -s " ,from ,to)))))
 
 (defun make-dir (dir)
-  (if (osicat:file-exists-p dir)
+  (if (uiop:directory-exists-p dir)
       (format t "Directory '~a' already exists on the file system.~%" dir)
-      (sb-unix:unix-mkdir (namestring dir) #o777 )))
+      (uiop:run-program (format nil "~{~A ~}" `("mkdir -p " ,dir)))))
 
 (defun stow-dir-into-target (dir target)
   (let* ((files-to-symlink (walk dir :ignore ".git/"))
