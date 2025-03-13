@@ -911,13 +911,20 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
    (use-package inf-ruby :defer
      :after ruby-mode
      :hook (ruby-mode . inf-ruby-minor-mode))))
+(me/setup-language-package "\\.applescript" applescript-mode)
 
 (use-package erlang :defer)
 ;; .rkt
 ;; https://www.racket-mode.com/
-;; (use-package racket-mode
-;;   :defer
-;;   :hook (racket-mode . racket-xp-mode))
+(use-package racket-mode
+  :defer
+  :mode ("\\.rkt" . racket-hash-lang-mode)
+  :hook
+  ((racket-hash-lang-mode . (lambda ()
+                              (when (boundp #'agda2-mode)
+                                (require 'agda2-mode)
+                                (set-input-method "Agda"))))
+   (racket-hash-lang-mode . racket-xp-mode)))
 
 (use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
@@ -979,13 +986,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :mode ("\\.sno" . snobol-mode))
 
 ;; Better scheme editing.
-(use-package geiser :defer
-  :defer
-  :custom
-  (geiser-active-implementations '(guile3 racket)))
-(use-package geiser-guile
-  :after geiser
-  :custom (geiser-guile-binary "guile3"))
+;; (use-package geiser :defer
+;;   :defer
+;;   :custom
+;;   (geiser-active-implementations '(guile3 racket)))
+;; (use-package geiser-guile
+;;   :after geiser
+;;   :custom (geiser-guile-binary "guile3"))
 
 ;; FIXME: rm these keybinds
 (use-package macrostep :defer
