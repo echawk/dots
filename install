@@ -6,9 +6,8 @@ if ! command -v sbcl; then
     exit 1
 fi
 
-sbcl --load "$PWD/dev/.sbclrc" \
-     --load stow.lisp \
-     --eval "(stow:stow)" \
+sbcl --load stow.lisp \
+     --eval "(stow:install-dots)" \
      --eval "(quit)"
 
 # Picom behaves strangely if the file is a symlink.
