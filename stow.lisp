@@ -1,12 +1,7 @@
 ;; Minimal CL script to behave *close enough* to GNU stow...
 ;; Primary reason for this script is to avoid perl like the plague...
 
-;; Assume that we are being called from a sbcl w/ quicklisp installed.
-;; - This will *eventually* be done with the `install` script at the /
-;; of my dots repo. Right now it is definitely not the case at the moment.
-
-;; I want the final script to effectively be this:
-;; sbcl --load $PWD/dev/.sbclrc --load stow.lisp --eval "(stow:stow :target $HOME)"
+;; sbcl --load stow.lisp --eval "(stow:install-dots)"
 
 (require :uiop)
 
