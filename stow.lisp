@@ -12,16 +12,13 @@
 
 (uiop:define-package #:stow
   (:export
-   #:stow)
+   #:stow
+   #:install-dots)
   (:use #:cl))
 
 (in-package #:stow)
 
-#-SBCL (error "This script *sadly* requires SBCL for `sb-unix:unix-mkdir`")
-
-(ql:quickload :osicat)
-
-(setq stow::current-dir (uiop:getcwd))
+(setq current-dir (uiop:getcwd))
 
 ;; Thank you AI...
 (defun zip (&rest lists)
@@ -30,19 +27,22 @@
           do (push (mapcar (lambda (lst) (nth i lst)) lists) result))
     (nreverse result)))
 
+(defun concat/space (lst) (format nil "~{~A ~}" lst))
+
 (defun walk (dir &key (ignore nil))
-  "Walk DIR and collect files that do not contain the substring IGNORE in their pathname."
-  (let ((files '()))
-    (osicat:walk-directory
-     dir
-     (lambda (path)
-       (let ((actual-path (merge-pathnames *default-pathname-defaults* path)))
-         (unless
-             (and
-              (not (null ignore))
-              (search ignore (namestring actual-path)))
-           (push actual-path files)))))
-    files))
+  "Walk DIR and collect *files* that do not contain the substring IGNORE in their pathname."
+  (mapcar
+   #'pathname
+   (remove-if
+    #'uiop:emptyp
+    (remove-if
+     (lambda (fp) (and (not (null ignore))
+                  (search ignore fp)))
+     (uiop:split-string
+      (uiop:run-program
+       (concat/space `("find" ,(namestring dir) "-type" "f"))
+       :output :string)
+      :separator '(#\Newline))))))
 
 
 (defun get-target-dir-path (file-path prefix-dir target-dir)
@@ -71,7 +71,12 @@ dotfiles repo, return a pathname that is located in the users home directory.
       (format t "Directory '~a' already exists on the file system.~%" dir)
       (uiop:run-program (format nil "~{~A ~}" `("mkdir -p " ,dir)))))
 
-(defun stow-dir-into-target (dir target)
+
+(defun stow (dir
+             &key (target (uiop:pathname-parent-directory-pathname current-dir)))
+  "'stow' a directory DIR's contents into the TARGET directory."
+  ;; TODO: technically should add asserts here?
+  ;; Ensure that everything actually can occur as it should.
   (let* ((files-to-symlink (walk dir :ignore ".git/"))
          (required-directories
            ;; Sort to ensure that base directories are made before their subdirs.
@@ -103,9 +108,8 @@ dotfiles repo, return a pathname that is located in the users home directory.
          (make-link from to)))
      (zip files-to-symlink required-symlinks-in-target))))
 
-
-;; FIXME: *technically* stow defaults to the parent directory.
-;; However, since this script is *just enough* of "stow" to
-;; manage my dotfiles, set the default target to be effectively $HOME.
-(defun stow (&key (target (user-homedir-pathname)) (dir current-dir))
-  (mapcar (lambda (d) (stow-dir-into-target d target)) (uiop:subdirectories dir)))
+(defun install-dots ()
+  "Likely the behavior that you want from stow..."
+  (let ((target (user-homedir-pathname))
+        (dir    current-dir))
+    (mapcar (lambda (d) (stow d :target target)) (uiop:subdirectories dir))))
