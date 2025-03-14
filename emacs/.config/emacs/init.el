@@ -1027,6 +1027,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
         ("C-c C-s"    . srfi-search)))
 
 ;; Use sly instead of slime
+(use-package elisp-slime-nav :after sly)
 (use-package sly :defer
   :bind
   (:map sly-mode-map
