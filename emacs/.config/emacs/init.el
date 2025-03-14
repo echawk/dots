@@ -701,8 +701,6 @@ the file.
 
 ;; In-buffer auto-completion.
 (use-package corfu
-  ;; Enable info popups whenever we use corfu.
-  :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
   (corfu-auto t)  ;; Enable auto-completion.
   (corfu-cycle t) ;; Enable cycling.
