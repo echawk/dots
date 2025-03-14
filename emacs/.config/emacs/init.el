@@ -150,7 +150,11 @@
       ;; issues that macOS has so this package hurts *far* more than it helps.
       (use-package exec-path-from-shell
         :config
-        (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID"))
+        (dolist (var '("PATH"
+                       "HOMEBREW_PREFIX" "HOMEBREW_CELLAR" "HOMEBREW_REPOSITORY"
+                       "VIRTUAL_ENV" "PYTHONHOME"
+                       "CPPFLAGS" "LDFLAGS"
+                       "SSH_AUTH_SOCK" "SSH_AGENT_PID"))
           (add-to-list 'exec-path-from-shell-variables var))
         (exec-path-from-shell-initialize))))
    (t
