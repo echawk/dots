@@ -36,15 +36,16 @@
   (mapcar
    #'pathname
    (remove-if
-    #'uiop:emptyp
-    (remove-if
-     (lambda (fp) (and (not (null ignore))
-                  (search ignore fp)))
-     (uiop:split-string
-      (uiop:run-program
-       (concat/space `("find" ,(namestring dir) "-type" "f"))
-       :output :string)
-      :separator '(#\Newline))))))
+    (lambda (fp)
+      (or
+       (uiop:emptyp fp)
+       (and (not (null ignore))
+            (search ignore fp))))
+    (uiop:split-string
+     (uiop:run-program
+      (concat/space `("find" ,(namestring dir) "-type" "f"))
+      :output :string)
+     :separator '(#\Newline)))))
 
 
 (defun get-target-dir-path (file-path prefix-dir target-dir)
