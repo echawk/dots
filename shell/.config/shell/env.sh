@@ -1,5 +1,10 @@
 # potentially change the order of $PATH to have '.local' stuff to be first
 export PATH="$(find "$HOME/.local/bin/" -type d | tr '\n' ':' | sed 's/:*$//'):$PATH"
+
+# if qlot is setup, add it to the path.
+if [ -e "$HOME/.local/share/qlot/bin" ]; then
+    export PATH="$HOME/.local/share/qlot/bin:$PATH"
+fi
 [ -d "$HOME/.dotnet/" ]             && PATH="$PATH:$HOME/.dotnet"
 [ -d "$HOME/.dotnet/tools" ]        && PATH="$PATH:$HOME/.dotnet/tools"
 [ -d "$HOME/.local/share/npm/bin" ] && PATH="$PATH:$HOME/.local/share/npm/bin"
