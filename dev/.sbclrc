@@ -3,6 +3,9 @@
 (require 'asdf)
 (asdf:load-system :uiop)
 
+;; Muffle warnings while we load our init.
+#+SBCL (declaim (sb-ext:muffle-conditions style-warning))
+
 ;; Make these stupid dummy package to make SBCL shut up.
 (defpackage :quicklisp-quickstart
   (:use :cl)
@@ -91,3 +94,5 @@
              (list :source-registry (list :directory (uiop:getcwd))
                    :inherit-configuration))))
 
+;; Unmuffle our warnings again.
+#+SBCL (declaim (sb-ext:unmuffle-conditions style-warning))
