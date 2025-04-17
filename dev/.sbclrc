@@ -28,11 +28,16 @@
 (let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
                                        (user-homedir-pathname))))
   (unless (probe-file quicklisp-init)
-    (uiop:run-program "curl -O https://beta.quicklisp.org/quicklisp.lisp"
-                      :output *standard-output*)
-    (load "quicklisp.lisp")
-    (quicklisp-quickstart:install)
-    (uiop:run-program "rm quicklisp.lisp"))
+    (let ((temp-dir (string-trim '(#\Newline)
+                                 (uiop:run-program "mktemp -d" :output :string))))
+      (uiop:with-current-directory (temp-dir)
+        (progn
+          (uiop:run-program "curl -O https://beta.quicklisp.org/quicklisp.lisp"
+                            :output *standard-output*)
+          (load "quicklisp.lisp")
+          (quicklisp-quickstart:install)
+          (uiop:run-program "rm quicklisp.lisp")))
+      (uiop:run-program (concatenate 'string "rm -vrf " temp-dir))))
 
   (when (probe-file quicklisp-init)
     (load quicklisp-init))
