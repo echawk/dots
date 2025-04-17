@@ -43,7 +43,7 @@
             (search ignore fp))))
     (uiop:split-string
      (uiop:run-program
-      (concat/space `("find" ,(namestring dir) "-type" "f"))
+      (concat/space `("find" "-L" ,(namestring dir) "-type" "f"))
       :output :string)
      :separator '(#\Newline)))))
 
