@@ -138,12 +138,12 @@ dotfiles repo, return a pathname that is located in the users home directory.
 
     ;; Make any of the required directories.
     (make-dirs
-     (assoc "required-directories-in-target" install-data :test 'equal))
+     (cdr (assoc "required-directories-in-target" install-data :test 'equal)))
 
     ;; Make our symlinks.
     (make-symlinks
-     (assoc "files-to-symlink"            install-data :test 'equal)
-     (assoc "required-symlinks-in-target" install-data :test 'equal))))
+     (cdr (assoc "files-to-symlink"            install-data :test 'equal))
+     (cdr (assoc "required-symlinks-in-target" install-data :test 'equal)))))
 
 (defun unstow (dir
                &key (target (uiop:pathname-parent-directory-pathname current-dir)))
@@ -152,11 +152,11 @@ dotfiles repo, return a pathname that is located in the users home directory.
 
     ;; Make any of the required directories.
     (del-dirs
-     (assoc "required-directories-in-target" install-data :test 'equal))
+     (cdr (assoc "required-directories-in-target" install-data :test 'equal)))
 
     ;; Make our symlinks.
     (del-symlinks
-     (assoc "required-symlinks-in-target" install-data :test 'equal))))
+     (cdr (assoc "required-symlinks-in-target" install-data :test 'equal)))))
 
 (defun install-dots ()
   "Likely the behavior that you want from stow..."
