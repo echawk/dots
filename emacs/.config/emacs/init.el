@@ -827,6 +827,17 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :bind (:map prog-mode-map
               ("C-c o" . casual-symbol-overlay-tmenu)))
 
+;; TODO: configure this package more.
+;; Specifically the keybinds to slurp/barf sexps, since the default bindings
+;; are a little strange imo.
+(use-package paredit
+  :defer
+  :hook
+  ((emacs-lisp-mode       . enable-paredit-mode)
+   (geiser-mode           . enable-paredit-mode)
+   (racket-mode           . enable-paredit-mode)
+   (racket-hash-lang-mode . enable-paredit-mode)
+   (lisp-mode             . enable-paredit-mode)))
 
 (use-package tuareg
   :defer
