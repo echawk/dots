@@ -523,9 +523,10 @@ With optional argument FRAME, return the list of buffers of FRAME."
 
 (use-package consult-eglot :after eglot)
 
-(use-package eldoc-box
-  :defer
-  :hook ((eldoc-mode         . eldoc-box-hover-mode)))
+;; I almost never want this to popup
+;; (use-package eldoc-box
+;;   :defer
+;;   :hook ((eldoc-mode         . eldoc-box-hover-mode)))
 
 ;; NOTE: Can't defer this package because it won't add in the custom formatters.
 
