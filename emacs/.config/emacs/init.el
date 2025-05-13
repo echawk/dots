@@ -163,6 +163,28 @@
     )
    )
 
+  ;; Section to disable eldoc since I almost never want it around.
+  ;; If I do, then I still have means of enabling it.
+
+  (defvar me/eldoc-enabled-p nil)
+
+  (defun me/eldoc-advice (orig &rest args)
+    (if me/eldoc-enabled-p
+        (apply orig args)
+      (ignore orig args)))
+
+  (advice-add 'eldoc-mode :around #'me/eldoc-advice)
+
+  (defun me/disable-eldoc ()
+    (interactive)
+    (setq me/eldoc-enabled-p nil)
+    (message "eldoc-mode disabled (via advice)."))
+
+  (defun me/enable-eldoc ()
+    (interactive)
+    (setq me/eldoc-enabled-p t)
+    (message "eldoc-mode enabled (via advice)."))
+
   ;; Automatically update buffers when contents change on disk.
   (global-auto-revert-mode)
   ;; Always highlight the current line.
