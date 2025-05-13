@@ -169,21 +169,14 @@
   (defvar me/eldoc-enabled-p nil)
 
   (defun me/eldoc-advice (orig &rest args)
-    (if me/eldoc-enabled-p
-        (apply orig args)
-      (ignore orig args)))
+    (when me/eldoc-enabled-p
+      (apply orig args)))
 
   (advice-add 'eldoc-mode :around #'me/eldoc-advice)
 
-  (defun me/disable-eldoc ()
+  (defun me/toggle-eldoc ()
     (interactive)
-    (setq me/eldoc-enabled-p nil)
-    (message "eldoc-mode disabled (via advice)."))
-
-  (defun me/enable-eldoc ()
-    (interactive)
-    (setq me/eldoc-enabled-p t)
-    (message "eldoc-mode enabled (via advice)."))
+    (setq me/eldoc-enabled-p (not me/eldoc-enabled-p)))
 
   ;; Automatically update buffers when contents change on disk.
   (global-auto-revert-mode)
