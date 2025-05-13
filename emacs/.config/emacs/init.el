@@ -174,9 +174,9 @@
 
   (advice-add 'eldoc-mode :around #'me/eldoc-advice)
 
-  (defun me/toggle-eldoc ()
-    (interactive)
-    (setq me/eldoc-enabled-p (not me/eldoc-enabled-p)))
+  (defun me/toggle-eldoc (&optional arg)
+    (interactive "P")
+    (setq me/eldoc-enabled-p (if arg nil (not me/eldoc-enabled-p))))
 
   ;; Automatically update buffers when contents change on disk.
   (global-auto-revert-mode)
