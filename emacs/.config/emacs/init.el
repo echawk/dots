@@ -959,15 +959,17 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package erlang :defer)
 ;; .rkt
 ;; https://www.racket-mode.com/
-(use-package racket-mode
-  :defer
-  :mode ("\\.rkt" . racket-hash-lang-mode)
-  :hook
-  ((racket-hash-lang-mode . (lambda ()
-                              (when (boundp #'agda2-mode)
-                                (require 'agda2-mode)
-                                (set-input-method "Agda"))))
-   (racket-hash-lang-mode . racket-xp-mode)))
+(me/setup-language-package
+ "\\.rkt"
+ racket-hash-lang-mode
+ :package racket-mode
+ (progn
+   (add-hook 'racket-hash-lang-mode-hook #'racket-xp-mode)
+   (add-hook 'racket-hash-lang-mode-hook
+             #'(lambda ()
+                 (when (boundp #'agda2-mode)
+                   (require 'agda2-mode)
+                   (set-input-method "Agda")))) ))
 
 (use-package ess :defer
   :mode ("\\.jl$" . ess-julia-mode))
