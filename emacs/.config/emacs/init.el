@@ -872,6 +872,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :custom
   (utop-command "opam exec -- dune utop . -- -emacs"))
 
+
+;; TODO: consider rewriting this macro as a use-package extension
+
+;; it should be possible to have this be a keyword, similar to :defer,
+;; which, will actually install the package either when the file extension
+;; given by :mode is encountered, or when a certain mode is requested.
+
+
 ;; IE: only install/require the code whenever I begin to edit a file
 ;; with the associated file extension.
 (defmacro me/setup-language-package (file-extension major-mode &rest args)
@@ -956,7 +964,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
      :hook (ruby-mode . inf-ruby-minor-mode))))
 (me/setup-language-package "\\.applescript" applescript-mode)
 
-(use-package erlang :defer)
+(me/setup-language-package "\\.erl" erlang-mode :package erlang)
 ;; .rkt
 ;; https://www.racket-mode.com/
 (me/setup-language-package
@@ -971,9 +979,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
                    (require 'agda2-mode)
                    (set-input-method "Agda")))) ))
 
-(use-package ess :defer
-  :mode ("\\.jl$" . ess-julia-mode))
-(use-package julia-mode :defer)
+(me/setup-language-package
+ "\\.jl$"
+ ess-julia-mode
+ :package ess
+ (progn
+   (use-package julia-mode :defer)))
 
 ;; https://eshelyaron.com/sweep.html
 (use-package prolog
@@ -1096,26 +1107,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   (inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
 
-
-(use-package haskell-mode
-  :defer
-  :hook ((haskell-mode . haskell-indentation-mode)
-         (haskell-mode . interactive-haskell-mode)))
-;; FIXME: check to see if I can use flymake instead.
-(use-package dante
-  :after haskell-mode
-  :commands 'dante-mode
-  :hook ((haskell-mode . flymake-mode)
-         (haskell-mode . dante-mode))
-  :config
-  (defalias 'flymake-hlint
-    (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
-  (add-to-list 'flymake-diagnostic-functions 'flymake-hlint)
-
-  ;; Generate a capf backend...
-  (add-to-list completion-at-point-functions
-               (cape-company-to-capf #'dante-company)))
-
 (use-package agda
   :ensure nil
   :defer
@@ -1123,6 +1114,30 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :commands (agda2-mode)
   :init
   (load-file (shell-command-to-string "agda-mode locate")))
+(me/setup-language-package
+ "\\.hs" haskell-mode
+ (progn
+   (add-hook 'haskell-mode-hook #'haskell-indentation-mode)
+   (add-hook 'haskell-mode-hook #'interactive-haskell-mode)
+   ;; FIXME: check to see if I can use flymake instead.
+   (use-package dante
+     :after haskell-mode
+     :commands 'dante-mode
+     :hook ((haskell-mode . flymake-mode)
+            (haskell-mode . dante-mode))
+     :config
+     (defalias 'flymake-hlint
+       (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
+     (add-to-list 'flymake-diagnostic-functions 'flymake-hlint)
+
+     ;; Generate a capf backend...
+     ;; Way to do as a list?
+     ;; (dolist (company-backend (list #'dante-company))
+     ;;   (add-to-list completion-at-point-functions
+     ;;                (cape-company-to-capf #'company-backend)))
+     (add-to-list completion-at-point-functions
+                  (cape-company-to-capf #'dante-company)))))
+
 
 ;; (setq completion-at-point-functions
 ;;       (append
