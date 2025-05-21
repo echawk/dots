@@ -1163,10 +1163,11 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
              :rev :newest)
    :defer))
 
-(use-package gnu-apl-mode
-  :defer
-  :hook ((gnu-apl-mode             . (lambda () (set-input-method "APL-Z")))
-         (gnu-apl-interactive-mode . (lambda () (set-input-method "APL-Z")))))
+(me/setup-auto-mode
+ "\\.apl"
+ gnu-apl-mode
+ (add-hook 'gnu-apl-mode-hook             #'(lambda () (set-input-method "APL-Z")))
+ (add-hook 'gnu-apl-interactive-mode-hook #'(lambda () (set-input-method "APL-Z"))))
 
 ;; Refactoring mode:
 ;; https://github.com/Wilfred/emacs-refactor
@@ -1247,10 +1248,11 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
     whisper--ffmpeg-input-device "hw:5,0")))
 
 ;; Read EPUBs in Emacs!
-(use-package nov
-  :defer
-  :mode ("\\.epub\\'" . nov-mode)
-  :hook (nov-mode . visual-line-mode))
+(me/setup-auto-mode
+ "\\.epub"
+ nov-mode
+ :package nov
+ (add-hook 'nov-mode-hook #'visual-line-mode))
 
 (use-package vterm
   :defer
@@ -1261,13 +1263,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :config
   (eat-eshell-mode))
 
-(use-package pdf-tools
-  :defer
-  :hook ((pdf-view-mode . (lambda () (display-line-numbers-mode 0)))
-         (pdf-view-mode . (lambda () (if (me/is-night-p) (pdf-view-midnight-minor-mode)))))
-  :init
-  (pdf-loader-install :no-query))
-
+(me/setup-auto-mode
+ "\\.pdf"
+ pdf-view-mode
+ :package pdf-tools
+ (pdf-loader-install :no-query)
+ (add-hook 'pdf-view-mode-hook #'(lambda () (display-line-numbers-mode 0)))
+ (add-hook 'pdf-view-mode-hook #'(lambda () (if (me/is-night-p) (pdf-view-midnight-minor-mode)))))
 
 (use-package eradio
   :defer
