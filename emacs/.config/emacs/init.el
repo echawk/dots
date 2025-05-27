@@ -1349,41 +1349,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 
 ;; Better LaTeX editing.
-(use-package auctex
-  :defer
-  :hook ((LaTeX-mode . visual-line-mode)
-         (LaTeX-mode . LaTeX-math-mode)
-         (LaTeX-mode . jinx-mode)
-         (LaTeX-mode . auctex-cluttex-mode))
-  :init
-  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-
-  ;; Configuration for tectonic. FIXME? Doesn't work?
-  ;; (setq TeX-engine-alist '((default
-  ;;                           "Tectonic"
-  ;;                           "tectonic -X compile -f plain %T"
-  ;;                           "tectonic -X watch"
-  ;;                           nil)))
-  ;; (setq LaTeX-command-style '(("" "%(latex)")))
-  ;; (let ((tex-list (assoc "TeX" TeX-command-list))
-  ;;       (latex-list (assoc "LaTeX" TeX-command-list)))
-  ;;   (setf (cadr tex-list) "%(tex)"
-  ;;         (cadr latex-list) "%l"))
-
-  :config
-  (setq
-   ;; Make pdf-tools the default viewer for auctex.
-   TeX-view-program-selection '((output-pdf "PDF Tools"))
-   TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-   TeX-source-correlate-mode t
-   TeX-source-correlate-start-server t
-   TeX-engine 'xetex
-   TeX-process-asynchronous t
-   TeX-check-TeX nil
-   TeX-auto-save nil
-   TeX-parse-self t)
-
-  (setq-default TeX-master nil))
 (use-package auctex-cluttex
   :after auctex)
 
@@ -1391,6 +1356,41 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package rmsbolt :defer)
 
 (use-package realgud :defer)
+(me/setup-auto-mode
+ "\\.tex$"
+ LaTeX-mode
+ :package auctex
+ (add-hook 'LaTeX-mode-hook #'visual-line-mode)
+ (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
+ (add-hook 'LaTeX-mode-hook #'jinx-mode)
+ 
+ (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+
+ ;; Configuration for tectonic. FIXME? Doesn't work?
+ ;; (setq TeX-engine-alist '((default
+ ;;                           "Tectonic"
+ ;;                           "tectonic -X compile -f plain %T"
+ ;;                           "tectonic -X watch"
+ ;;                           nil)))
+ ;; (setq LaTeX-command-style '(("" "%(latex)")))
+ ;; (let ((tex-list (assoc "TeX" TeX-command-list))
+ ;;       (latex-list (assoc "LaTeX" TeX-command-list)))
+ ;;   (setf (cadr tex-list) "%(tex)"
+ ;;         (cadr latex-list) "%l"))
+ 
+ (setq
+  ;; Make pdf-tools the default viewer for auctex.
+  TeX-view-program-selection '((output-pdf "PDF Tools"))
+  TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+  TeX-source-correlate-mode t
+  TeX-source-correlate-start-server t
+  TeX-engine 'xetex
+  TeX-process-asynchronous t
+  TeX-check-TeX nil
+  TeX-auto-save nil
+  TeX-parse-self t)
+
+ (setq-default TeX-master nil))
 
 ;; http://yummymelon.com/devnull/announcing-casual-an-opinionated-porcelain-for-emacs-calc.html
 ;; https://legends2k.github.io/note/emacs_calc/
