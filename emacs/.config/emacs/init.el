@@ -1164,6 +1164,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  (add-hook 'gnu-apl-mode-hook             #'(lambda () (set-input-method "APL-Z")))
  (add-hook 'gnu-apl-interactive-mode-hook #'(lambda () (set-input-method "APL-Z"))))
 
+(me/setup-auto-mode
+ "\\.md$"
+ markdown-mode
+ (add-hook 'markdown-mode-hook #'jinx-mode)
+ (setq markdown-command "lowdown -s -Thtml")
+ (use-package markdown-preview-mode :defer))
+
 ;; Refactoring mode:
 ;; https://github.com/Wilfred/emacs-refactor
 
@@ -1367,13 +1374,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package auctex-cluttex
   :after auctex)
 
-;; Markdown support.
-(use-package markdown-mode
-  :defer
-  :hook (markdown-mode . jinx-mode)
-  :custom
-  (markdown-command "lowdown -s -Thtml"))
-(use-package markdown-preview-mode :defer)
 
 (use-package rmsbolt :defer)
 
