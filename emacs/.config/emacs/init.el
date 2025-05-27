@@ -1339,11 +1339,10 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :commands (maxima-mode maxima imaxima imath-mode)
   :defer
   :mode ("\\.ma[cx]\\'" . maxima-mode)
-  :custom
-  (imaxima-use-maxima-mode-flag t)
-  (imaxima-fnt-size "LARGE")
-  (imaxima-latex-preamble "\\usepackage{concrete}") ;; Sets the font for the LaTeX output.
   :config
+  (setq imaxima-use-maxima-mode-flag t)
+  (setq imaxima-fnt-size "LARGE")
+  (setq imaxima-latex-preamble "\\usepackage{concrete}") ;; Sets the font for the LaTeX output.
   ;; Needed to fix commands section above. TODO: see if I can remove this.
   (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
   (autoload 'imath-mode "imath" "Imath mode for math formula input" t))
