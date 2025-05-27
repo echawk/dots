@@ -1357,18 +1357,32 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
          (LaTeX-mode . auctex-cluttex-mode))
   :init
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-  :custom
-  ;; Make pdf-tools the default viewer for auctex.
-  (TeX-view-program-selection '((output-pdf "PDF Tools")))
-  (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
 
-  (TeX-source-correlate-mode t)
-  (TeX-source-correlate-start-server t)
+  ;; Configuration for tectonic. FIXME? Doesn't work?
+  ;; (setq TeX-engine-alist '((default
+  ;;                           "Tectonic"
+  ;;                           "tectonic -X compile -f plain %T"
+  ;;                           "tectonic -X watch"
+  ;;                           nil)))
+  ;; (setq LaTeX-command-style '(("" "%(latex)")))
+  ;; (let ((tex-list (assoc "TeX" TeX-command-list))
+  ;;       (latex-list (assoc "LaTeX" TeX-command-list)))
+  ;;   (setf (cadr tex-list) "%(tex)"
+  ;;         (cadr latex-list) "%l"))
 
-  (TeX-engine 'xetex)
-  (TeX-auto-save nil)
-  (TeX-parse-self t)
   :config
+  (setq
+   ;; Make pdf-tools the default viewer for auctex.
+   TeX-view-program-selection '((output-pdf "PDF Tools"))
+   TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+   TeX-source-correlate-mode t
+   TeX-source-correlate-start-server t
+   TeX-engine 'xetex
+   TeX-process-asynchronous t
+   TeX-check-TeX nil
+   TeX-auto-save nil
+   TeX-parse-self t)
+
   (setq-default TeX-master nil))
 (use-package auctex-cluttex
   :after auctex)
