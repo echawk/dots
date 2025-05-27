@@ -981,6 +981,23 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
    :custom
    (utop-command "opam exec -- dune utop . -- -emacs")))
 
+;; FIXME: figure out how to get proof general from deciding that it will
+;; automatically reload the windows **without** my input. I really really really
+;; have had enough of package authors thinking that they know best and decide
+;; to refresh my emacs instance and open up buffers where there shouldn't be
+;; any.......
+(me/setup-auto-mode
+ "\\.v$"
+ coq-mode
+ :package proof-general
+ (use-package company-coq :after proof-general
+   ;; FIXME: enable company-coq mode when we enter coq-mode - not sure why
+   ;; below doesn't work.
+   ;;:hook ((coq-mode . company-coq-mode))
+   :config
+   (add-to-list completion-at-point-functions
+                (cape-company-to-capf #'company-coq))))
+
 ;; https://eshelyaron.com/sweep.html
 (use-package prolog
   :ensure nil
