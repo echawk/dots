@@ -1014,9 +1014,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
       (make-directory pl-dir)
       (url-copy-file "https://bruda.ca/_media/emacs/prolog.el"
                      (concat pl-dir "prolog.el"))))
-  :custom
-  (prolog-system 'swi)
   :config
+  (setq prolog-system 'swi)
   ;; Custom code to allow for switching between prolog implementations.
   (let* ((custom-prologs '((trealla "tpl")
                            (scryer "scryer-prolog")))
