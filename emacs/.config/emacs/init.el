@@ -854,24 +854,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
    (racket-hash-lang-mode . enable-paredit-mode)
    (lisp-mode             . enable-paredit-mode)))
 
-(use-package tuareg
-  :defer
-  :mode ("\\.ml[iylp]?$" . tuareg-mode)
-  :init
-  ;; Ensure that `ocamllsp` is in Emacs' $PATH.
-  (let ((opam-bindir (concat (getenv "HOME") "/.opam/default/bin/")))
-    (when (file-exists-p opam-bindir)
-      (add-to-list 'exec-path opam-bindir)))
-  :custom
-  (tuareg-indent-align-with-first-arg t)
-  (tuareg-match-patterns-aligned t))
-
-(use-package utop
-  :after tuareg
-  :hook ((tuareg-mode . utop-minor-mode))
-  :custom
-  (utop-command "opam exec -- dune utop . -- -emacs"))
-
 
 ;; TODO: consider rewriting this macro as a use-package extension
 
@@ -913,9 +895,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
            (,mm))
          (add-to-list
           'auto-mode-alist
-          '(,fe . ,setup-fn-name))))
-    )
-  )
+          '(,fe . ,setup-fn-name))))))
 
 (me/setup-auto-mode "\\.bqn"   bqn-mode)
 (me/setup-auto-mode "\\.cr"    crystal-mode)
@@ -971,13 +951,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  "\\.rkt"
  racket-hash-lang-mode
  :package racket-mode
- (progn
-   (add-hook 'racket-hash-lang-mode-hook #'racket-xp-mode)
-   (add-hook 'racket-hash-lang-mode-hook
-             #'(lambda ()
-                 (when (boundp #'agda2-mode)
-                   (require 'agda2-mode)
-                   (set-input-method "Agda")))) ))
+ (add-hook 'racket-hash-lang-mode-hook #'racket-xp-mode)
+ (add-hook 'racket-hash-lang-mode-hook
+           #'(lambda ()
+               (when (boundp #'agda2-mode)
+                 (require 'agda2-mode)
+                 (set-input-method "Agda")))))
 
 (me/setup-auto-mode
  "\\.jl$"
@@ -985,6 +964,22 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  :package ess
  (progn
    (use-package julia-mode :defer)))
+
+(me/setup-auto-mode
+ "\\.ml[iylp]?$"
+ tuareg-mode
+ :package tuareg
+ ;; Ensure that `ocamllsp` is in Emacs' $PATH.
+ (let ((opam-bindir (concat (getenv "HOME") "/.opam/default/bin/")))
+   (when (file-exists-p opam-bindir)
+     (add-to-list 'exec-path opam-bindir)))
+ (setq tuareg-indent-align-with-first-arg t)
+ (setq tuareg-match-patterns-aligned t)
+ (use-package utop
+   :after tuareg
+   :hook ((tuareg-mode . utop-minor-mode))
+   :custom
+   (utop-command "opam exec -- dune utop . -- -emacs")))
 
 ;; https://eshelyaron.com/sweep.html
 (use-package prolog
