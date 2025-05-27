@@ -1415,9 +1415,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; https://wiki.archlinux.org/title/EXWM
 ;; https://github.com/ch11ng/exwm/wiki/Configuration-Example
 (use-package exwm
-  :if (and (getenv "EMACS_IS_EXWM")
-           (or (eq system-type 'gnu/linux)
-               (eq system-type 'berkeley-unix)))
+  :if (and (or (eq system-type 'gnu/linux)
+               (eq system-type 'berkeley-unix))
+           (getenv "EMACS_IS_EXWM"))
   :hook ((exwm-update-class . (lambda () (exwm-workspace-rename-buffer exwm-class-name))))
   :init
   (unless (file-exists-p (executable-find "exwm"))
