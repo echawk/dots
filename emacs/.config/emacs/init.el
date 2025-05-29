@@ -466,10 +466,6 @@ With optional argument FRAME, return the list of buffers of FRAME."
   :hook ((prog-mode . hl-prog-extra-mode))
   :commands (hl-prog-extra-mode))
 
-;; Git frontend.
-(use-package magit :defer)
-(use-package forge :defer)
-
 
 ;;(make-variable-buffer-local
 ;;(setq me/apheleia-preferred-backend (me/get-formatter-backend))
@@ -875,6 +871,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
            (eval ,form)
            (setq ,comm-var-ran-p t))
          (,command)))))
+
+
+;; Git frontend.
+(me/eval-form-on-first-command-run
+ magit
+ (progn
+   (use-package magit)
+   (use-package forge)))
 
 
 ;; IE: only install/require the code whenever I begin to edit a file
