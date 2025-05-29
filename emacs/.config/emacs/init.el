@@ -1218,34 +1218,33 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
              :rev :newest)
    :commands (spray-mode)))
 
-(use-package org
-  :defer
-  :hook (org-mode . jinx-mode)
-  :custom
-  ;;(org-src-preserve-indentation nil)
-  (org-edit-src-content-indentation 0)
-  (org-confirm-babel-evaluate nil)
-  :config
-  ;; Add in shortcuts for code blocks and whatnot.
-  (require 'org-tempo)
+(me/setup-auto-mode
+ "\\.org$"
+ org-mode
+ :package org
+ (add-hook 'org-mode-hook #'jinx-mode)
+ (setq org-edit-src-content-indentation 0)
+ (setq org-confirm-babel-evaluate nil)
 
-  ;; Will automatically load a language if it is needed when in org-mode.
-  (advice-add
-   #'org-babel-execute-src-block
-   :around
-   (lambda (orig &rest args)
-     "Load a language if needed."
-     (let ((language (org-element-property :language (org-element-at-point))))
-       (unless (cdr (assoc (intern language) org-babel-load-languages))
-         (add-to-list 'org-babel-load-languages
-                      (cons (intern language) t))
-         (org-babel-do-load-languages 'org-babel-load-languages
-                                      org-babel-load-languages)))
-     (apply orig args))))
+ ;; Add in shortcuts for code blocks and whatnot.
+ (require 'org-tempo)
 
-;; Fix weird tab behavior in default org-mode. Preferable to "C-c '".
-(use-package poly-org
-  :after org)
+ ;; Will automatically load a language if it is needed when in org-mode.
+ (advice-add
+  #'org-babel-execute-src-block
+  :around
+  (lambda (orig &rest args)
+    "Load a language if needed."
+    (let ((language (org-element-property :language (org-element-at-point))))
+      (unless (cdr (assoc (intern language) org-babel-load-languages))
+        (add-to-list 'org-babel-load-languages
+                     (cons (intern language) t))
+        (org-babel-do-load-languages 'org-babel-load-languages
+                                     org-babel-load-languages)))
+    (apply orig args)))
+ ;; Fix weird tab behavior in default org-mode. Preferable to "C-c '".
+ (use-package poly-org
+   :after org))
 
 ;; Speech-to-text in Emacs.
 (me/emacs-N-progn
