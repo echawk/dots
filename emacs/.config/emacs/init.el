@@ -1223,8 +1223,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; https://alphapapa.github.io/emacs-package-dev-handbook/
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
 ;; (use-package elisp-demap :defer)
-(use-package suggest :defer)
-(use-package package-lint :defer)
+
+(me/eval-form-on-first-command-run
+ suggest
+ (use-package suggest))
+(me/eval-form-on-first-command-run
+ package-lint-current-buffer
+ (use-package package-lint))
 
 
 ;; Speed reading in Emacs.
