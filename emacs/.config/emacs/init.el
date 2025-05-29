@@ -349,10 +349,6 @@
        (:map god-local-mode-map
              ("i" . god-local-mode))))))
 
-;; TODO: add a keybind to bring up vundo menu.
-(use-package vundo
-  :defer
-  :commands (vundo))
 
 (use-package beframe
   :defer
@@ -871,6 +867,11 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  (progn
    (use-package magit)
    (use-package forge)))
+
+;; TODO: add a keybind to bring up vundo menu.
+(me/eval-form-on-first-command-run
+ vundo
+ (use-package vundo))
 
 (me/eval-form-on-first-command-run
  jinx-correct
