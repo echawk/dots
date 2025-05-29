@@ -779,9 +779,6 @@ the file.
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 
-;; Collaborative editing in Emacs.
-(use-package crdt :defer)
-
 (use-package jinx
   :hook ((emacs-startup . global-jinx-mode)
          (prog-mode     . (lambda () (jinx-mode -1))))
@@ -880,6 +877,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
    (use-package magit)
    (use-package forge)))
 
+;; Collaborative editing in Emacs.
+(me/eval-form-on-first-command-run crdt-share-buffer (use-package crdt))
 
 ;; IE: only install/require the code whenever I begin to edit a file
 ;; with the associated file extension.
