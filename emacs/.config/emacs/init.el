@@ -1114,32 +1114,34 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 ;; Use sly instead of slime
 (use-package elisp-slime-nav :after sly)
-(use-package sly :defer
-  :bind
-  (:map sly-mode-map
-        ("C-c C-i" . sly-interrupt)
-        ("C-c C-b" . sly-eval-buffer))
-  :init
-  ;; This little bit of magic code will make a custom sly-<lisp> command
-  ;; for each of the available lisps.
-  (dolist (inf-lisp '(sbcl ecl ccl clasp clisp abcl))
-    (if (executable-find (format "%s" inf-lisp))
-        (let* ((inf-lisp-str (symbol-name inf-lisp))
-               (func-name
-                (intern
-                 (seq-concatenate 'string (symbol-name 'sly-) inf-lisp-str)))
-               (doc-str
-                (seq-concatenate
-                 'string "Start " inf-lisp-str " and connect to it.")))
-          (eval
-           `(defun ,func-name ()
-              ,doc-str
-              (interactive)
-              (let ((inferior-lisp-program ,inf-lisp-str))
-                (sly)))))))
-  :custom
-  (inferior-lisp-program "sbcl"))
-(use-package sly-macrostep :after sly)
+(me/eval-form-on-first-command-run
+ sly
+ (use-package sly :defer
+   :bind
+   (:map sly-mode-map
+         ("C-c C-i" . sly-interrupt)
+         ("C-c C-b" . sly-eval-buffer))
+   :init
+   ;; This little bit of magic code will make a custom sly-<lisp> command
+   ;; for each of the available lisps.
+   (dolist (inf-lisp '(sbcl ecl ccl clasp clisp abcl))
+     (if (executable-find (format "%s" inf-lisp))
+         (let* ((inf-lisp-str (symbol-name inf-lisp))
+                (func-name
+                 (intern
+                  (seq-concatenate 'string (symbol-name 'sly-) inf-lisp-str)))
+                (doc-str
+                 (seq-concatenate
+                  'string "Start " inf-lisp-str " and connect to it.")))
+           (eval
+            `(defun ,func-name ()
+               ,doc-str
+               (interactive)
+               (let ((inferior-lisp-program ,inf-lisp-str))
+                 (sly)))))))
+   :custom
+   (inferior-lisp-program "sbcl"))
+ (use-package sly-macrostep :after sly))
 
 (use-package agda
   :ensure nil
