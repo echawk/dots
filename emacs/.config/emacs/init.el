@@ -1294,6 +1294,19 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
      whisper--ffmpeg-input-format "alsa"
      whisper--ffmpeg-input-device "hw:5,0"))))
 
+
+(use-package gptel
+  :defer
+  :config
+  (setq
+   gptel-model 'devstral:latest
+   gptel-backend (gptel-make-ollama
+                     "Ollama"
+                   :host "localhost:11434"
+                   :stream t
+                   :models '(devstral:latest))))
+(use-package gptel-magit :after gptel)
+
 ;; Read EPUBs in Emacs!
 (me/setup-auto-mode
  "\\.epub"
