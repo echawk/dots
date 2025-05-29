@@ -1304,18 +1304,19 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  (add-hook 'pdf-view-mode-hook #'(lambda () (display-line-numbers-mode 0)))
  (add-hook 'pdf-view-mode-hook #'(lambda () (if (me/is-night-p) (pdf-view-midnight-minor-mode)))))
 
-(use-package eradio
-  :defer
-  :custom
-  (eradio-player '("mpv" "--no-video" "--no-terminal"))
-  (eradio-channels '(("def con - soma fm"      . "https://somafm.com/defcon256.pls")
-                     ("the trip - soma fm"     . "https://somafm.com/thetrip.pls")
-                     ("dubstep - soma fm"      . "https://somafm.com/dubstep.pls")
-                     ("doomed - soma fm"       . "https://somafm.com/doomed.pls")
-                     ("darkzone - soma fm"     . "https://somafm.com/darkzone.pls")
-                     ("groove salad - soma fm" . "https://somafm.com/groovesalad.pls")
-                     ("bossa - soma fm"        . "https://somafm.com/bossa.pls")
-                     ("isl - soma fm "         . "https://somafm.com/illstreet.pls"))))
+(me/eval-form-on-first-command-run
+ eradio-play
+ (use-package eradio
+   :custom
+   (eradio-player '("mpv" "--no-video" "--no-terminal"))
+   (eradio-channels '(("def con - soma fm"      . "https://somafm.com/defcon256.pls")
+                      ("the trip - soma fm"     . "https://somafm.com/thetrip.pls")
+                      ("dubstep - soma fm"      . "https://somafm.com/dubstep.pls")
+                      ("doomed - soma fm"       . "https://somafm.com/doomed.pls")
+                      ("darkzone - soma fm"     . "https://somafm.com/darkzone.pls")
+                      ("groove salad - soma fm" . "https://somafm.com/groovesalad.pls")
+                      ("bossa - soma fm"        . "https://somafm.com/bossa.pls")
+                      ("isl - soma fm "         . "https://somafm.com/illstreet.pls")))))
 
 ;; NOTE: They keys get bound, but they are captured by evil-mode.
 (use-package yeetube
