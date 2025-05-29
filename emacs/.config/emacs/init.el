@@ -1090,22 +1090,24 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :after geiser-mode
   :hook ((geiser-mode . macrostep-geiser-setup)))
 ;; https://scripter.co/emacs-lisp-advice-combinators/
-(use-package srfi :defer
-  :config
-  ;; I'm kinda over trying to mess w/ Emacs advice combinators to make
-  ;; this more reliable (cl-flet sucks). This works for now though.
-  (advice-add
-   #'srfi-browse-document-url
-   :override
-   (lambda (number) (eww-browse-url (srfi--document-url number))))
-  ;; Add some keybinds that make this easier to use from evil-mode.
-  :bind
-  (:map srfi-mode-map
-        ("C-<return>" . srfi-browse-document-url)
-        ("C-c C-k"    . srfi-keyword)
-        ("C-c C-l"    . srfi-browse-landing-page-url)
-        ("C-c C-r"    . srfi-browse-repository-url)
-        ("C-c C-s"    . srfi-search)))
+(me/eval-form-on-first-command-run
+ srfi-list
+ (use-package srfi
+   :config
+   ;; I'm kinda over trying to mess w/ Emacs advice combinators to make
+   ;; this more reliable (cl-flet sucks). This works for now though.
+   (advice-add
+    #'srfi-browse-document-url
+    :override
+    (lambda (number) (eww-browse-url (srfi--document-url number))))
+   ;; Add some keybinds that make this easier to use from evil-mode.
+   :bind
+   (:map srfi-mode-map
+         ("C-<return>" . srfi-browse-document-url)
+         ("C-c C-k"    . srfi-keyword)
+         ("C-c C-l"    . srfi-browse-landing-page-url)
+         ("C-c C-r"    . srfi-browse-repository-url)
+         ("C-c C-s"    . srfi-search))))
 
 ;; Use sly instead of slime
 (use-package elisp-slime-nav :after sly)
