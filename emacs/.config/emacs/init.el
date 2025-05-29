@@ -1239,11 +1239,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; Speed reading in Emacs.
 (me/emacs-N-progn
  30
- (use-package spray
-   :defer
-   :vc (:url "https://github.com/emacsmirror/spray"
-             :rev :newest)
-   :commands (spray-mode)))
+ (me/eval-form-on-first-command-run
+  spray-mode
+  (use-package spray
+    :vc (:url "https://github.com/emacsmirror/spray"
+              :rev :newest)
+    :commands (spray-mode))))
 
 (me/setup-auto-mode
  "\\.org$"
@@ -1276,20 +1277,21 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; Speech-to-text in Emacs.
 (me/emacs-N-progn
  30
- (use-package whisper
-   :defer
-   :vc (:url "https://github.com/natrys/whisper.el"
-             :rev :newest)
-   :bind ("C-c w" . whisper-run)
-   :config
-   (setq
-    whisper-install-directory (concat user-emacs-directory "whisper-el/")
-    whisper-model "base"
-    whisper-language "en"
-    whisper-translate nil
-    whisper-recording-timeout 600
-    whisper--ffmpeg-input-format "alsa"
-    whisper--ffmpeg-input-device "hw:5,0")))
+ (me/eval-form-on-first-command-run
+  whisper-run
+  (use-package whisper
+    :vc (:url "https://github.com/natrys/whisper.el"
+              :rev :newest)
+    :bind ("C-c w" . whisper-run) ;; FIXME: move this out of here?
+    :config
+    (setq
+     whisper-install-directory (concat user-emacs-directory "whisper-el/")
+     whisper-model "base"
+     whisper-language "en"
+     whisper-translate nil
+     whisper-recording-timeout 600
+     whisper--ffmpeg-input-format "alsa"
+     whisper--ffmpeg-input-device "hw:5,0"))))
 
 ;; Read EPUBs in Emacs!
 (me/setup-auto-mode
@@ -1372,11 +1374,15 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :defer
   :hook (elpher-mode . visual-line-mode))
 
-(use-package google-translate :defer)
+(me/eval-form-on-first-command-run
+ google-translate-buffer
+ (use-package google-translate))
 
 (use-package ement :defer)
 
-(use-package define-word :defer)
+(me/eval-form-on-first-command-run
+ define-word
+ (use-package define-word))
 
 (use-package maxima
   :ensure nil
