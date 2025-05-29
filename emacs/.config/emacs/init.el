@@ -1113,7 +1113,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
          ("C-c C-s"    . srfi-search))))
 
 ;; Use sly instead of slime
-(use-package elisp-slime-nav :after sly)
+(use-package elisp-slime-nav :defer)
 
 ;; FIXME: figure out why (me/eval-form-on-first-command-run) does not work w/ sly
 (use-package sly
