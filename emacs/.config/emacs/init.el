@@ -779,11 +779,6 @@ the file.
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 
-(use-package jinx
-  :hook ((emacs-startup . global-jinx-mode)
-         (prog-mode     . (lambda () (jinx-mode -1))))
-  :bind ([remap ispell-word] . jinx-correct))
-
 (use-package flymake
   :defer
   :hook ((text-mode . flymake-mode))
@@ -876,6 +871,13 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  (progn
    (use-package magit)
    (use-package forge)))
+
+(me/eval-form-on-first-command-run
+ jinx-correct
+ (use-package jinx
+   :hook ((emacs-startup . global-jinx-mode)
+          (prog-mode     . (lambda () (jinx-mode -1))))
+   :bind ([remap ispell-word] . jinx-correct)))
 
 ;; Collaborative editing in Emacs.
 (me/eval-form-on-first-command-run crdt-share-buffer (use-package crdt))
