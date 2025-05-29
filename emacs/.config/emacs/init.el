@@ -1403,19 +1403,21 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  define-word
  (use-package define-word))
 
-(use-package maxima
-  :ensure nil
-  :if (file-exists-p "/usr/share/emacs/site-lisp/maxima")
-  :commands (maxima-mode maxima imaxima imath-mode)
-  :defer
-  :mode ("\\.ma[cx]\\'" . maxima-mode)
-  :config
-  (setq imaxima-use-maxima-mode-flag t)
-  (setq imaxima-fnt-size "LARGE")
-  (setq imaxima-latex-preamble "\\usepackage{concrete}") ;; Sets the font for the LaTeX output.
-  ;; Needed to fix commands section above. TODO: see if I can remove this.
-  (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
-  (autoload 'imath-mode "imath" "Imath mode for math formula input" t))
+(me/eval-form-on-first-command-run
+ imaxima
+ (use-package maxima
+   :ensure nil
+   :if (file-exists-p "/usr/share/emacs/site-lisp/maxima")
+   :commands (maxima-mode maxima imaxima imath-mode)
+   :defer
+   :mode ("\\.ma[cx]\\'" . maxima-mode)
+   :config
+   (setq imaxima-use-maxima-mode-flag t)
+   (setq imaxima-fnt-size "LARGE")
+   (setq imaxima-latex-preamble "\\usepackage{concrete}") ;; Sets the font for the LaTeX output.
+   ;; Needed to fix commands section above. TODO: see if I can remove this.
+   (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
+   (autoload 'imath-mode "imath" "Imath mode for math formula input" t)))
 
 
 ;; Better LaTeX editing.
