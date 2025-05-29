@@ -861,6 +861,21 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; which, will actually install the package either when the file extension
 ;; given by :mode is encountered, or when a certain mode is requested.
 
+(defmacro me/eval-form-on-first-command-run (command form)
+  (let ((comm-var-ran-p (intern
+                         (concat
+                          (symbol-name command)
+                          (symbol-name (gensym))
+                          "-p"))))
+    `(progn
+       (setq ,comm-var-ran-p nil)
+       (defun ,command ()
+         (interactive)
+         (unless ,comm-var-ran-p
+           (eval ,form)
+           (setq ,comm-var-ran-p t))
+         (,command)))))
+
 
 ;; IE: only install/require the code whenever I begin to edit a file
 ;; with the associated file extension.
@@ -1271,9 +1286,10 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  :package nov
  (add-hook 'nov-mode-hook #'visual-line-mode))
 
-(use-package vterm
-  :defer
-  :hook (vterm-mode . (lambda () (display-line-numbers-mode 0))))
+(me/eval-form-on-first-command-run
+ vterm
+ (use-package vterm
+   :hook (vterm-mode . (lambda () (display-line-numbers-mode 0)))))
 
 (use-package eat
   :after eshell
