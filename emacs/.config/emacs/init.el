@@ -1082,16 +1082,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;;   :after geiser
 ;;   :custom (geiser-guile-binary "guile3"))
 
-;; FIXME: rm these keybinds
-(use-package macrostep :defer
-  :bind
-  (:map macrostep-keymap
-        ("C-c C-e" . macrostep-expand)
-        ("C-c C-u" . macrostep-collapse)
-        ("C-c C-q" . macrostep-collapse-all)))
-(use-package macrostep-geiser
-  :after geiser-mode
-  :hook ((geiser-mode . macrostep-geiser-setup)))
+(me/eval-form-on-first-command-run
+ macrostep-expand
+ (use-package macrostep))
+
+;; (use-package macrostep-geiser
+;;   :after geiser-mode
+;;   :hook ((geiser-mode . macrostep-geiser-setup)))
+
 ;; https://scripter.co/emacs-lisp-advice-combinators/
 (me/eval-form-on-first-command-run
  srfi-list
@@ -1143,6 +1141,8 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
   (setq inferior-lisp-program "sbcl"))
 (use-package sly-macrostep :after sly)
+
+
 (me/setup-auto-mode
  "\\.hs" haskell-mode
  (progn
