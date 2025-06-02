@@ -90,7 +90,6 @@ command has been ran before.
                           (symbol-name (gensym))
                           "-p"))))
     `(progn
-       (setq ,comm-var-ran-p nil)
        ,@(mapcar
           (lambda (comm)
             `(me/eval-form-on-first-command-run
