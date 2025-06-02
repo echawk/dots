@@ -499,8 +499,6 @@ With optional argument FRAME, return the list of buffers of FRAME."
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
-  :custom
-  (eglot-events-buffer-size 0)
   :init
   ;; Refresh the file every two weeks.
   (when (or
@@ -512,6 +510,8 @@ With optional argument FRAME, return the list of buffers of FRAME."
   (load-file me/eglot-quickload-file)
   (me/eglot-enable-everything)
   :config
+  ;; Don't log anything in the events buffer, offers a decent speed improvement.
+  (setq eglot-events-buffer-size 0)
   ;; Don't log *anything*. If there are problems, it's easy enough to comment
   ;; this line out.
   (fset #'jsonrpc--log-event #'ignore)
@@ -908,6 +908,7 @@ If COMMAND is not redefined after evaluating FORM, an infinite loop will occur.
 
 ;; IE: only install/require the code whenever I begin to edit a file
 ;; with the associated file extension.
+;; FIXME: re-implement in terms of me/eval-form-on-first-command-run
 (defmacro me/setup-auto-mode (file-extension major-mode &rest args)
   "FIXME: write this docstring"
   ;; NOTE: only use this for modes that you don't plan on configuring at all.
@@ -1115,7 +1116,7 @@ If COMMAND is not redefined after evaluating FORM, an infinite loop will occur.
 
 ;; https://scripter.co/emacs-lisp-advice-combinators/
 (me/eval-form-on-first-command-run
- srfi-list
+ srfi
  (use-package srfi
    :config
    ;; I'm kinda over trying to mess w/ Emacs advice combinators to make
@@ -1412,9 +1413,10 @@ If COMMAND is not redefined after evaluating FORM, an infinite loop will occur.
   ;; (setq browse-url-browser-function 'eww-browse-url)
   :hook (eww-mode . visual-line-mode))
 
-(use-package elpher
-  :defer
-  :hook (elpher-mode . visual-line-mode))
+(me/eval-form-on-first-command-run
+ elpher
+ (use-package elpher
+   :hook (elpher-mode . visual-line-mode)))
 
 (me/eval-form-on-first-command-run
  google-translate-buffer
