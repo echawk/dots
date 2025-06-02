@@ -551,16 +551,19 @@ With optional argument FRAME, return the list of buffers of FRAME."
      `(setq eglot-server-programs ',eglot-server-programs)
      (current-buffer))))
 
+(defun me/eglot-quickload-file-out-of-date-p ()
+  (or
+   (not (file-exists-p me/eglot-quickload-file))
+   (<= 14
+       (- (time-to-days (current-time))
+          (time-to-days (nth 5 (file-attributes me/eglot-quickload-file)))))))
+
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
   :init
   ;; Refresh the file every two weeks.
-  (when (or
-         (not (file-exists-p me/eglot-quickload-file))
-         (<= 14
-             (- (time-to-days (current-time))
-                (time-to-days (nth 5 (file-attributes me/eglot-quickload-file))))))
+  (when (me/eglot-quickload-file-out-of-date-p)
     (me/make-eglot-quickload-file))
   (load-file me/eglot-quickload-file)
   (me/eglot-enable-everything)
