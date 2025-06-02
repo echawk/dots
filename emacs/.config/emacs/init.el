@@ -846,9 +846,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; given by :mode is encountered, or when a certain mode is requested.
 
 (defmacro me/eval-form-on-first-command-run (command form)
+  "Evaluate FORM when COMMAND is attempted to be ran for the first time. 
+COMMAND will be re-evaluated after FORM is evaluated. 
+If COMMAND is not redefined after evaluating FORM, an infinite loop will occur.
+"
   (let ((comm-var-ran-p (intern
                          (concat
                           (symbol-name command)
+                          "-"
                           (symbol-name (gensym))
                           "-p"))))
     `(progn
@@ -860,6 +865,24 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
            (setq ,comm-var-ran-p t))
          (,command)))))
 
+(defmacro me/eval-form-on-first-commands-run (command-lst form)
+  (let ((comm-var-ran-p (intern
+                         (concat
+                          (symbol-name (car command-lst))
+                          "-"
+                          (symbol-name (gensym))
+                          "-p"))))
+    `(progn
+       (setq ,comm-var-ran-p nil)
+       ,@(mapcar
+          (lambda (command)
+            `(defun ,command ()
+               (interactive)
+               (unless ,comm-var-ran-p
+                 (eval ,form)
+                 (setq ,comm-var-ran-p t))
+               (,command)))
+          command-lst))))
 
 ;; Git frontend.
 (me/eval-form-on-first-command-run
