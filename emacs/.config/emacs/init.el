@@ -940,6 +940,7 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (me/setup-auto-mode "\\.vim"   vimrc-mode)
 (me/setup-auto-mode "\\.zig"   zig-mode)
 (me/setup-auto-mode "\\.ua"    uiua-mode)
+(me/setup-auto-mode "\\.nasm"  nasm-mode)
 (me/setup-auto-mode
  "\\.clj" clojure-mode (use-package inf-clojure :after clojure-mode))
 (me/setup-auto-mode
