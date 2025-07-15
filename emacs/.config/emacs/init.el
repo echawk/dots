@@ -26,9 +26,7 @@
   (setq use-package-always-ensure t
         use-package-compute-statistics t))
 
-(let ((pkg-system 'package-el))
-  (pcase pkg-system
-    ('package-el (me/package-bootstrap))))
+(me/package-bootstrap)
 
 (setq me/delete-trailing-whitespace nil)
 
