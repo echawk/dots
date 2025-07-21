@@ -231,6 +231,10 @@ command has been ran before.
     (interactive "P")
     (setq me/eldoc-enabled-p (if arg nil (not me/eldoc-enabled-p))))
 
+  ;; Disable the C-scrolling keybinds
+  (global-set-key (kbd "C-<wheel-up>")   #'ignore)
+  (global-set-key (kbd "C-<wheel-down>") #'ignore)
+
   ;; Automatically update buffers when contents change on disk.
   (global-auto-revert-mode)
   ;; Always highlight the current line.
