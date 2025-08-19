@@ -107,5 +107,23 @@
              (list :source-registry (list :directory (uiop:getcwd))
                    :inherit-configuration))))
 
+;; Thank you : https://gist.github.com/ryukinix/5273af4b25dec53ed9f078bd7e350d88
+(defun executables ()
+  (loop with path = (uiop:getenv "PATH")
+        for p in (uiop:split-string path :separator ":")
+        for dir = (probe-file p)
+        when (uiop:directory-exists-p dir)
+          append (uiop:directory-files dir)))
+
+(defun find-executable-p (name)
+  (find name (executables)
+        :test #'equalp
+        :key #'pathname-name))
+
+;; Install `qlot` in the REPL if it isn't available in $PATH.
+(unless (find-executable-p "qlot")
+  (format t "NOTE: There is no `qlot` executable on this system. Installing via quicklisp...")
+  #+QUICKLISP (ql:quickload :qlot :silent t))
+
 ;; Unmuffle our warnings again.
 #+SBCL (declaim (sb-ext:unmuffle-conditions style-warning))
