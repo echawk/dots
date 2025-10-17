@@ -77,6 +77,11 @@ export GOPROXY=direct
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 #export RUSTC_WRAPPER=sccache
 export RUSTFLAGS="-C opt-level=3"
+# more rust configuration.
+if [ -e "$CARGO_HOME/bin/" ] ; then
+    export PATH="$CARGO_HOME/bin:$PATH"
+fi
+
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export NODE_REPL_HSTORY="$XDG_DATA_HOME/node_repl_history"
 
