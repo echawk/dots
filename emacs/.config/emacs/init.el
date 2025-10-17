@@ -979,18 +979,45 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (me/setup-auto-mode "\\.applescript" applescript-mode)
 
 (me/setup-auto-mode "\\.erl" erlang-mode :package erlang)
-;; .rkt
-;; https://www.racket-mode.com/
-(me/setup-auto-mode
- "\\.rkt"
- racket-hash-lang-mode
- :package racket-mode
- (add-hook 'racket-hash-lang-mode-hook #'racket-xp-mode)
- (add-hook 'racket-hash-lang-mode-hook
-           #'(lambda ()
-               (when (boundp #'agda2-mode)
-                 (require 'agda2-mode)
-                 (set-input-method "Agda")))))
+
+(use-package racket-mode
+  :defer
+  :mode "\\.rkt"
+  :init
+  (add-to-list
+   'eglot-server-programs
+   '((racket-hash-lang-mode) "racket" "-l" "racket-langserver"))
+
+  (defun me/racket-pkg-is-installed-p (pkg-name)
+    (thread-last
+      pkg-name
+      (format "sh -c 'raco pkg show %s | tail -n 1'")
+      (shell-command-to-string)
+      (string-match-p (rx "[none]"))
+      (not)))
+
+  (defun me/racket-install-package (pkg-name)
+    (shell-command
+     (format "sh -c 'yes Y | raco pkg install %s'" pkg-name)))
+  
+  (unless (me/racket-pkg-is-installed-p "racket-langserver")
+    (me/racket-install-package "racket-langserver"))
+  
+  :config
+  (require 'racket-xp)
+  ;; (add-hook 'racket-xp-mode-hook
+  ;;           (lambda ()
+  ;;             (remove-hook 'pre-display-functions
+  ;;                          #'racket-xp-pre-redisplay
+  ;;                          t)))
+  (add-hook 'racket-mode-hook           #'racket-xp-mode)
+  (add-hook 'racket-hash-lang-mode-hook #'racket-xp-mode)
+  (add-hook 'racket-hash-lang-mode-hook
+            #'(lambda ()
+                (when (boundp #'agda2-mode)
+                  (require 'agda2-mode)
+                  (set-input-method "Agda")))))
+
 
 (me/setup-auto-mode
  "\\.jl$"
