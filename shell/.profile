@@ -34,6 +34,12 @@ case "$sys" in
         # useful on macos.
         if [ -e "$HOME/.venv/" ]; then
             . "$HOME/.venv/bin/activate"
+        else
+            # If we have python, create the venv & source it.
+            if command -v python; then
+                python -m venv "$HOME/.venv/" > /dev/null 2>&1
+                . "$HOME/.venv/bin/activate"
+            fi
         fi
         ;;
     *)
