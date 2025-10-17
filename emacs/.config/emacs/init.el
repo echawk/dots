@@ -897,6 +897,15 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
    (racket-hash-lang-mode . enable-paredit-mode)
    (lisp-mode             . enable-paredit-mode)))
 
+(use-package lisp-docstring-toggle
+  :ensure nil
+  :hook
+  ((emacs-lisp-mode lisp-mode scheme-mode) . lisp-docstring-toggle-setup)
+  :init
+  (unless (package-installed-p (intern "lisp-docstring-toggle"))
+    (package-vc-install
+     '(lisp-docstring-toggle :vc-backend Git
+                             :url "https://github.com/gggion/lisp-docstring-toggle"))))
 
 ;; TODO: consider rewriting this macro as a use-package extension
 
