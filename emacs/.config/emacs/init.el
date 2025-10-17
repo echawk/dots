@@ -684,8 +684,7 @@ It will also remove any trailing whitespace from the end of any line from
 the file.
 "
     (interactive)
-    (setq formatter
-          (if (not (eq nil formatter)) formatter (me/get-formatter-backend)))
+    (setq formatter (if formatter formatter (me/get-formatter-backend)))
     (cl-flet
         ((apheleia-fmt ()
            (apheleia-format-buffer (cdr (assoc major-mode apheleia-mode-alist))))
