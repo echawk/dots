@@ -77,7 +77,7 @@
           "https://github.com/ocicl/ocicl"
           "'"))
         (uiop:with-current-directory
-          ((merge-pathnames "ocicl" (uiop:getcwd)))
+            ((merge-pathnames "ocicl" (uiop:getcwd)))
           (uiop:run-program
            (concatenate
             'string
@@ -120,10 +120,25 @@
         :test #'equalp
         :key #'pathname-name))
 
+;; Make this dummy package to allow for the below code snippet to work.
+(defpackage :qlot/cli (:export :main))
+
+#+SBCL
+(defun make-qlot-exe ()
+  (ql:quickload :sb-posix)
+  (when (zerop (sb-posix:fork))
+    (format t "here in the forked process")
+    (ql:quickload '(:uiop :qlot :qlot/cli) :silent nil)
+    (setq uiop:*image-entry-point* #'qlot/cli:main)
+    (uiop:dump-image "qlot" :executable t :compression t)))
+
 ;; Install `qlot` in the REPL if it isn't available in $PATH.
+#+(and QUICKLISP SBCL)
 (unless (find-executable-p "qlot")
   (format t "NOTE: There is no `qlot` executable on this system. Installing via quicklisp...")
-  #+QUICKLISP (ql:quickload :qlot :silent t))
+  (uiop:with-current-directory
+      ((merge-pathnames ".local/bin" (user-homedir-pathname)))
+    (make-qlot-exe)))
 
 ;; Unmuffle our warnings again.
 #+SBCL (declaim (sb-ext:unmuffle-conditions style-warning))
