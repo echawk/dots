@@ -23,21 +23,26 @@
 ;; Switch back to cl-user package.
 (in-package :cl-user)
 
+(defmacro with-temporary-directory (form)
+  "Evaluate form within a temporary directory created by `mktemp -d`."
+  `(let ((temp-dir
+           (string-trim '(#\Newline)
+                        (uiop:run-program "mktemp -d" :output :string))))
+     (uiop:with-current-directory (temp-dir)
+       ,form)
+     (uiop:run-program (concatenate 'string "rm -vrf " temp-dir))))
+
 ;;; Install quicklisp if it is not already installed.
-#-quicklisp
+#-QUICKLISP
 (let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
                                        (user-homedir-pathname))))
   (unless (probe-file quicklisp-init)
-    (let ((temp-dir (string-trim '(#\Newline)
-                                 (uiop:run-program "mktemp -d" :output :string))))
-      (uiop:with-current-directory (temp-dir)
+    (with-temporary-directory
         (progn
           (uiop:run-program "curl -O https://beta.quicklisp.org/quicklisp.lisp"
                             :output *standard-output*)
           (load "quicklisp.lisp")
-          (quicklisp-quickstart:install)
-          (uiop:run-program "rm quicklisp.lisp")))
-      (uiop:run-program (concatenate 'string "rm -vrf " temp-dir))))
+          (quicklisp-quickstart:install))))
 
   (when (probe-file quicklisp-init)
     (load quicklisp-init))
@@ -55,15 +60,6 @@
 ;; https://github.com/fukamachi/qlot
 ;; https://www.clpm.dev/
 ;; https://medium.com/@MartinCracauer/static-type-checking-in-the-programmable-programming-language-lisp-79bb79eb068a
-
-(defmacro with-temporary-directory (form)
-  "Evaluate form within a temporary directory created by `mktemp -d`."
-  `(let ((temp-dir
-           (string-trim '(#\Newline)
-                        (uiop:run-program "mktemp -d" :output :string))))
-     (uiop:with-current-directory (temp-dir)
-       ,form)
-     (uiop:run-program (concatenate 'string "rm -vrf " temp-dir))))
 
 (defun install-ocicl-cmd ()
   (with-temporary-directory
@@ -127,8 +123,7 @@
 (defun make-qlot-exe ()
   (ql:quickload :sb-posix)
   (when (zerop (sb-posix:fork))
-    (format t "here in the forked process")
-    (ql:quickload '(:uiop :qlot :qlot/cli) :silent nil)
+    (ql:quickload '(:uiop :qlot :qlot/cli))
     (setq uiop:*image-entry-point* #'qlot/cli:main)
     (uiop:dump-image "qlot" :executable t :compression t)))
 
