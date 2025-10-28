@@ -1005,8 +1005,12 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
       (not)))
 
   (defun me/racket-install-package (pkg-name)
-    (shell-command
-     (format "sh -c 'yes Y | raco pkg install %s'" pkg-name)))
+    (unless
+        (zerop
+         (shell-command
+          (format "sh -c 'yes Y | raco pkg install %s'" pkg-name)))
+      (message
+       (format "me/racket-install-package: unable to install '%s'" pkg-name))))
   
   (unless (me/racket-pkg-is-installed-p "racket-langserver")
     (me/racket-install-package "racket-langserver"))
