@@ -1041,7 +1041,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; NOTE: look into this package.
 ;; (use-package ess-view-data
 ;;   :defer t)
+
 (me/setup-auto-mode
+ "\\.R$"
  ess-r-mode
  :package ess
  (progn
