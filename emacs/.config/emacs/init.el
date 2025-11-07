@@ -1472,8 +1472,11 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
   :defer
   :hook (dired-mode . media-thumbnail-dired-mode))
 
-(use-package eww
+(use-package electric-list-directory
   :defer
+  :bind ("C-x C-d" . electric-list-directory))
+
+(use-package eww
   ;; Uncomment below for emacs to behave as the default web browser.
   ;; :init
   ;; (setq browse-url-browser-function 'eww-browse-url)
