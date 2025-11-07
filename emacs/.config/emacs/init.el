@@ -1038,6 +1038,37 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  (progn
    (use-package julia-mode :defer)))
 
+;; NOTE: look into this package.
+;; (use-package ess-view-data
+;;   :defer t)
+(me/setup-auto-mode
+ ess-r-mode
+ :package ess
+ (progn
+   (defun me/is-r-pacakge-installed-p (pkgname)
+     (eq 0
+         (shell-command
+          (format "Rscript -e 'if(requireNamespace(\"%s\", quietly=TRUE)) q(status=0) else q(status=1)'" pkgname))))
+
+   ;;(Me/is-cran-pacakge-installed-p "languageserver")
+   (defun me/install-r-cran-pacakge (pkgname)
+     (shell-command
+      (format "Rscript -e 'options(repos = \"https://cran.r-project.org\")' -e 'install.packages(\"%s\")'" pkgname)))
+
+   (defun me/install-r-github-package (user/repo)
+     (shell-command
+      (format "Rscript -e 'if(requireNamespace(\"remotes\")) remotes::install_github(\"%s\")' else q(status=1)" user/repo)))
+
+   (unless (me/is-r-pacakge-installed-p "remotes")
+     (me/install-r-cran-pacakge "remotes")
+     ;; # install.packages("remotes")
+     ;; remotes::install_github("REditorSupport/languageserver")
+     (unless (me/is-r-pacakge-installed-p "languageserver")
+       ;;(me/install-r-github-package "REditorSupport/languageserver")
+       (me/install-r-cran-pacakge "langaugeserver")))))
+
+;;(me/install-cran-pacakge "languageserver")
+
 (me/setup-auto-mode
  "\\.ml[iylp]?$"
  tuareg-mode
