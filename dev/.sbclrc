@@ -20,6 +20,12 @@
 (defun install-dist (arg1 arg2 arg3) (list arg1 arg2 arg3))
 (defun find-dist (str) str)
 
+(defpackage :ql-https
+  (:use :cl)
+  (:export :*quietly-use-https*))
+(in-package :ql-https)
+(defvar *quietly-use-https* t)
+
 ;; Switch back to cl-user package.
 (in-package :cl-user)
 
@@ -56,11 +62,33 @@
 (push '*default-pathname-defaults* asdf:*central-registry*)
 
 ;; TODO: figure out how to incorporate ql-https
+#+(and QUICKLISP DARWIN)
+(progn
+  (defun install-ql-https ()
+    (uiop:with-current-directory ((car ql:*local-project-directories*))
+      (uiop:run-program
+       (concatenate
+          'string
+          "sh -c '"
+          "HOME=/dev/null "
+          "git clone --depth 1 "
+          "https://github.com/rudolfochrist/ql-https"
+          "'"))))
+  (defun setup-ql-https ()
+    (unless (ql:where-is-system :ql-https)
+      (install-ql-https))
+    (progn
+      (load (merge-pathnames (ql:where-is-system :ql-https) "ql-setup.lisp"))
+      (ql:quickload :ql-https)
+      (quicklisp:setup)
+      (setf ql-https:*quietly-use-https* t)))
+  (setup-ql-https))
 
 ;; https://github.com/fukamachi/qlot
 ;; https://www.clpm.dev/
 ;; https://medium.com/@MartinCracauer/static-type-checking-in-the-programmable-programming-language-lisp-79bb79eb068a
 
+#+SBCL
 (defun install-ocicl-cmd ()
   (with-temporary-directory
       (progn
@@ -74,6 +102,11 @@
           "'"))
         (uiop:with-current-directory
             ((merge-pathnames "ocicl" (uiop:getcwd)))
+          ;; FIXME: try to get the fork version to work.
+          ;;(ql:quickload '(:sb-posix))
+          ;; (when (zerop (sb-posix:fork))
+          ;;   (defconstant +dynamic-space-size+ 2048)
+          ;;   (load "setup.lisp"))
           (uiop:run-program
            (concatenate
             'string
@@ -119,8 +152,10 @@
 ;; Make this dummy package to allow for the below code snippet to work.
 (defpackage :qlot/cli (:export :main))
 
-#+SBCL
+#+(and QUICKLISP SBCL)
 (defun make-qlot-exe ()
+  ;; (unless (and (find-package :bordeaux-threads)
+  ;;              (> (length (bordeaux-threads:all-threads)) 1)))
   (ql:quickload :sb-posix)
   (when (zerop (sb-posix:fork))
     (ql:quickload '(:uiop :qlot :qlot/cli))
@@ -134,6 +169,12 @@
   (uiop:with-current-directory
       ((merge-pathnames ".local/bin" (user-homedir-pathname)))
     (make-qlot-exe)))
+
+#+(and QUICKLISP SBCL)
+(defun update-all-dists ()
+  (let ((*standard-input*  (make-string-input-stream "\n"))
+        (*standard-output* (make-broadcast-stream)))
+    (ql:update-all-dists)))
 
 ;; Unmuffle our warnings again.
 #+SBCL (declaim (sb-ext:unmuffle-conditions style-warning))
