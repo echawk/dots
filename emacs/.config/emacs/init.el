@@ -989,8 +989,24 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (me/setup-auto-mode "\\.erl" erlang-mode :package erlang)
 
 (use-package racket-mode
-  :defer
+  ;;:defer
   :mode "\\.rkt"
+  :hook
+  ((racket-xp-mode        . (lambda ()
+                              (remove-hook 'pre-display-functions
+                                           #'racket-xp-pre-redisplay
+                                           t)))
+   ((racket-mode
+     racket-hash-lang-mode)
+    . (lambda ()
+        ;; Enable racket-xp which allow for goto-source, etc.
+        (require 'racket-xp)
+        (racket-xp-mode)
+
+        ;; Enable unicode input/mostly for \Gamma & friends...
+        (when (boundp #'agda2-mode)
+          (require 'agda2-mode)
+          (set-input-method "Agda")))))
   :init
   (add-to-list
    'eglot-server-programs
@@ -1011,24 +1027,22 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
           (format "sh -c 'yes Y | raco pkg install %s'" pkg-name)))
       (message
        (format "me/racket-install-package: unable to install '%s'" pkg-name))))
-  
-  (unless (me/racket-pkg-is-installed-p "racket-langserver")
-    (me/racket-install-package "racket-langserver"))
-  
-  :config
-  (require 'racket-xp)
-  ;; (add-hook 'racket-xp-mode-hook
-  ;;           (lambda ()
-  ;;             (remove-hook 'pre-display-functions
-  ;;                          #'racket-xp-pre-redisplay
-  ;;                          t)))
-  (add-hook 'racket-mode-hook           #'racket-xp-mode)
-  (add-hook 'racket-hash-lang-mode-hook #'racket-xp-mode)
-  (add-hook 'racket-hash-lang-mode-hook
-            #'(lambda ()
-                (when (boundp #'agda2-mode)
-                  (require 'agda2-mode)
-                  (set-input-method "Agda")))))
+
+  (advice-add
+   #'eglot--connect
+   :around
+   (lambda (orig &rest args)
+     ;; Match the 5 expected arguments and bind them to names
+     (pcase args
+       (`(,major-modes ,project ,class-name ,saved-initargs ,language-ids)
+        (when (and (eq 1 (length major-modes))
+                   (or
+                    (eq (car major-modes) 'racket-mode)
+                    (eq (car major-modes) 'racket-hash-lang-mode)))
+
+          (unless (me/racket-pkg-is-installed-p "racket-langserver")
+            (me/racket-install-package "racket-langserver")))))
+     (apply orig args))))
 
 
 (me/setup-auto-mode
