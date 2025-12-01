@@ -534,42 +534,16 @@ With optional argument FRAME, return the list of buffers of FRAME."
        (add-to-list 'eglot-server-programs
                     `(,modes . ,cmd)))))
 
-(defun me/eglot-enable-everything ()
-  "Little function to enable eglot in every mode that it knows about."
-  (mapcar
-   (lambda (mode-str)
-     (add-hook
-      (intern (seq-concatenate 'string mode-str "-hook")) #'eglot-ensure))
-   (seq-filter
-    (lambda (str) (string-match-p ".*-mode$" str))
-    (mapcar (lambda (sym) (if (symbolp sym) (symbol-name sym) sym))
-            (flatten-list (mapcar #'car eglot-server-programs))))))
 
-(setq me/eglot-quickload-file (concat user-emacs-directory "eglot-quickload.el"))
-
-(defun me/make-eglot-quickload-file ()
-  (require 'eglot)
-  (with-temp-file me/eglot-quickload-file
-    (prin1
-     `(setq eglot-server-programs ',eglot-server-programs)
-     (current-buffer))))
-
-(defun me/eglot-quickload-file-out-of-date-p ()
-  (or
-   (not (file-exists-p me/eglot-quickload-file))
-   (<= 14
-       (- (time-to-days (current-time))
-          (time-to-days (nth 5 (file-attributes me/eglot-quickload-file)))))))
 
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
-  :init
-  ;; Refresh the file every two weeks.
-  (when (me/eglot-quickload-file-out-of-date-p)
-    (me/make-eglot-quickload-file))
-  (load-file me/eglot-quickload-file)
-  (me/eglot-enable-everything)
+  ;; :init
+  ;; ;; Refresh the file every two weeks.
+  ;; (when (me/eglot-quickload-file-out-of-date-p)
+  ;;   (me/make-eglot-quickload-file))
+  ;; (load-file me/eglot-quickload-file)
   :config
   ;; Don't log anything in the events buffer, offers a decent speed improvement.
   (setq eglot-events-buffer-size 0)
