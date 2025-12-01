@@ -563,6 +563,12 @@ With optional argument FRAME, return the list of buffers of FRAME."
       ("texlab"))
      (vala-mode     ("vala-language-server")))))
 
+;; LSP/DAP/formatter/linter manager ported from nvim.
+(use-package mason
+  :ensure t
+  :config
+  (mason-ensure))
+
 (use-package eglot-plus
   :ensure nil
   :after eglot
