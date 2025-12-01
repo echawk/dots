@@ -20,7 +20,7 @@
 
 ;; Eglot quickload file/allows for faster init times.
 
-(defcustom eglot-plus-quickload-file
+(defvar eglot-plus-quickload-file
   (concat user-emacs-directory "eglot-plus-quickload.el"))
 
 (defun eglot-plus-make-quickload-file ()
@@ -46,7 +46,7 @@
 
 ;; Automatically install eglot lsp servers.
 
-(defcustom +eglot-plus-install-lsp-servers+
+(defvar +eglot-plus-install-lsp-servers+
   `(((python-mode python-ts-mode)
      ,(lambda () (eq 0 (shell-command "pip show pyrefly")))
      ,(lambda () (shell-command "pip install pyrefly")))
@@ -59,23 +59,21 @@
     ((go-mode go-ts-mode)
      ,(lambda () (executable-find "gopls"))
      ,(lambda () (shell-command "go install golang.org/x/tools/gopls@latest")))
+    ((LaTeX-mode)
+     ,(lambda () (executable-find "texlab"))
+     ,(lambda () (shell-command "cargo install texlab")))
     ((haskell-mode)
      ,(lambda ()
         (string-match-p
          "haskell-language-server"
          (shell-command-to-string "ghc-pkg list --simple-output")))
      ,(lambda () (shell-command "cabal install haskell-language-server")))
-    ((tuareg-mode)
+    ((caml-mode tuareg-mode)
      ,(lambda ()
         (string-match-p
          "ocaml-lsp-server"
          (shell-command-to-string "opam list")))
-     ,(lambda () (shell-command "opam install ocaml-lsp-server")))
-
-    ;; ((racket-mode racket-hash-lang-mode)
-    ;;  ,(lambda () (me/racket-pkg-is-installed-p "racket-langserver"))
-    ;;  ,(lambda () (me/racket-install-package "racket-langserver")))
-    ))
+     ,(lambda () (shell-command "opam install ocaml-lsp-server")))))
 
 (defvar +eglot-plus-install-lsp-servers-modes+
   (flatten-list (mapcar #'car +eglot-plus-install-lsp-servers+)))
