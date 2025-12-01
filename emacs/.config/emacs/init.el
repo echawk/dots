@@ -590,6 +590,40 @@ With optional argument FRAME, return the list of buffers of FRAME."
        bibtex-mode) "texlab")
      (vala-mode     "vala-language-server"))))
 
+
+;; FIXME: make a package for this functionality - allow for users
+;; to configure eglot to automatically install language servers when the
+;; mode for them is first entered.
+;; (defconst +me/eglot-auto-install-lsp-servers+
+;;   `(((python-mode python-ts-mode)
+;;      ,(lambda () (shell-command "pip show pyright"))
+;;      ,(lambda () (shell-command "pip install pyright")))
+;;     ;; ((tuareg-mode)
+;;     ;;  (shell-command "opam list " | grep ocaml-lsp-server)
+;;     ;;  )
+;;     ((racket-mode racket-hash-lang-mode)
+;;      ,(lambda () (me/racket-pkg-is-installed-p "racket-langserver"))
+;;      ,(lambda () (me/racket-install-package "racket-langserver")))))
+
+;; (defconst +me/eglot-auto-install-lsp-servers-modes+
+;;   (flatten-list (mapcar #'car +me/eglot-auto-install-lsp-servers+)))
+
+;; (advice-add
+;;  #'eglot--connect
+;;  :around
+;;  (lambda (orig &rest args)
+;;    (pcase args
+;;      (`(,major-modes ,project ,class-name ,saved-initargs ,language-ids)
+;;       (when (and (eq 1 (length major-modes))
+;;                  (memq (car major-modes)
+;;                        +me/eglot-auto-install-lsp-servers-modes+))
+;;         (pcase (cl-find-if (lambda (e) (memq 'python-mode (car e)))
+;;                            +me/eglot-auto-install-lsp-servers+)
+;;           (`(,modes-lst ,server-installed-thnk-p ,install-server-thnk)
+;;            (unless (funcall server-installed-expr-p)
+;;              (funcall install-server-expr)))))))
+;;    (apply orig args)))
+
 (use-package consult-eglot :after eglot)
 
 ;; I almost never want this to popup
