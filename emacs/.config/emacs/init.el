@@ -566,6 +566,15 @@ With optional argument FRAME, return the list of buffers of FRAME."
       ("texlab"))
      (vala-mode     ("vala-language-server")))))
 
+(use-package eglot-plus
+  :ensure nil
+  :config
+  (eglot-plus-enable-eglot-everywhere)
+  (eglot-plus-enable-quickload-file)
+  )
+
+;;(load-file (concat user-emacs-directory "eglot-plus.el"))
+
 
 ;; FIXME: make a package for this functionality - allow for users
 ;; to configure eglot to automatically install language servers when the
