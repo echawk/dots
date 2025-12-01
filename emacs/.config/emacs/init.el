@@ -531,9 +531,8 @@ With optional argument FRAME, return the list of buffers of FRAME."
   `(dolist (modes-cmd ,modes-lsp-cmd)
      (let ((modes (car   modes-cmd))
            (cmd   (nth 1 modes-cmd)))
-       (if (executable-find cmd)
-           (add-to-list 'eglot-server-programs
-                        `(,modes . (,cmd)))))))
+       (add-to-list 'eglot-server-programs
+                    `(,modes . ,cmd)))))
 
 (defun me/eglot-enable-everything ()
   "Little function to enable eglot in every mode that it knows about."
@@ -578,17 +577,20 @@ With optional argument FRAME, return the list of buffers of FRAME."
   ;; this line out.
   (fset #'jsonrpc--log-event #'ignore)
   (me/add-to-eglot-server-programs
-   '((crystal-mode  "crystalline")
-     (d-mode        "serve-d")
-     (elixir-mode   "elixir-ls")
+   '((crystal-mode  ("crystalline"))
+     (d-mode        ("serve-d"))
+     (elixir-mode   ("elixir-ls"))
+     ((python-mode python-ts-mode)
+      ("pyrefly" "lsp"))
      ;; TODO: integrate julia into this
      ;; https://github.com/julia-vscode/LanguageServer.jl
      ((latex-mode
        tex-mode
        context-mode
        texinfo-mode
-       bibtex-mode) "texlab")
-     (vala-mode     "vala-language-server"))))
+       bibtex-mode)
+      ("texlab"))
+     (vala-mode     ("vala-language-server")))))
 
 
 ;; FIXME: make a package for this functionality - allow for users
@@ -596,8 +598,8 @@ With optional argument FRAME, return the list of buffers of FRAME."
 ;; mode for them is first entered.
 ;; (defconst +me/eglot-auto-install-lsp-servers+
 ;;   `(((python-mode python-ts-mode)
-;;      ,(lambda () (shell-command "pip show pyright"))
-;;      ,(lambda () (shell-command "pip install pyright")))
+;;      ,(lambda () (shell-command "pip show pyrefly"))
+;;      ,(lambda () (shell-command "pip install pyrefly")))
 ;;     ;; ((tuareg-mode)
 ;;     ;;  (shell-command "opam list " | grep ocaml-lsp-server)
 ;;     ;;  )
