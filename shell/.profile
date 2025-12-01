@@ -18,10 +18,11 @@ if [ -e "$HOME/.ssh/" ]; then
         if ! pgrep ssh-agent >/dev/null; then
             # Check if we even have access to ssh-agent
             if command -v ssh-agent > /dev/null 2>&1; then
+                [ -e "$SSH_AUTH_SOCK" ] && rm "${SSH_AUTH_SOCK:?}"
                 ssh-agent -a "$SSH_AUTH_SOCK"
-                find "$HOME/.ssh" -name '*.pub' \
-                    | sed "s/.pub$//" \
-                    | xargs -I{} ssh-add {} >/dev/null 2>&1
+                for key in "${HOME}/.ssh"*.pub; do
+                    [ -e "$key" ] && ssh-add "${key%.pub}" >/dev/null 2>&1
+                done
             fi
         fi
         export SSH_AGENT_PID="$(pidof ssh-agent)"
@@ -32,15 +33,11 @@ case "$sys" in
     Darwin)
         # If we have a venv in $HOME, source it.
         # useful on macos.
-        if [ -e "$HOME/.venv/" ]; then
-            . "$HOME/.venv/bin/activate"
-        else
-            # If we have python, create the venv & source it.
-            if command -v python; then
-                python -m venv "$HOME/.venv/" > /dev/null 2>&1
-                . "$HOME/.venv/bin/activate"
-            fi
+        VENV_DIR="${HOME}/.venv/"
+        if ! [ -e "$VENV_DIR" ] && command -v python > /dev/null 2>&1; then
+           python -m venv "$VENV_DIR" > /dev/null 2>&1
         fi
+        [ -e "$VENV_DIR" ] && . "${VENV_DIR}bin/activate"
         ;;
     *)
         # Enable wifi if possible
