@@ -350,10 +350,12 @@ command has been ran before.
   :defer
   :commands (helpful-callable helpful-variable helpful-key helpful-at-point)
   :init
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key)
-  (global-set-key (kbd "C-h C-d") #'helpful-at-point))
+  (dolist (bind.func `(("C-h f"   . ,#'helpful-callable)
+                       ("C-h v"   . ,#'helpful-variable)
+                       ("C-h k"   . ,#'helpful-key)
+                       ("C-h C-d" . ,#'helpful-at-point)))
+    (pcase bind.func
+      (`(,bind . ,func) (global-set-key (kbd bind) func)))))
 
 ;; TODO: experiment with not using vim, and trying out Vanilla emacs binds...
 
