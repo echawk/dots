@@ -115,5 +115,7 @@
 ;; Every 1/4 hour, reset the theme.
 (run-with-timer 0 (* 15 60) 'me/set-theme)
 
+(add-to-list 'load-path (expand-file-name user-emacs-directory))
+
 (provide 'early-init)
 ;;; early-init.el ends here
