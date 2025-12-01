@@ -539,11 +539,6 @@ With optional argument FRAME, return the list of buffers of FRAME."
 ;; Simple LSP mode for emacs.
 (use-package eglot
   :defer
-  ;; :init
-  ;; ;; Refresh the file every two weeks.
-  ;; (when (me/eglot-quickload-file-out-of-date-p)
-  ;;   (me/make-eglot-quickload-file))
-  ;; (load-file me/eglot-quickload-file)
   :config
   ;; Don't log anything in the events buffer, offers a decent speed improvement.
   (setq eglot-events-buffer-size 0)
@@ -554,6 +549,8 @@ With optional argument FRAME, return the list of buffers of FRAME."
    '((crystal-mode  ("crystalline"))
      (d-mode        ("serve-d"))
      (elixir-mode   ("elixir-ls"))
+     (racket-hash-lang-mode
+      ("racket" "-l" "racket-langserver"))
      ((python-mode python-ts-mode)
       ("pyrefly" "lsp"))
      ;; TODO: integrate julia into this
@@ -568,46 +565,11 @@ With optional argument FRAME, return the list of buffers of FRAME."
 
 (use-package eglot-plus
   :ensure nil
+  :after eglot
   :config
   (eglot-plus-enable-eglot-everywhere)
   (eglot-plus-enable-quickload-file)
   )
-
-;;(load-file (concat user-emacs-directory "eglot-plus.el"))
-
-
-;; FIXME: make a package for this functionality - allow for users
-;; to configure eglot to automatically install language servers when the
-;; mode for them is first entered.
-;; (defconst +me/eglot-auto-install-lsp-servers+
-;;   `(((python-mode python-ts-mode)
-;;      ,(lambda () (shell-command "pip show pyrefly"))
-;;      ,(lambda () (shell-command "pip install pyrefly")))
-;;     ;; ((tuareg-mode)
-;;     ;;  (shell-command "opam list " | grep ocaml-lsp-server)
-;;     ;;  )
-;;     ((racket-mode racket-hash-lang-mode)
-;;      ,(lambda () (me/racket-pkg-is-installed-p "racket-langserver"))
-;;      ,(lambda () (me/racket-install-package "racket-langserver")))))
-
-;; (defconst +me/eglot-auto-install-lsp-servers-modes+
-;;   (flatten-list (mapcar #'car +me/eglot-auto-install-lsp-servers+)))
-
-;; (advice-add
-;;  #'eglot--connect
-;;  :around
-;;  (lambda (orig &rest args)
-;;    (pcase args
-;;      (`(,major-modes ,project ,class-name ,saved-initargs ,language-ids)
-;;       (when (and (eq 1 (length major-modes))
-;;                  (memq (car major-modes)
-;;                        +me/eglot-auto-install-lsp-servers-modes+))
-;;         (pcase (cl-find-if (lambda (e) (memq 'python-mode (car e)))
-;;                            +me/eglot-auto-install-lsp-servers+)
-;;           (`(,modes-lst ,server-installed-thnk-p ,install-server-thnk)
-;;            (unless (funcall server-installed-expr-p)
-;;              (funcall install-server-expr)))))))
-;;    (apply orig args)))
 
 (use-package consult-eglot :after eglot)
 
