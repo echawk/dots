@@ -142,13 +142,16 @@
 
 #+(and QUICKLISP SBCL)
 (defun make-qlot-exe ()
-  ;; (unless (and (find-package :bordeaux-threads)
-  ;;              (> (length (bordeaux-threads:all-threads)) 1)))
-  (ql:quickload :sb-posix)
-  (when (zerop (sb-posix:fork))
-    (ql:quickload '(:uiop :qlot :qlot/cli))
-    (setq uiop:*image-entry-point* #'qlot/cli:main)
-    (uiop:dump-image "qlot" :executable t :compression t)))
+  (unless (or
+           (uiop:find-package* :slynk)
+           (uiop:find-package* :slime)
+           (and (uiop:find-package* :bordeaux-threads)
+                (> (length (uiop:symbol-call :bordeaux-threads '#:all-threads)) 1)))
+    (ql:quickload :sb-posix)
+    (when (zerop (sb-posix:fork))
+      (ql:quickload '(:uiop :qlot :qlot/cli))
+      (setq uiop:*image-entry-point* #'qlot/cli:main)
+      (uiop:dump-image "qlot" :executable t :compression t))))
 
 ;; Install `qlot` in the REPL if it isn't available in $PATH.
 #+(and QUICKLISP SBCL)
