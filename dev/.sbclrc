@@ -6,26 +6,6 @@
 ;; Muffle warnings while we load our init.
 #+SBCL (declaim (sb-ext:muffle-conditions style-warning))
 
-;; Make these stupid dummy package to make SBCL shut up.
-(defpackage :quicklisp-quickstart
-  (:use :cl)
-  (:export :install))
-(in-package :quicklisp-quickstart)
-(defun install () t)
-
-(defpackage :ql-dist
-  (:use :cl)
-  (:export :install-dist :find-dist))
-(in-package :ql-dist)
-(defun install-dist (arg1 arg2 arg3) (list arg1 arg2 arg3))
-(defun find-dist (str) str)
-
-(defpackage :ql-https
-  (:use :cl)
-  (:export :*quietly-use-https*))
-(in-package :ql-https)
-(defvar *quietly-use-https* t)
-
 ;; Switch back to cl-user package.
 (in-package :cl-user)
 
@@ -48,14 +28,14 @@
           (uiop:run-program "curl -O https://beta.quicklisp.org/quicklisp.lisp"
                             :output *standard-output*)
           (load "quicklisp.lisp")
-          (quicklisp-quickstart:install))))
+          (uiop:symbol-call :quicklisp-quickstart '#:install))))
 
   (when (probe-file quicklisp-init)
     (load quicklisp-init))
 
   ;; Also install the ultralisp dist while we are at it...
-  (unless (ql-dist:find-dist "ultralisp")
-    (ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)))
+  (unless (uiop:symbol-call :ql-dist '#:find-dist "ultralisp")
+    (uiop:symbol-call :ql-dist '#:install-dist "http://dist.ultralisp.org/" :prompt nil)))
 
 ;; how to get the current directory always detectable by quicklisp
 #+quicklisp
@@ -81,8 +61,16 @@
       (load (merge-pathnames (ql:where-is-system :ql-https) "ql-setup.lisp"))
       (ql:quickload :ql-https)
       (quicklisp:setup)
-      (setf ql-https:*quietly-use-https* t)))
-  (setup-ql-https))
+
+      ;; (uiop:symbol-package-name :ql-https ':*quietly-use-https*)
+
+      (let ((sym (uiop:find-symbol* "*QUIETLY-USE-HTTPS*" :ql-https)))
+        (uiop:find-symbol* "*QUIETLY-USE-HTTPS*" :ql-https)
+        ;; Set its value to T, even if the package hasn’t been loaded yet
+        (setf (symbol-value sym) t))))
+
+  ;;(setup-ql-https)
+  )
 
 ;; https://github.com/fukamachi/qlot
 ;; https://www.clpm.dev/
