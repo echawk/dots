@@ -62,14 +62,10 @@
       (ql:quickload :ql-https)
       (quicklisp:setup)
 
-      ;; (uiop:symbol-package-name :ql-https ':*quietly-use-https*)
-
       (let ((sym (uiop:find-symbol* "*QUIETLY-USE-HTTPS*" :ql-https)))
-        (uiop:find-symbol* "*QUIETLY-USE-HTTPS*" :ql-https)
-        ;; Set its value to T, even if the package hasn’t been loaded yet
         (setf (symbol-value sym) t))))
 
-  ;;(setup-ql-https)
+  ;; (setup-ql-https)
   )
 
 ;; https://github.com/fukamachi/qlot
@@ -160,9 +156,11 @@
   (uiop:with-current-directory
       ((merge-pathnames ".local/bin" (user-homedir-pathname)))
     (make-qlot-exe)))
+;; (push ".qlot" asdf::*default-source-registry-exclusions*)
 
 #+(and QUICKLISP SBCL)
 (defun update-all-dists ()
+  ;; FIXME: I don't think this works?
   (let ((*standard-input*  (make-string-input-stream "\n"))
         (*standard-output* (make-broadcast-stream)))
     (ql:update-all-dists)))
