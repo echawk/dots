@@ -20,7 +20,7 @@ if [ -e "$HOME/.ssh/" ]; then
             if command -v ssh-agent > /dev/null 2>&1; then
                 [ -e "$SSH_AUTH_SOCK" ] && rm "${SSH_AUTH_SOCK:?}"
                 ssh-agent -a "$SSH_AUTH_SOCK"
-                for key in "${HOME}/.ssh"*.pub; do
+                for key in "${HOME}/.ssh/"*.pub; do
                     [ -e "$key" ] && ssh-add "${key%.pub}" >/dev/null 2>&1
                 done
             fi
