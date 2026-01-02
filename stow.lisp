@@ -13,7 +13,7 @@
 
 (in-package #:stow)
 
-(setq current-dir (uiop:getcwd))
+(defvar current-dir (uiop:getcwd))
 
 ;; Thank you AI...
 (defun zip (&rest lists)
@@ -168,4 +168,4 @@ dotfiles repo, return a pathname that is located in the users home directory.
   "Uninstalls the dotfiles."
   (let ((target (user-homedir-pathname))
         (dir    current-dir))
-    (mapcar (lambda (d) (unstow d :target target) (uiop:subdirectories dir)))))
+    (mapcar (lambda (d) (unstow d :target target)) (uiop:subdirectories dir))))
