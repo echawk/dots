@@ -1,0 +1,29 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    cmd = "pip list --outdated --no-color"
+    # Initialize a counter for lines
+    line_count = 0
+    while ((cmd | getline line) > 0) {
+        line_count++;
+        # Print each line retrieved
+        print "Retrieved line " line_count ": " line;
+
+        # Skip the first two header lines
+        if (line_count > 2) {
+            # Split the line into fields
+            split(line, fields, " ")
+            package_name = fields[1];
+
+            # Print the package we're going to install
+            print "Installing: " package_name;
+            ret_code = system("pip install --upgrade " package_name);
+            if (ret_code != 0) {
+                print "Failed to install: " package_name;
+            } else {
+                print "Successfully installed: " package_name;
+            }
+        }
+    }
+    close(cmd);
+}
