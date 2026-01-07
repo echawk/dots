@@ -76,12 +76,10 @@
   (with-temporary-directory
       (progn
         (uiop:run-program
-          (list
-           "sh -c '"
-           "HOME=/dev/null "
-           "git clone --depth 1 "
-           "https://github.com/ocicl/ocicl"
-           "'"))
+         (format
+          nil
+          "sh -c '~A'"
+          "HOME=/dev/null git clone --depth 1 https://github.com/ocicl/ocicl"))
         (uiop:with-current-directory
             ((merge-pathnames "ocicl" (uiop:getcwd)))
           ;; FIXME: try to get the fork version to work.
@@ -90,11 +88,10 @@
           ;;   (defconstant +dynamic-space-size+ 2048)
           ;;   (load "setup.lisp"))
           (uiop:run-program
-           (concatenate
-            'string
-            "sh -c '"
-            "sbcl --eval \"(defconstant +dynamic-space-size+ 2048)\" --load setup.lisp"
-            "'"))))))
+           (format
+            nil
+            "sh -c '~A'"
+            "sbcl --eval \"(defconstant +dynamic-space-size+ 2048)\" --load setup.lisp"))))))
 
 (defun load-ocicl-runtime-file (ocicl-runtime-file)
   (if (probe-file ocicl-runtime-file)
