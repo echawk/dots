@@ -310,10 +310,9 @@ command has been ran before.
 ;; https://github.com/oantolin/embark
 (use-package embark
   :init
-
   ;; Prefer a more minimal setup w/ using only the minibuffer & vertico.
   (setq embark-indicators
-        '(embark-minimal-indicator  ; default is embark-mixed-indicator
+        '(embark-minimal-indicator      ; default is embark-mixed-indicator
           embark-highlight-indicator
           embark-isearch-highlight-indicator))
   (setq embark-prompter #'embark-completing-read-prompter)
@@ -325,6 +324,7 @@ command has been ran before.
    ("C-:" . embark-dwim))
   (:map embark-general-map
         ("Dw" . define-word-at-point)
+        ("Ie" . iedit-mode)
         ("Cp" . kill-ring-save)))
 
 (use-package embark-consult
