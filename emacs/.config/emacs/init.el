@@ -1389,33 +1389,111 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
      whisper--ffmpeg-input-format "alsa"
      whisper--ffmpeg-input-device "hw:5,0"))))
 
-(progn
-  (use-package gptel
-    :config
-    (setq
-     gptel-model 'qwen3:4b
-     gptel-backend (gptel-make-ollama "Ollama"
-                     :host "localhost:11434"
-                     :stream t
-                     :models '(qwen3:4b)))
-    ;; (setq
-    ;;  gptel-model 'devstral:latest
-    ;;  gptel-backend (gptel-make-ollama "Ollama"
-    ;;                  :host "localhost:11434"
-    ;;                  :stream t
-    ;;                  :models '(devstral:latest)))
-    ;; (setq
-    ;;  gptel-mode 'deepseek-r1:1.5b
-    ;;  gptel-backend (gptel-make-ollama
-    ;;                    "Ollama"
-    ;;                  :host "localhost:11434"
-    ;;                  :stream t
-    ;;                  :models '(deepseek-r1:1.5b)))
-    )
-  (use-package corsair     :after gptel)
-  (use-package elysium     :after gptel)
-  (use-package smerge-mode :after elysium)
-  (use-package gptel-magit :after gptel))
+;; (setq gptel-model      'gpt-5.2
+;;       gptel-temperature 0.2
+;;       gptel-backend
+;;       (gptel-make-openai "OpenAI"
+;;         :key
+;;         (lambda ()
+;;           (car
+;;            (with-current-buffer (get-buffer-create (symbol-name (gensym)))
+;;              (insert-file-contents "~/openai-api-key")
+;;              (split-string (buffer-string) "\n" t))))
+;;         :models
+;;         '(gpt-5.2
+;;           :description "Latest GPT-5.2 reasoning model"
+;;           :capabilities (tool)
+;;           :mime-types '("text/plain"))))
+
+;;(add-to-list gptel-agent-dirs "~/ai-agents")
+;;   (gptel-agent-define
+;;   "Programming Agent"
+;;   :system
+;;   "You are a senior software engineer.
+;; You can:
+;; - Explore the repository to understand architecture
+;; - Read files as needed
+;; - Ask clarifying questions before major changes
+;; - Propose minimal, correct patches
+;; - Prefer tests and clear explanations
+
+;; Rules:
+;; - Do NOT invent APIs
+;; - Do NOT modify files without showing diffs
+;; - If unsure, ask instead of guessing."
+;;   :tools '(read-file list-files search))
+
+;; (use-package gptel-watch
+;;   :ensure nil
+;;   :after gptel
+;;   :init
+;;   (package-vc-install
+;;    '(gptel-watch :vc-backend Git
+;;                  :url "https://github.com/ISouthRain/gptel-watch"))
+;;   (setq gptel-watch-trigger-patterns '("ai!"))
+;;   (setq gptel-watch-system-prompt
+;;         "
+;; You are a text assistant with writing and programming abilities.
+;; You infer intent from context and help me create content.
+;; For example, if I send:
+
+;; ```
+;; int main()
+;; {
+;;   // Print Hello World. ai!
+;; }
+;; ```
+
+;; you infer the purpose of the 'ai!' comment and then return the appropriate content, e.g.:
+
+;; ```
+;; printf(\"Hello World\");
+;; ```
+
+;; The conditions for your response are:
+
+;; * Keep the reply concise.
+;; * Do not include any Markdown‑formatted code blocks.
+;; * Do not use any Markdown formatting at all.
+;; "))
+
+
+
+(use-package mcp)
+(use-package gptel
+  :config
+  (require 'gptel-integrations)
+
+  (setq gptel-model      'qwen2.5:7b
+        gptel-temperature 0.2
+        gptel-backend
+        (gptel-make-ollama "Ollama"
+          :host "100.74.249.9:11434"
+          :stream t
+          :models '(qwen2.5:7b))))
+
+(use-package gptel-agent
+  :after gptel
+  :config
+  (gptel-agent-update))
+
+(use-package gptel-quick
+  :ensure nil
+  :after gptel
+  :init
+  (unless (package-installed-p (intern "gptel-quick"))
+    (package-vc-install
+     '(gptel-quick :vc-backend Git
+                   :url "https://github.com/karthink/gptel-quick")))
+  :config
+  (setq gptel-quick-use-context t)
+  (keymap-set embark-general-map "?" #'gptel-quick))
+
+(use-package gptel-magit :after gptel)
+(use-package corsair     :after gptel)
+
+;; (use-package ellama) ;; I should check this out, I think it'd be pretty useful.
+;; Also it is built into emacs whereas gptel is a separate package.
 
 ;; Read EPUBs in Emacs!
 (me/setup-auto-mode
