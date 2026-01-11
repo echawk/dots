@@ -1055,16 +1055,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
       (format "Rscript -e 'options(repos = \"https://cran.r-project.org\")' -e 'install.packages(\"%s\")'" pkgname)))
 
    (defun me/install-r-github-package (user/repo)
+     (unless (me/is-r-pacakge-installed-p "remotes")
+       (me/install-r-cran-pacakge "remotes"))
      (shell-command
       (format "Rscript -e 'if(requireNamespace(\"remotes\")) remotes::install_github(\"%s\")' else q(status=1)" user/repo)))
 
-   (unless (me/is-r-pacakge-installed-p "remotes")
-     (me/install-r-cran-pacakge "remotes")
-     ;; # install.packages("remotes")
-     ;; remotes::install_github("REditorSupport/languageserver")
-     (unless (me/is-r-pacakge-installed-p "languageserver")
-       ;;(me/install-r-github-package "REditorSupport/languageserver")
-       (me/install-r-cran-pacakge "langaugeserver")))))
+   (unless (me/is-r-pacakge-installed-p "languageserver")
+     ;;(me/install-r-github-package "REditorSupport/languageserver")
+     (me/install-r-cran-pacakge "langaugeserver"))))
 
 ;;(me/install-cran-pacakge "languageserver")
 
