@@ -357,6 +357,11 @@ command has been ran before.
     (pcase bind.func
       (`(,bind . ,func) (global-set-key (kbd bind) func)))))
 
+(use-package iedit)
+
+;;(use-package multiple-cursors :defer)
+;;(use-package selected :defer)
+
 ;; TODO: experiment with not using vim, and trying out Vanilla emacs binds...
 
 (pcase me/modal-system
