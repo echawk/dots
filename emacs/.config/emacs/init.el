@@ -921,15 +921,14 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  vundo
  (use-package vundo))
 
-(me/eval-form-on-first-commands-run
- (jinx-correct jinx-mode global-jinx-mode)
- (use-package jinx
-   :hook ((emacs-startup . global-jinx-mode)
-          (prog-mode     . (lambda () (jinx-mode -1))))
-   :bind ([remap ispell-word] . jinx-correct)))
+(use-package jinx
+  :defer
+  :hook ((emacs-startup . global-jinx-mode)
+         (prog-mode     . (lambda () (jinx-mode -1))))
+  :bind ([remap ispell-word] . jinx-correct))
 
 ;; Collaborative editing in Emacs.
-(me/eval-form-on-first-command-run crdt-share-buffer (use-package crdt))
+(me/eval-form-on-first-command-run crdt-version (use-package crdt))
 
 
 (me/setup-auto-mode "\\.bqn"   bqn-mode)
