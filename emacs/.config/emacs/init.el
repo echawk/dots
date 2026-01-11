@@ -1002,10 +1002,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
           (require 'agda2-mode)
           (set-input-method "Agda")))))
   :init
-  (add-to-list
-   'eglot-server-programs
-   '((racket-hash-lang-mode) "racket" "-l" "racket-langserver"))
-
   (defun me/racket-pkg-is-installed-p (pkg-name)
     (thread-last
       pkg-name
@@ -1022,22 +1018,15 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
       (message
        (format "me/racket-install-package: unable to install '%s'" pkg-name))))
 
-  (advice-add
-   #'eglot--connect
-   :around
-   (lambda (orig &rest args)
-     ;; Match the 5 expected arguments and bind them to names
-     (pcase args
-       (`(,major-modes ,project ,class-name ,saved-initargs ,language-ids)
-        (when (and (eq 1 (length major-modes))
-                   (or
-                    (eq (car major-modes) 'racket-mode)
-                    (eq (car major-modes) 'racket-hash-lang-mode)))
+  (add-to-list +eglot-plus-install-lsp-servers+
+               `((racket-mode racket-hash-lang-mode)
+                 ,(lambda () (me/racket-pkg-is-installed-p "racket-langserver"))
+                 ,(lambda () (me/racket-install-package "racket-langserver")))))
 
-          (unless (me/racket-pkg-is-installed-p "racket-langserver")
-            (me/racket-install-package "racket-langserver")))))
-     (apply orig args))))
 
+;; elpy
+;; auto-virtualenv                20250608.1633  available    melpa    Automatically activate Python virtualenvs based on project directory
+;; auto-virtualenvwrapper         20230317.1313  available    melpa    Lightweight auto activate python virtualenvs
 
 (me/setup-auto-mode
  "\\.jl$"
@@ -1056,9 +1045,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
  :package ess
  (progn
    (defun me/is-r-pacakge-installed-p (pkgname)
-     (eq 0
-         (shell-command
-          (format "Rscript -e 'if(requireNamespace(\"%s\", quietly=TRUE)) q(status=0) else q(status=1)'" pkgname))))
+     (zerop
+      (shell-command
+       (format "Rscript -e 'if(requireNamespace(\"%s\", quietly=TRUE)) q(status=0) else q(status=1)'" pkgname))))
 
    ;;(Me/is-cran-pacakge-installed-p "languageserver")
    (defun me/install-r-cran-pacakge (pkgname)
