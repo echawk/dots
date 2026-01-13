@@ -48,10 +48,10 @@
 
 (defvar +eglot-plus-install-lsp-servers+
   `(((python-mode python-ts-mode)
-     ,(lambda () (eq 0 (shell-command "pip show pyrefly")))
+     ,(lambda () (zerop (shell-command "pip show pyrefly")))
      ,(lambda () (shell-command "pip install pyrefly")))
     ((ruby-mode ruby-ts-mode)
-     ,(lambda () (eq 0 (shell-command "gem list -i solargraph")))
+     ,(lambda () (zerop (shell-command "gem list -i solargraph")))
      ,(lambda () (shell-command "gem install solargraph")))
     ((rust-mode rust-ts-mode)
      ,(lambda () (executable-find "rust-analyzer"))
