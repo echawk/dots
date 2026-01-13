@@ -198,6 +198,18 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
     (dolist (head heads)
       (enable-mode-line (current-screen) head t))))
 
+;; Enable cl-cron
+(ql:quickload :cl-cron)
+
+;; On long running X sessions, these two commands seem to eventually need to be re-ran.
+(cl-cron:make-cron-job
+ (lambda ()
+   (uiop:run-program (list "xset" "r" "rate" "300" "50"))
+   (uiop:run-program (list "setxkbmap" "-option" "caps:esacpe")))
+ :minute 0)
+
+(cl-cron:start-cron)
+
 ;; General settings.
 
 (setf
