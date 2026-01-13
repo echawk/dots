@@ -263,9 +263,10 @@ Type^2 (in-package :stumpwm)^n in sly REPL."
 ;; FIXME: make this much prettier and contain actually useful info.
 (let ((mode-line-colors
         (cond
-          ((string= (machine-instance) "KISS")    '("#ee0000" "#000000"))
+          ((string= (machine-instance) "KISS")    '("#ee0088" "#000000"))
           ((string= (machine-instance) "arch")    '("#005577" "#cdcdcd"))
           ((string= (machine-instance) "OpenBSD") '("#dddd00" "#000000"))
+          ((string= (machine-instance) "FreeBSD") '("#ff0000" "#000000"))
           (t                                      '("#007755" "#cdcdcd")))))
 
   (setf *mode-line-background-color* (car  mode-line-colors)
