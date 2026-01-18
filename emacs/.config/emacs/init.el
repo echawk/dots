@@ -1445,18 +1445,85 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 
 
-(use-package mcp)
 (use-package gptel
   :config
   (require 'gptel-integrations)
-
   (setq gptel-model      'qwen2.5:7b
+        ;; Enable tools& force 'auto
+        gptel-use-tools t
+        gptel-confirm-tool-calls 'auto
+        ;; Default temp is "cool"
         gptel-temperature 0.2
         gptel-backend
         (gptel-make-ollama "Ollama"
           :host "100.74.249.9:11434"
           :stream t
-          :models '(qwen2.5:7b))))
+          :models '(qwen2.5:7b
+                    (llava:7b
+                     :capabilities (media)
+                     :mime-types ("image/jpeg" "image/png")))))
+
+  ;; example tool.
+  ;; (setq gptel-tools
+  ;;     (list
+  ;;      (gptel-make-tool
+  ;;       :function (lambda (url)
+  ;;                   (with-current-buffer (url-retrieve-synchronously url)
+  ;;                     (goto-char (point-min))
+  ;;                     (forward-paragraph)
+  ;;                     (let ((dom (libxml-parse-html-region (point) (point-max))))
+  ;;                       (run-at-time 0 nil #'kill-buffer (current-buffer))
+  ;;                       (with-temp-buffer
+  ;;                         (shr-insert-document dom)
+  ;;                         (buffer-substring-no-properties (point-min) (point-max))))))
+  ;;       :name "read_url"
+  ;;       :description "Fetch and read the contents of a URL"
+  ;;       :args (list '(:name "url"
+  ;;                           :type string
+  ;;                           :description "The URL to read"))
+  ;;       :category "web")))
+
+  ;; https://open-meteo.com/
+  (gptel-make-preset 'weather
+    :pre (lambda () nil)
+    :system
+    "You are to return the current temperature for a given location using 'https://open-meteo.com/'.
+
+Use Fahrenheit, and give a brief description of the weather conditions. 
+Be sure to mention any weather watches or warnings if they are present, otherwise mention nothing.
+
+Do not ask for API keys, rely only on web services which are available without api keys.
+Otherwise, keep your response focused."
+    :tools '("WebSearch"))
+  
+  (defun gptel-code-infill ()
+    "Fill in code at point based on buffer context.  Note: Sends the whole buffer."
+    (let ((lang (gptel--strip-mode-suffix major-mode)))
+      `(,(format "You are a %s programmer and assistant in a code buffer in a text editor.
+
+Follow my instructions and generate %s code to be inserted at the cursor.
+For context, I will provide you with the code BEFORE and AFTER the cursor.
+
+
+Generate %s code and only code without any explanations or markdown code fences.  NO markdown.
+You may include code comments.
+
+Do not repeat any of the BEFORE or AFTER code." lang lang lang)
+        nil
+        "What is the code AFTER the cursor?"
+        ,(format "AFTER\n```\n%s\n```\n"
+                 (buffer-substring-no-properties
+                  (if (use-region-p) (max (point) (region-end)) (point))
+                  (point-max)))
+        "And what is the code BEFORE the cursor?"
+        ,(format "BEFORE\n```%s\n%s\n```\n" lang
+                 (buffer-substring-no-properties
+                  (point-min)
+                  (if (use-region-p) (min (point) (region-beginning)) (point))))
+        ,@(when (use-region-p) "What should I insert at the cursor?"))))
+  (add-to-list gptel-directives (cons 'infill #'gptel-code-infill))
+
+  )
 
 (use-package gptel-agent
   :after gptel
@@ -1466,14 +1533,115 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (use-package gptel-quick
   :ensure nil
   :after gptel
+  :bind (:map embark-general-map ("?" . gptel-quick))
   :init
   (unless (package-installed-p (intern "gptel-quick"))
     (package-vc-install
      '(gptel-quick :vc-backend Git
                    :url "https://github.com/karthink/gptel-quick")))
   :config
-  (setq gptel-quick-use-context t)
-  (keymap-set embark-general-map "?" #'gptel-quick))
+  (setq gptel-quick-use-context t))
+
+(use-package mcp
+  :after gptel
+  ;; :custom
+  ;; (mcp-hub-servers
+  ;;  `(("filesystem" . (:command
+  ;;                     "npx"
+  ;;                     :args ("-y @modelcontextprotocol/server-filesystem")
+  ;;                     :roots ("/Users/ethan/Downloads/")))
+  ;;    ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))))
+  ;; :config (require 'mcp-hub)
+  ;; :hook (after-init . mcp-hub-start-all-server)
+  )
+
+(use-package llm-tool-collection
+  :ensure nil
+  :after gptel
+  :init
+  (unless (package-installed-p (intern "llm-tool-collection"))
+    (package-vc-install
+     '(llm-tool-collection :vc-backend Git
+                           :url "https://github.com/skissue/llm-tool-collection")))
+  :config
+  ;;   (defun llm-tool-collection-register-with-gptel (tool-spec)
+  ;;     "Register a tool defined by TOOL-SPEC with gptel.
+  ;; TOOL-SPEC is a plist that can be passed to `gptel-make-tool'."
+  ;;     (apply #'gptel-make-tool tool-spec))
+
+  ;;   (add-hook 'llm-tool-collection-post-define-functions
+  ;;             #'llm-tool-collection-register-with-gptel)
+  (setq gptel-tools
+        (append gptel-tools
+                (mapcar (apply-partially #'apply #'gptel-make-tool)
+                        (llm-tool-collection-get-all)))))
+
+;; (use-package superchat
+;;   :ensure nil
+;;   :after gptel
+;;   :init
+;;   (unless (package-installed-p (intern "superchat"))
+;;     (package-vc-install
+;;      '(superchat :vc-backend Git
+;;                  :url "https://github.com/yibie/superchat")))
+;;   :config
+;;   ;; Set the data storage directory
+;;   (setq superchat-data-directory (concat user-emacs-directory "superchat/"))
+
+;;   ;; Set the language for $lang variable in custom commands
+;;   (setq superchat-lang "English")  ; or "中文", "Français", etc.
+
+;;   ;; Response timeout protection (prevents UI freezing from blocking tools)
+;;   (setq superchat-response-timeout 30)  ; seconds, nil to disable
+
+;;   ;; Smart completion detection delay (for non-streaming responses)
+;;   ;; Used primarily for Ollama + tools mode
+;;   (setq superchat-completion-check-delay 2)  ; seconds, default is 2
+
+;;   ;; Set default directories for file selection
+;;   (setq superchat-default-directories '("~/Documents" "~/Downloads" "~/Projects")))
+
+(use-package ragmacs
+  :ensure (:host github :repo "positron-solutions/ragmacs")
+  :after gptel
+  :defer
+  :init
+  (gptel-make-preset 'introspect
+    :pre (lambda () (require 'ragmacs))
+    :system
+    "You are pair programming with the user in Emacs and on Emacs.
+ 
+ Your job is to dive into Elisp code and understand the APIs and
+ structure of elisp libraries and Emacs.  Use the provided tools to do
+ so, but do not make duplicate tool calls for information already
+ available in the chat.
+ 
+ <tone>
+ 1. Be terse and to the point.  Speak directly.
+ 2. Explain your reasoning.
+ 3. Do NOT hedge or qualify.
+ 4. If you don't know, say you don't know.
+ 5. Do not offer unprompted advice or clarifications.
+ 6. Never apologize.
+ 7. Do NOT summarize your answers.
+ </tone>
+ 
+ <code_generation>
+ When generating code:
+ 1. Always check that functions or variables you use in your code exist.
+ 2. Also check their calling convention and function-arity before you use them.
+ 3. Write code that can be tested by evaluation, and offer to evaluate
+ code using the `elisp_eval` tool.
+ </code_generation>
+ 
+ <formatting>
+ 1. When referring to code symbols (variables, functions, tags etc) enclose them in markdown quotes.
+    Examples: `read_file`, `getResponse(url, callback)`
+    Example: `<details>...</details>`
+ 2. If you use LaTeX notation, enclose math in \( and \), or \[ and \] delimiters.
+ </formatting>"
+    :tools '("introspection")))
+
 
 (use-package gptel-magit :after gptel)
 (use-package corsair     :after gptel)
