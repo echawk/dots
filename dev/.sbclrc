@@ -18,28 +18,79 @@
        ,form)
      (uiop:run-program (list "rm" "-rvf" temp-dir))))
 
+(defun install-quicklisp ()
+  (let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                         (user-homedir-pathname))))
+    (unless (probe-file quicklisp-init)
+      (with-temporary-directory
+          (progn
+            (uiop:run-program "curl -O https://beta.quicklisp.org/quicklisp.lisp"
+                              :output *standard-output*)
+            (load "quicklisp.lisp")
+            (uiop:symbol-call :quicklisp-quickstart '#:install))))
+
+    (when (probe-file quicklisp-init)
+      (load quicklisp-init))
+
+    ;; Also install the ultralisp dist while we are at it...
+    (unless (uiop:symbol-call :ql-dist '#:find-dist "ultralisp")
+      (uiop:symbol-call :ql-dist '#:install-dist "http://dist.ultralisp.org/" :prompt nil)))
+  
+  ;; how to get the current directory always detectable by quicklisp
+  (push '*default-pathname-defaults* asdf:*central-registry*)
+
+  )
+
 ;;; Install quicklisp if it is not already installed.
-#-QUICKLISP
-(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
-                                       (user-homedir-pathname))))
-  (unless (probe-file quicklisp-init)
-    (with-temporary-directory
-        (progn
-          (uiop:run-program "curl -O https://beta.quicklisp.org/quicklisp.lisp"
-                            :output *standard-output*)
-          (load "quicklisp.lisp")
-          (uiop:symbol-call :quicklisp-quickstart '#:install))))
+;; #-QUICKLISP
+;; (install-quicklisp)
 
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init))
+;; #+SBCL
+;; (defun port-available-p (port &optional (host "127.0.0.1"))
+;;   (let ((socket nil)
+;;         (available nil))
+;;     (unwind-protect
+;;          (handler-case
+;;              (progn
+;;                (setf socket
+;;                      (make-instance 'sb-bsd-sockets:inet-socket
+;;                                     :type :stream
+;;                                     :protocol :tcp))
+;;                (sb-bsd-sockets:socket-bind
+;;                 socket
+;;                 (sb-bsd-sockets:make-inet-address host)
+;;                 port)
+;;                (setf available t))
+;;            (sb-bsd-sockets:socket-error ()
+;;              (setf available nil))
+;;            (error ()
+;;              (setf available nil)))
+;;       (when socket
+;;         (ignore-errors
+;;          (sb-bsd-sockets:socket-close socket))))
+;;     available))
 
-  ;; Also install the ultralisp dist while we are at it...
-  (unless (uiop:symbol-call :ql-dist '#:find-dist "ultralisp")
-    (uiop:symbol-call :ql-dist '#:install-dist "http://dist.ultralisp.org/" :prompt nil)))
+;; (defvar *https-proxy-port* 8080)
+;; (defvar *https-proxy-host* "127.0.0.1")
+;; (defvar *https-proxy-uri*  (format nil "http://~a:~a"
+;;                                    *https-proxy-host*
+;;                                    *https-proxy-port*))
 
-;; how to get the current directory always detectable by quicklisp
-#+quicklisp
-(push '*default-pathname-defaults* asdf:*central-registry*)
+;; ;; TODO: set these & use them below.
+;; (defvar *https-proxy-user* nil)
+;; (defvar *https-proxy-pass* nil)
+
+;; FIXME: need to think about how to get this thing to actually work...
+;; #+(and SBCL DARWIN)
+;; (when (and (string= "127.0.0.1" *https-proxy-host*)
+;;             (port-available-p *https-proxy-port*))
+;;   (ignore-errors
+;;     (uiop:run-program
+;;      '("launchctl" "start" "com.example.trivial-https-proxy")
+;;      :ignore-error-status t)))
+
+;;#+SBCL
+;; (setf (ql-config:config-value "proxy-url") "http://127.0.0.1:8080")
 
 ;; TODO: figure out how to incorporate ql-https
 #+(and QUICKLISP DARWIN)
@@ -152,13 +203,6 @@
       ((merge-pathnames ".local/bin" (user-homedir-pathname)))
     (make-qlot-exe)))
 ;; (push ".qlot" asdf::*default-source-registry-exclusions*)
-
-#+(and QUICKLISP SBCL)
-(defun update-all-dists ()
-  ;; FIXME: I don't think this works?
-  (let ((*standard-input*  (make-string-input-stream "\n"))
-        (*standard-output* (make-broadcast-stream)))
-    (ql:update-all-dists)))
 
 ;; Unmuffle our warnings again.
 #+SBCL (declaim (sb-ext:unmuffle-conditions style-warning))
