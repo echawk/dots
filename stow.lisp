@@ -17,12 +17,9 @@
 
 ;; Thank you AI...
 (defun zip (&rest lists)
-  (let ((result '()))
-    (loop for i from 0 below (apply #'min (mapcar #'length lists))
-          do (push (mapcar (lambda (lst) (nth i lst)) lists) result))
-    (nreverse result)))
+  (apply #'mapcar #'list lists))
 
-(defun concat/space (lst) (format nil "~{~A ~}" lst))
+(defun concat/space (lst) (format nil "~{~A~^ ~}" lst))
 
 (defun file-is-symlink-p (fp)
   "Portable way to determine if a file path is a symlink or not."
@@ -54,11 +51,7 @@ dotfiles repo, return a pathname that is located in the users home directory.
 "
   (let ((prefix-str (namestring prefix-dir))
         (file-str   (namestring file-path)))
-    (when
-        (string= prefix-str
-                 (subseq file-str
-                         0
-                         (length prefix-str)))
+    (when (uiop:string-prefix-p prefix-str file-str)
       (pathname
        (concatenate 'string
                     (namestring target-dir)
@@ -124,39 +117,54 @@ dotfiles repo, return a pathname that is located in the users home directory.
       ("required-directories-in-target" . ,required-directories-in-target)
       ("required-symlinks-in-target" . ,required-symlinks-in-target))))
 
-(defun stow (dir
-             &key (target (uiop:pathname-parent-directory-pathname current-dir)))
+(defun stow (dir &key (target (uiop:pathname-parent-directory-pathname current-dir)))
   "'stow' a directory DIR's contents into the TARGET directory."
+  (let ((install-data (stow-get-install-data dir target))
+        (folded-dirs nil))
 
-  ;; TODO: technically should add asserts here?
-  ;; Ensure that everything actually can occur as it should.
-  (let ((install-data (stow-get-install-data dir target)))
+    ;; 1. Directory Folding
+    ;; If a target directory doesn't exist, we link the whole thing and track it.
+    (loop for src-dir in (cdr (assoc "required-directories" install-data :test 'equal))
+          for tgt-dir in (cdr (assoc "required-directories-in-target" install-data :test 'equal))
+          unless (some (lambda (fd) (uiop:string-prefix-p fd (namestring tgt-dir))) folded-dirs)
+            do (if (uiop:directory-exists-p tgt-dir)
+                   (make-dir (namestring tgt-dir))
+                   (progn
+                     (make-link (namestring src-dir) (namestring tgt-dir))
+                     (push (namestring tgt-dir) folded-dirs))))
 
-    ;; FIXME: add in flag here that can swap the behavior of the creation
-    ;; of directories. Since in upstream stow, if a directory does not exist,
-    ;; then instead of it being created, a symlink is made instead.
+    ;; 2. Symlink files
+    ;; We skip creating file symlinks if their parent directory was already folded.
+    (loop for src-file in (cdr (assoc "files-to-symlink" install-data :test 'equal))
+          for tgt-file in (cdr (assoc "required-symlinks-in-target" install-data :test 'equal))
+          unless (some (lambda (fd) (uiop:string-prefix-p fd (namestring tgt-file))) folded-dirs)
+            do (make-link (namestring src-file) (namestring tgt-file)))))
 
-    ;; Make any of the required directories.
-    (make-dirs
-     (cdr (assoc "required-directories-in-target" install-data :test 'equal)))
-
-    ;; Make our symlinks.
-    (make-symlinks
-     (cdr (assoc "files-to-symlink"            install-data :test 'equal))
-     (cdr (assoc "required-symlinks-in-target" install-data :test 'equal)))))
-
-(defun unstow (dir
-               &key (target (uiop:pathname-parent-directory-pathname current-dir)))
+(defun unstow (dir &key (target (uiop:pathname-parent-directory-pathname current-dir)))
   "Given a directory DIR, 'unstow' it from TARGET. The inverse of STOW."
-  (let ((install-data (stow-get-install-data dir target)))
+  (let ((install-data (stow-get-install-data dir target))
+        (folded-dirs nil))
 
-    ;; Make any of the required directories.
-    (del-dirs
-     (cdr (assoc "required-directories-in-target" install-data :test 'equal)))
+    ;; 1. Unlink folded directories
+    ;; If the target is a directory AND a symlink, it was folded. Unlink it.
+    (loop for tgt-dir in (cdr (assoc "required-directories-in-target" install-data :test 'equal))
+          if (and (uiop:directory-exists-p tgt-dir) (file-is-symlink-p tgt-dir))
+            do (progn
+                 (uiop:run-program (concat/space `("unlink" ,(namestring tgt-dir))))
+                 (push (namestring tgt-dir) folded-dirs)))
 
-    ;; Make our symlinks.
-    (del-symlinks
-     (cdr (assoc "required-symlinks-in-target" install-data :test 'equal)))))
+    ;; 2. Unlink files
+    ;; Skip files that were inside a directory we just unlinked.
+    (loop for tgt-file in (cdr (assoc "required-symlinks-in-target" install-data :test 'equal))
+          unless (some (lambda (fd) (uiop:string-prefix-p fd (namestring tgt-file))) folded-dirs)
+            do (del-link (namestring tgt-file)))
+
+    ;; 3. Prune empty directories
+    ;; Reverse the list to process subdirectories before their parents (bottom-up).
+    (loop for tgt-dir in (reverse (cdr (assoc "required-directories-in-target" install-data :test 'equal)))
+          unless (some (lambda (fd) (uiop:string-prefix-p fd (namestring tgt-dir))) folded-dirs)
+            do (when (uiop:directory-exists-p tgt-dir)
+                 (del-dir (namestring tgt-dir))))))
 
 (defun install-dots ()
   "Likely the behavior that you want from stow..."
