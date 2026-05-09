@@ -1527,6 +1527,7 @@ Do not repeat any of the BEFORE or AFTER code." lang lang lang)
   )
 
 (use-package gptel-agent
+  :defer
   :after gptel
   :config
   (gptel-agent-update))
@@ -1644,7 +1645,6 @@ Do not repeat any of the BEFORE or AFTER code." lang lang lang)
     :tools '("introspection")))
 
 
-(use-package gptel-magit :after gptel)
 (use-package corsair     :after gptel)
 
 ;; (use-package ellama) ;; I should check this out, I think it'd be pretty useful.
