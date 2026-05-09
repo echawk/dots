@@ -913,7 +913,9 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (me/eval-form-on-first-commands-run
  (magit magit-status magit-refresh)
  (progn
-   (use-package magit)
+   (use-package magit
+     :hook (magit-mode . (lambda ()
+                           (use-package gptel-magit :after gptel))))
    (use-package forge)))
 
 ;; TODO: add a keybind to bring up vundo menu.
