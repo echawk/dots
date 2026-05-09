@@ -1328,33 +1328,32 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
               :rev :newest)
     :commands (spray-mode))))
 
-(me/setup-auto-mode
- "\\.org$"
- org-mode
- :package org
- (add-hook 'org-mode-hook #'jinx-mode)
- (setq org-edit-src-content-indentation 0)
- (setq org-confirm-babel-evaluate nil)
+(use-package org
+  :mode ("\\.org\\'" . org-mode)
+  :hook
+  (org-mode . jinx-mode)
+  :init
+  (setq org-edit-src-content-indentation 0
+        org-confirm-babel-evaluate nil
+        org-src-preserve-indentation t)
+  :config
+  (require 'org-tempo)
+  (advice-add
+   #'org-babel-execute-src-block
+   :around
+   (lambda (orig &rest args)
+     (let ((language (org-element-property :language (org-element-at-point))))
+       (unless (cdr (assoc (intern language) org-babel-load-languages))
+         (add-to-list 'org-babel-load-languages
+                      (cons (intern language) t))
+         (org-babel-do-load-languages 'org-babel-load-languages
+                                      org-babel-load-languages)))
+     (apply orig args))))
 
- ;; Add in shortcuts for code blocks and whatnot.
- (require 'org-tempo)
-
- ;; Will automatically load a language if it is needed when in org-mode.
- (advice-add
-  #'org-babel-execute-src-block
-  :around
-  (lambda (orig &rest args)
-    "Load a language if needed."
-    (let ((language (org-element-property :language (org-element-at-point))))
-      (unless (cdr (assoc (intern language) org-babel-load-languages))
-        (add-to-list 'org-babel-load-languages
-                     (cons (intern language) t))
-        (org-babel-do-load-languages 'org-babel-load-languages
-                                     org-babel-load-languages)))
-    (apply orig args)))
- ;; Fix weird tab behavior in default org-mode. Preferable to "C-c '".
- (use-package poly-org
-   :after org))
+;; Fix weird tab behavior in default org-mode. Preferable to "C-c '".
+;; (use-package poly-org
+;;   :defer
+;;   :after org)
 
 ;; Speech-to-text in Emacs.
 (me/emacs-N-progn
