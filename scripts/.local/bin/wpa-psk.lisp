@@ -71,18 +71,17 @@ PreSharedKey=~a
   (assert (not (string= "" ssid)))
   (assert (member daemon +valid-wifi-daemons+))
   (if (string= "" password)
-      (cond
-       ((eq daemon 'iwd) "")
-       ((eq daemon 'wpa-supplicant)
-        (format nil wpa-supplicant-fmt-str ssid "key_mgmt=NONE")))
+      (case daemon
+            ('iwd "")
+            ('wpa-supplicant (format nil wpa-supplicant-fmt-str ssid "key_mgmt=NONE")))
     (let ((hashed-pass (get-ssid-pass-hashed ssid password)))
-      (cond
-       ((eq daemon 'iwd)
-        (format nil iwd-fmt-str hashed-pass))
-       ((eq daemon 'wpa-supplicant)
-        (format nil wpa-supplicant-fmt-str
-                ssid
-                (concatenate 'string "psk=" hashed-pass)))))))
+      (case daemon
+            ('iwd
+             (format nil iwd-fmt-str hashed-pass))
+            ('wpa-supplicant
+             (format nil wpa-supplicant-fmt-str
+                     ssid
+                     (concatenate 'string "psk=" hashed-pass)))))))
 
 (defun cli-handler (cmd)
   (let ((iwd-toggle (clingon:getopt cmd :iwd))
