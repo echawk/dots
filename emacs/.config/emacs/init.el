@@ -337,8 +337,8 @@ command has been ran before.
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  (completion-styles '(orderless basic partial-completion))
+  (completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package which-key
   :config
