@@ -78,6 +78,8 @@
 (defvar +eglot-plus-install-lsp-servers-modes+
   (flatten-list (mapcar #'car +eglot-plus-install-lsp-servers+)))
 
+(defvar +eglot-plus-prefer-installation-from-mason+ nil)
+
 ;; FIXME: add way for the user to disable the automatic installation of
 ;; lang servers based off of adding values to a list; or could do the opposite
 ;; semantics, but I'd rather things be lazy.
@@ -90,6 +92,7 @@
     (`(,modes-lst ,server-installed-thnk-p ,install-server-thnk)
      (unless (funcall server-installed-thnk-p)
        (funcall install-server-thnk)))))
+
 
 (defun eglot-plus-enable-auto-lsp-server-installation ()
   (interactive)
