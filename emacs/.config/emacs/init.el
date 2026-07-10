@@ -1761,35 +1761,27 @@ Do not repeat any of the BEFORE or AFTER code." lang lang lang)
 
 
 ;; Better LaTeX editing.
-(use-package auctex-cluttex
-  :after auctex)
-
-
-(use-package rmsbolt :defer)
-
-(use-package realgud :defer)
 (me/setup-auto-mode
  "\\.tex$"
  LaTeX-mode
  :package auctex
- (add-hook 'LaTeX-mode-hook #'visual-line-mode)
- (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
- (add-hook 'LaTeX-mode-hook #'jinx-mode)
- 
+ (dolist (mode (list #'visual-line-mode #'LaTeX-math-mode #'jinx-mode))
+   (add-hook 'LaTeX-mode-hook mode))
+
  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
- ;; Configuration for tectonic. FIXME? Doesn't work?
- ;; (setq TeX-engine-alist '((default
- ;;                           "Tectonic"
- ;;                           "tectonic -X compile -f plain %T"
- ;;                           "tectonic -X watch"
- ;;                           nil)))
- ;; (setq LaTeX-command-style '(("" "%(latex)")))
+ ;; https://tectonic-typesetting.github.io/book/latest/howto/auctex-setup/index.html
+ ;; (add-to-list 'TeX-engine-alist '(default
+ ;;                                  "Tectonic"
+ ;;                                  "tectonic -X compile -f plain %T"
+ ;;                                  "tectonic -X watch"
+ ;;                                  nil))
+ ;; (setq LaTeX-command-style '(("" "%(latenx)")))
  ;; (let ((tex-list (assoc "TeX" TeX-command-list))
  ;;       (latex-list (assoc "LaTeX" TeX-command-list)))
  ;;   (setf (cadr tex-list) "%(tex)"
  ;;         (cadr latex-list) "%l"))
- 
+
  (setq
   ;; Make pdf-tools the default viewer for auctex.
   TeX-view-program-selection '((output-pdf "PDF Tools"))
@@ -1803,6 +1795,17 @@ Do not repeat any of the BEFORE or AFTER code." lang lang lang)
   TeX-parse-self t)
 
  (setq-default TeX-master nil))
+;; (use-package auctex-cluttex
+;;   :after auctex)
+;;(add-hook 'LaTeX-mode-hook #'auctex-cluttex-mode)
+
+(me/eval-form-on-first-command-run
+ rmsbolt
+ (use-package rmsbolt))
+
+(me/eval-form-on-first-command-run
+ realgud:gdb
+ (use-package realgud))
 
 ;; http://yummymelon.com/devnull/announcing-casual-an-opinionated-porcelain-for-emacs-calc.html
 ;; https://legends2k.github.io/note/emacs_calc/
