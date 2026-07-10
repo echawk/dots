@@ -89,16 +89,12 @@
 (defun install-ql-https ()
   (setup-quicklisp)
   (uiop:with-current-directory
-      ((car
-        (symbol-value (uiop:find-symbol* '*local-project-directories* :ql))
-        ))
+      ((car (symbol-value (uiop:find-symbol* '*local-project-directories* :ql))))
     (uiop:run-program
-     (list
-      "sh -c '"
-      "HOME=/dev/null "
-      "git clone --depth 1 "
-      "https://github.com/rudolfochrist/ql-https"
-      "'"))))
+     (format
+      nil
+      "sh -c '~A'"
+      "HOME=/dev/null git clone --depth 1 https://github.com/rudolfochrist/ql-https"))))
 
 (defun setup-ql-https ()
   (setup-quicklisp)
@@ -171,7 +167,7 @@
         for p in (uiop:split-string path :separator ":")
         for dir = (probe-file p)
         when (uiop:directory-exists-p dir)
-          append (uiop:directory-files dir)))
+        append (uiop:directory-files dir)))
 
 (defun find-executable-p (name)
   (find name (executables)
