@@ -1,5 +1,9 @@
 ;;; setup for editing code
 
+(use-package scratch-plus
+  :hook (prog-mode . scratch-plus-minor-mode)
+  :config (scratch-plus-mode))
+
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
   `(dolist (modes-cmd ,modes-lsp-cmd)
@@ -37,7 +41,6 @@
 
 (use-package eglot-plus
   :ensure nil
-  :after eglot
   :config
   (eglot-plus-enable-eglot-everywhere)
   (eglot-plus-enable-quickload-file))
@@ -49,6 +52,7 @@
 ;; LSP/DAP/formatter/linter manager ported from nvim.
 (use-package mason
   :ensure t
+  :after eglot
   :config
   ;; FIXME: integrate with eglot-plus.
   (defun mason-install-if-uninstalled (lsp)
@@ -56,26 +60,14 @@
      (lambda ()
        (unless (mason-installed-p lsp)
          (ignore-errors (mason-install lsp))))))
-
-  ;; (let ((lsps
-  ;;        (list
-  ;;         "asm-lsp"
-  ;;         "awk-language-server"
-  ;;         "bash-language-server"
-  ;;         "crystalline"
-  ;;         "elixir-ls"
-  ;;         "erlang-ls"
-  ;;         "gopls"
-  ;;         "haskell-language-server"
-  ;;         "jdtls"
-  ;;         "julia-lsp"
-  ;;         "ocaml-lsp"
-  ;;         "openscad-lsp"
-  ;;         "serve-d"
-  ;;         "texlab"
-  ;;         "zls")))
-  ;;   (mapcar #'mason-install-if-uninstalled lsps))
-  )
+  
+  (mason-setup
+    (thread-last
+      eglot-server-programs
+      (mapcar #'cdr)
+      (cl-remove-if #'compiled-function-p)
+      (mapcar #'car)
+      (mapcar #'mason-install-if-uninstalled))))
 
 (use-package eldoc-mouse
   :defer
@@ -202,48 +194,11 @@ the file.
          (me/format-buffer formatter))
         (t (apply orig args)))))))
 
-(use-package treesit
-  ;; Need to make sure we don't try to install this from package.el
-  :ensure nil
-  :commands (treesit-install-language-grammar treesit-install-all-languages)
-  :init
-  (setq treesit-language-source-alist
-        '((bash       . ("https://github.com/tree-sitter/tree-sitter-bash"))
-          (c          . ("https://github.com/tree-sitter/tree-sitter-c"))
-          (cpp        . ("https://github.com/tree-sitter/tree-sitter-cpp"))
-          (c-sharp    . ("https://github.com/tree-sitter/tree-sitter-c-sharp"))
-          (clojure    . ("https://github.com/sogaiu/tree-sitter-clojure"))
-          (elixir     . ("https://github.com/elixir-lang/tree-sitter-elixir"))
-          (erlang     . ("https://github.com/AbstractMachinesLab/tree-sitter-erlang"))
-          (fennel     . ("https://github.com/TravonteD/tree-sitter-fennel"))
-          (go         . ("https://github.com/tree-sitter/tree-sitter-go"))
-          (haskell    . ("https://github.com/tree-sitter/tree-sitter-haskell"))
-          (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
-          (json       . ("https://github.com/tree-sitter/tree-sitter-json"))
-          (julia      . ("https://github.com/tree-sitter/tree-sitter-julia"))
-          (latex      . ("https://github.com/latex-lsp/tree-sitter-latex"))
-          (lua        . ("https://github.com/Azganoth/tree-sitter-lua"))
-          (make       . ("https://github.com/alemuller/tree-sitter-make"))
-          (php        . ("https://github.com/tree-sitter/tree-sitter-php"))
-          (python     . ("https://github.com/tree-sitter/tree-sitter-python"))
-          (ruby       . ("https://github.com/tree-sitter/tree-sitter-ruby"))
-          (rust       . ("https://github.com/tree-sitter/tree-sitter-rust"))
-          (zig        . ("https://github.com/GrayJack/tree-sitter-zig"))))
-  :config
-  ;; https://www.nathanfurnal.xyz/posts/building-tree-sitter-langs-emacs/#native-emacs-solution
-  (defun treesit-install-all-languages ()
-    "Install all languages specified by `treesit-language-source-alist'."
-    (interactive)
-    (let ((languages (mapcar 'car treesit-language-source-alist)))
-      (dolist (lang languages)
-        (treesit-install-language-grammar lang)
-        (message "`%s' parser was installed." lang)
-        (sit-for 0.75)))))
-
 (use-package treesit-auto
-  :if (>= emacs-major-version 29)
-  ;; :defer
+  :custom
+  (treesit-auto-install t)
   :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
 ;; (use-package flycheck-xcode
@@ -256,8 +211,6 @@ the file.
 ;;    '(c-mode-hook c++-mode-hook objc-mode-hook swift-mode-hook)))
 
 ;; (use-package flymake-x)
-
-
 
 (use-package symbol-overlay
   :hook (prog-mode . symbol-overlay-mode))
@@ -349,6 +302,9 @@ the file.
  :package ess
  (progn
    (use-package julia-mode :defer)))
+;; NOTE: look into this package.
+;; (use-package ess-view-data
+;;   :defer t)
 (me/setup-auto-mode
  "\\.R$"
  ess-r-mode
@@ -497,10 +453,9 @@ the file.
 ;; auto-virtualenv                20250608.1633  available    melpa    Automatically activate Python virtualenvs based on project directory
 ;; auto-virtualenvwrapper         20230317.1313  available    melpa    Lightweight auto activate python virtualenvs
 (use-package auto-virtualenv
-  :config
-  (setq auto-virtualenv-verbose t)
-  (auto-virtualenv-setup))
-
+  :hook (python-ts-mode . (lambda ()
+                            (setq auto-virtualenv-verbose t)
+                            (auto-virtualenv-setup))))
 
 
 ;; Refactoring mode:

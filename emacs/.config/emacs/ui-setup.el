@@ -48,9 +48,13 @@ With optional argument FRAME, return the list of buffers of FRAME."
 
 (use-package all-the-icons
   :defer
-  :hook (dired-mode . (lambda ()
-                        (use-package all-the-icons-dired :ensure t)
-                        (all-the-icons-dired-mode))))
+  :hook
+  (dired-mode . (lambda ()
+                  (use-package all-the-icons-dired :ensure t)
+                  (all-the-icons-dired-mode)))
+  (ibuffer-mode . (lambda ()
+                    (use-package all-the-icons-ibuffer :ensure t)
+                    (all-the-icons-ibuffer-mode))))
 
 ;; (use-package sidebuf :defer)
 
@@ -72,6 +76,10 @@ With optional argument FRAME, return the list of buffers of FRAME."
   :commands (hl-prog-extra-mode))
 
 ;;; --- begin modeline section ---
+
+;; (use-package minions
+;;   :config
+;;   (minions-mode))
 
 (defmacro me/modeline-sexps-to-str (lst-of-sexps)
   `(let* ((lst ,lst-of-sexps)
@@ -262,13 +270,14 @@ With optional argument FRAME, return the list of buffers of FRAME."
  vundo
  (use-package vundo))
 
-(use-package helpful
-  :defer
-  :commands (helpful-callable helpful-variable helpful-key helpful-at-point)
-  :init
-  (dolist (bind.func `(("C-h f"   . ,#'helpful-callable)
-                       ("C-h v"   . ,#'helpful-variable)
-                       ("C-h k"   . ,#'helpful-key)
-                       ("C-h C-d" . ,#'helpful-at-point)))
-    (pcase bind.func
-      (`(,bind . ,func) (global-set-key (kbd bind) func)))))
+;; (use-package helpful
+;;   :commands (helpful-callable helpful-variable helpful-key helpful-at-point)
+;;   :init
+;;   (dolist (bind.func `(("C-h f"   . ,#'helpful-callable)
+;;                        ("C-h v"   . ,#'helpful-variable)
+;;                        ("C-h k"   . ,#'helpful-key)
+;;                        ("C-h C-d" . ,#'helpful-at-point)))
+;;     (pcase bind.func
+;;       (`(,bind . ,func) (global-set-key (kbd bind) func)))))
+
+

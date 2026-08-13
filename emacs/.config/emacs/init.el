@@ -289,29 +289,27 @@ command has been ran before.
 
 (use-package async :defer)
 
-(use-package ux-setup :ensure nil)
-(use-package ui-setup :ensure nil)
-(use-package pl-setup :ensure nil)
+(use-package ux-setup
+  :ensure nil
+  :defer nil)
+(use-package ui-setup
+  :ensure nil
+  :defer nil)
+(use-package pl-setup
+  :ensure nil
+  :defer nil)
+;; (use-package llm-setup
+;;   :ensure nil
+;;   :defer nil)
+;; (use-package mail-setup
+;;   :ensure nil
+;;   :defer nil)
 
 ;; Elisp programming libraries
 (use-package for     :defer)
 (use-package eprolog :defer)
 
-
-;; (eprolog-define-prolog-predicate parent (tom bob))
-;; (eprolog-define-prolog-predicate parent (bob ann))
-
-;; (eprolog-define-prolog-predicate grandparent (_x _z)
-;;   (parent _x _y)
-;;   (parent _y _z))
-
-;; ;; Query the database
-;; (eprolog-query (grandparent tom _x))
-
-
 ;; Some packages worth looking into.
-;; scratch-plus
-;; magit-prime (faster magit times)
 ;; automoji  (discord style emoji completion)
 
 ;; (use-package vc-got :defer)
@@ -347,33 +345,6 @@ command has been ran before.
 ;; https://valentjn.github.io/ltex/index.html
 ;; https://old.reddit.com/r/emacs/comments/1b1s7wk/grammarly_in_emacs/
 
-(me/emacs-N-progn
- 31
- (defun me/make-vale-config ()
-   "Write a simple vale config to `.vale.ini' in `default-directory'."
-   (interactive)
-   (let ((vale-cfg (concat default-directory ".vale.ini")))
-     (write-region
-      "StylesPath = styles
-
-MinAlertLevel = suggestion
-
-Packages = proselint, write-good, alex, Readability, Joblint
-
-[*]
-BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
-      nil
-      vale-cfg))
-   (shell-command "vale sync")
-   (when flymake-mode (flymake-vale-maybe-load)))
-
- (use-package flymake-vale
-   :if (executable-find "vale")
-   :defer
-   :vc (:url "https://github.com/tpeacock19/flymake-vale"
-             :rev :newest)
-   :hook (flymake-mode . flymake-vale-load)))
-
 
 ;; it should be possible to have this be a keyword, similar to :defer,
 ;; which, will actually install the package either when the file extension
@@ -382,28 +353,25 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 (progn
   (use-package magit
     :hook (magit-mode . (lambda ()
-                          (use-package gptel-magit :after gptel))))
+                          (use-package gptel-magit :after gptel)
+                          (use-package magit-prime
+                            :config
+                            (magit-prime-mode)))))
   (use-package forge)
-  ;; (use-package magit-filenotify)
+  (use-package magit-filenotify
+    :hook
+    (magit-status-mode . magit-filenotify-mode))
   (use-package magit-gh)
   (use-package magit-gh-pulls))
 
-;; TODO: add a keybind to bring up vundo menu.
-
-
-;; (use-package jinx
-;;   :defer
-;;   :hook ((emacs-startup . global-jinx-mode)
-;;          (prog-mode     . (lambda () (jinx-mode -1))))
-;;   :bind ([remap ispell-word] . jinx-correct))
+(use-package jinx
+  :defer
+  :hook ((emacs-startup . global-jinx-mode)
+         (prog-mode     . (lambda () (jinx-mode -1))))
+  :bind ([remap ispell-word] . jinx-correct))
 
 ;; Collaborative editing in Emacs.
 (me/eval-form-on-first-command-run crdt-version (use-package crdt))
-
-;; NOTE: look into this package.
-;; (use-package ess-view-data
-;;   :defer t)
-
 
 ;; Package nael is new.
 
@@ -676,73 +644,6 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 
 ;; (use-package exwm-setup :ensure nil)
 
-(defun me/mu4e-have-dependencies ()
-  "Return t if all dependencies for mu4e are installed, nil otherwise."
-  (and
-   (executable-find "msmtp")
-   (executable-find "mbsync")))
-
-;; FIXME: integrate this blogpost into mu4e-setup.el & this config.
-;; https://lambdaland.org/posts/2023-05-03_email_with_outlook/
-(use-package mu4e
-  :defer
-  :ensure nil
-  :if (me/mu4e-have-dependencies)
-  :config
-
-  ;; Allow selecting files with dired.
-  ;; https://www.djcbsoftware.nl/code/mu/mu4e/Dired.html
-  ;; Keybind is 'C-c RET C-a' once files are marked.
-  (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
-
-  (setq mu4e-setup-use-msmtp-p t)
-  (setq mu4e-setup-mbsync-use-master-slave-p t)
-  (load-file (concat user-emacs-directory "mu4e-setup.el"))
-
-  (setq mu4e-setup-email-profiles-list
-        (list
-
-         (mu4e-setup-email-profile
-          :email-address "ethan.hawk@valpo.edu"
-          :imap-address "imap.gmail.com"
-          :imap-port "993"
-          :smtp-address "smtp.gmail.com"
-          :smtp-port "587"
-          :password-command "cat /home/ethan/.config/lsps/gmail")
-
-         (mu4e-setup-email-profile
-          :email-address "masterdragoon17@hotmail.com"
-          :imap-address "outlook.office365.com"
-          :imap-port    "993"
-          :smtp-address "smtp-mail.outlook.com"
-          :smtp-port "587"
-          :password-command "cat /home/ethan/.config/lsps/masterdragoon17")
-
-         ;; Potential davmail setup below - if i ever get around to setting
-         ;; it up. Maybe over winter break 2024???
-         ;; (mu4e-setup-email-profile
-         ;;  :email-address "ethhawk@iu.edu"
-         ;;  :imap-address "127.0.0.1"
-         ;;  :imap-port "1143"
-         ;;  :smtp-address "127.0.0.1"
-         ;;  :smtp-port "1025"
-         ;;  :smtp-type "plain"
-         ;;  :password-commadn "cat /home/ethan/.config/lsps/gradoutlook")
-         ))
-
-  (mu4e-setup-configure)
-
-  (setq mail-user-agent               'mu4e-user-agent
-        user-full-name                "Ethan Hawk"
-        mu4e-compose-context-policy   'ask-if-none
-        mu4e-context-policy           'pick-first
-        mu4e-update-interval          (* 3 60)
-        mu4e-completing-read-function #'completing-read
-        mu4e-read-option-use-builtin  nil)
-
-  :commands (mu4e))
-
-;;(use-package vm)
 
 ;; (me/emacs-N-progn
 ;;  30
@@ -795,48 +696,3 @@ BasedOnStyles = Vale, proselint, write-good, alex, Readability, Joblint"
 ;; Once you have enough data, call M-x shannon-max-analyze to see the results.
 
 ;; See the project readme for more detailed instructions.
-
-
-
-;; FUCK MACOS HAS SO MANY FUCKING UPDATES
-
-(require 'subr-x)
-
-(defvar me/brew-maintenance-process nil)
-(defvar me/brew-maintenance-timer nil)
-
-(defun me/run-brew-maintenance ()
-  (interactive)
-  (if (and me/brew-maintenance-process
-           (process-live-p me/brew-maintenance-process))
-      (message "Homebrew maintenance already running; skipping")
-    (with-environment-variables (("NONINTERACTIVE" "1"))
-      (let ((brew (executable-find "brew")))
-        (unless brew
-          (user-error "brew not found; check Emacs exec-path/PATH"))
-        (setq me/brew-maintenance-process
-              (start-process-shell-command
-               "brew-maintenance"
-               "*brew-maintenance*"
-               (format "%s update && %s upgrade && %s cleanup"
-                       (shell-quote-argument brew)
-                       (shell-quote-argument brew)
-                       (shell-quote-argument brew))))
-        (set-process-sentinel
-         me/brew-maintenance-process
-         (lambda (_proc event)
-           (message "Homebrew maintenance: %s" (string-trim event))))))))
-
-;;(when (timerp me/brew-maintenance-timer)
-;;  (cancel-timer me/brew-maintenance-timer))
-
-;;(setq me/brew-maintenance-timer
-;;      (run-at-time "60 min" 3600 #'me/run-brew-maintenance))
-
-
-;; (run-at-time
-;;  "60 min" "60 min"
-;;  (lambda ()
-;;    (async-shell-command "brew update")
-;;    (async-shell-command "brew upgrade")
-;;    (async-shell-command "brew cleanup")))

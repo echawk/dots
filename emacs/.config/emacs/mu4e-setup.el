@@ -1,5 +1,7 @@
 ;;; Commentary:
 
+;; TODO: rename this file to mu4e-wizard; is more in line with what the package does. 
+
 ;; This file is essentially a re-implementation of mutt-wizard, but for
 ;; mu4e. There are many missing features when compared to mutt-wizard,
 ;; such as POP support, but this config is really just to make it easier
