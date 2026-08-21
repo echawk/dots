@@ -40,6 +40,7 @@
 
 
 (use-package eglot-plus
+  :defer
   :ensure nil
   :config
   (eglot-plus-enable-eglot-everywhere)
@@ -50,30 +51,32 @@
 
 
 ;; LSP/DAP/formatter/linter manager ported from nvim.
-(use-package mason
-  :ensure t
-  :after eglot
-  :config
-  ;; FIXME: integrate with eglot-plus.
-  (defun mason-install-if-uninstalled (lsp)
-    (mason-ensure
-     (lambda ()
-       (unless (mason-installed-p lsp)
-         (ignore-errors (mason-install lsp))))))
+;; (use-package mason
+;;   :defer
+;;   :config
+;;   ;; FIXME: integrate with eglot-plus.
+;;   (defun mason-install-if-uninstalled (lsp)
+;;     (mason-ensure
+;;      (lambda ()
+;;        (unless (mason-installed-p lsp)
+;;          (ignore-errors (mason-install lsp))))))
   
-  (mason-setup
-    (thread-last
-      eglot-server-programs
-      (mapcar #'cdr)
-      (cl-remove-if #'compiled-function-p)
-      (mapcar #'car)
-      (mapcar #'mason-install-if-uninstalled))))
+;;   (mason-setup
+;;     (thread-last
+;;       eglot-server-programs
+;;       (mapcar #'cdr)
+;;       (cl-remove-if #'compiled-function-p)
+;;       (mapcar #'car)
+;;       (mapcar #'mason-install-if-uninstalled))))
 
 (use-package eldoc-mouse
   :defer
   :hook eldoc-mode)
 
-
+;; I almost never want this to popup
+;; (use-package eldoc-box
+;;   :defer
+;;   :hook ((eldoc-mode         . eldoc-box-hover-mode)))
 
 ;;; formatting
 
@@ -194,12 +197,12 @@ the file.
          (me/format-buffer formatter))
         (t (apply orig args)))))))
 
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install t)
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
+;; (use-package treesit-auto
+;;   :custom
+;;   (treesit-auto-install t)
+;;   :config
+;;   (treesit-auto-add-to-auto-mode-alist 'all)
+;;   (global-treesit-auto-mode))
 
 ;; (use-package flycheck-xcode
 ;;   :ensure t
@@ -426,6 +429,12 @@ the file.
   TeX-parse-self t)
 
  (setq-default TeX-master nil))
+
+;; Better LaTeX editing.
+
+;; (use-package auctex-cluttex
+;;   :after auctex)
+;;(add-hook 'LaTeX-mode-hook #'auctex-cluttex-mode)
 (me/setup-auto-mode
  "\\.md$"
  markdown-mode
@@ -457,13 +466,107 @@ the file.
                             (setq auto-virtualenv-verbose t)
                             (auto-virtualenv-setup))))
 
+;; Custom snobol mode.
+;; (use-package snobol-mode
+;;   :ensure nil
+;;   :init
+;;   (unless (package-installed-p (intern "snobol-mode"))
+;;     (package-vc-install "https://github.com/echawk/snobol-mode"
+;;                         :last-release))
+;;   :mode ("\\.sno" . snobol-mode))
+
+;; Better scheme editing.
+;; (use-package geiser :defer
+;;   :defer
+;;   :custom
+;;   (geiser-active-implementations '(guile3 racket)))
+;; (use-package geiser-guile
+;;   :after geiser
+;;   :custom (geiser-guile-binary "guile3"))
+
+;; (use-package macrostep-geiser
+;;   :after geiser-mode
+;;   :hook ((geiser-mode . macrostep-geiser-setup)))
+
+;; https://eshelyaron.com/sweep.html
+;; (use-package prolog
+;;   :ensure nil
+;;   :load-path "prolog"
+;;   :defer
+;;   ;; Have <file>.(P|pl), be recognized as prolog source files.
+;;   ;; Have <file>.m be recognized as mercury source file.
+;;   :mode (("\\.P\\'"  . prolog-mode)
+;;          ("\\.pl\\'" . prolog-mode)
+;;          ("\\.m$"    . mercury-mode))
+;;   :init
+;;   (let ((pl-dir (concat user-emacs-directory "prolog/")))
+;;     (unless (file-exists-p pl-dir)
+;;       (make-directory pl-dir)
+;;       (url-copy-file "https://bruda.ca/_media/emacs/prolog.el"
+;;                      (concat pl-dir "prolog.el"))))
+;;   :config
+;;   (setq prolog-system 'swi)
+;;   ;; Custom code to allow for switching between prolog implementations.
+;;   (let* ((custom-prologs '((trealla "tpl")
+;;                            (scryer "scryer-prolog")))
+;;          (new-prolog-program-name
+;;           (seq-remove
+;;            (lambda (p)
+;;              (or (equal (car p) t)
+;;                  (equal (cadr p) nil)))
+;;            (seq-filter (lambda (p) (symbolp (car p)))
+;;                        (append prolog-program-name custom-prologs)))))
+;;     (dolist (prolog-pair new-prolog-program-name)
+;;       (if (executable-find (cadr prolog-pair))
+;;           (let* ((prolog-sys (car prolog-pair))
+;;                  (prolog-exe (cadr prolog-pair))
+;;                  (prolog-sym-str (symbol-name prolog-sys))
+;;                  (func-name
+;;                   (intern
+;;                    (seq-concatenate
+;;                     'string
+;;                     "run-" prolog-sym-str "-prolog"))))
+;;             (eval
+;;              `(defun ,func-name ()
+;;                 (interactive)
+;;                 (let ((prolog-system ',prolog-sys)
+;;                       (prolog-program-name ,prolog-exe))
+;;                   (run-prolog t)))))))))
+
+;; (use-package prolog-mode
+;;   :ensure nil
+;;   :mode (("\\.P\\'"  . prolog-mode)
+;;          ("\\.pl\\'" . prolog-mode)
+;;          ("\\.m$"    . mercury-mode)))
+
 
 ;; Refactoring mode:
 ;; https://github.com/Wilfred/emacs-refactor
 
 ;;(use-package emr :defer)
 
+;; https://github.com/phantomics/april/tree/master
+;; anaphora is a dependency of jpt-apl-mode.
+;; (me/emacs-N-progn
+;;  30
+;;  (use-package anaphora :defer)
+;;  (use-package jpt-apl-mode
+;;    :vc (:url "https://github.com/jthing/apl-mode"
+;;              :rev :newest)
+;;    :defer))
 
+;; (use-package agda
+;;   :ensure nil
+;;   :defer
+;;   :if (executable-find "agda-mode")
+;;   :commands (agda2-mode)
+;;   :init
+;;   (load-file (shell-command-to-string "agda-mode locate")))
+;; (setq completion-at-point-functions
+;;       (append
+;;        completion-at-point-functions
+;;        (mapcar #'cape-company-to-capf
+;;                (list #'dante-company))))
 
 ;; Emacs lisp editing stuff.
 ;; https://github.com/emacs-elsa/Elsa
@@ -594,3 +697,12 @@ the file.
 (me/eval-form-on-first-command-run
  package-lint-current-buffer
  (use-package package-lint))
+
+;; (use-package xjupyter
+;;   :ensure nil
+;;   :init
+;;   (unless (package-installed-p (intern "xjupyter"))
+;;     (package-vc-install
+;;      '(xjupyter :vc-backend Git
+;;                 :url "https://github.com/commercial-emacs/xjupyter"))))
+

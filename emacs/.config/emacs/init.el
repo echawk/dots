@@ -139,6 +139,7 @@ command has been ran before.
 (setq me/modal-system nil)
 (use-package emacs
   :hook ((prog-mode . display-fill-column-indicator-mode)
+         (eww-mode . visual-line-mode)
          (before-save . (lambda ()
                           ;; Somewhat better way of deleting whitespace
                           (when (or (not vc-mode) me/delete-trailing-whitespace)
@@ -239,9 +240,7 @@ command has been ran before.
         (exec-path-from-shell-initialize))))
    (t
     (progn
-      (setq auto-save-default nil))
-    )
-   )
+      (setq auto-save-default nil))))
 
   ;; Section to disable eldoc since I almost never want it around.
   ;; If I do, then I still have means of enabling it.
@@ -287,224 +286,21 @@ command has been ran before.
   (setq-default indent-tabs-mode nil
                 tab-width 4))
 
-(use-package async :defer)
-
-(use-package ux-setup
-  :ensure nil
-  :defer nil)
-(use-package ui-setup
-  :ensure nil
-  :defer nil)
-(use-package pl-setup
-  :ensure nil
-  :defer nil)
-;; (use-package llm-setup
-;;   :ensure nil
-;;   :defer nil)
-;; (use-package mail-setup
-;;   :ensure nil
-;;   :defer nil)
-
 ;; Elisp programming libraries
 (use-package for     :defer)
 (use-package eprolog :defer)
+(use-package reazon  :defer)
+(use-package async :defer)
+;; (use-package ffi
+;;   :unless noninteractive
+;;   (package-vc-install
+;;    '(ffi :url "https://github.com/emacs-ffi/emacs-ffi"
+;;          :branch "master"
+;;          :rev :newest
+;;          :make "vc-install"
+;;          :lisp-dir "./src"
+;;          :doc "./src/emacs-ffi.texi")))
 
-;; Some packages worth looking into.
-;; automoji  (discord style emoji completion)
-
-;; (use-package vc-got :defer)
-;; (use-package vc-fossil :defer)
-;; (use-package vc-defer)
-
-;; (use-package mqr :defer)
-
-;;https://github.com/jdtsmith/comint-fold
-
-;; (use-package doom-themes :defer)
-
-;; TODO: Break this out into a package.
-;; TODO: also make a macro to help simplify the creation of
-;; the functions - it should suffice to simply provide the quoted
-;; code and to have that automagically be inserted into an anonymous function.
-;; Semi-Configurable modeline.
-
-
-;;(make-variable-buffer-local
-;;(setq me/apheleia-preferred-backend (me/get-formatter-backend))
-
-
-;; I almost never want this to popup
-;; (use-package eldoc-box
-;;   :defer
-;;   :hook ((eldoc-mode         . eldoc-box-hover-mode)))
-
-
-
-;; https://github.com/emacs-languagetool/flymake-languagetool
-;; https://github.com/emacs-languagetool
-;; https://valentjn.github.io/ltex/index.html
-;; https://old.reddit.com/r/emacs/comments/1b1s7wk/grammarly_in_emacs/
-
-
-;; it should be possible to have this be a keyword, similar to :defer,
-;; which, will actually install the package either when the file extension
-;; given by :mode is encountered, or when a certain mode is requested.
-;; Git frontend.
-(progn
-  (use-package magit
-    :hook (magit-mode . (lambda ()
-                          (use-package gptel-magit :after gptel)
-                          (use-package magit-prime
-                            :config
-                            (magit-prime-mode)))))
-  (use-package forge)
-  (use-package magit-filenotify
-    :hook
-    (magit-status-mode . magit-filenotify-mode))
-  (use-package magit-gh)
-  (use-package magit-gh-pulls))
-
-(use-package jinx
-  :defer
-  :hook ((emacs-startup . global-jinx-mode)
-         (prog-mode     . (lambda () (jinx-mode -1))))
-  :bind ([remap ispell-word] . jinx-correct))
-
-;; Collaborative editing in Emacs.
-(me/eval-form-on-first-command-run crdt-version (use-package crdt))
-
-;; Package nael is new.
-
-;;      Status: New from melpa -- Install
-;;     Archive: melpa
-;;     Version: 20251215.1233
-;;      Commit: 82bd9a2141f9dc18945b5a8f530c94bbc5fef3ac
-;;     Summary: Major mode for Lean
-;;    Requires: emacs-29.1
-;;     Website: https://codeberg.org/mekeor/nael
-;;    Keywords: languages
-;;  Maintainer: Mekeor Melire <mekeor@posteo.de>
-
-;; `nael-mode' is a major mode for Lean.
-
-;; Nael is forked from Lean4-Mode:
-;; https://github.com/leanprover-community/lean4-mode
-
-;; (use-package prolog-mode
-;;   :ensure nil
-;;   :mode (("\\.P\\'"  . prolog-mode)
-;;          ("\\.pl\\'" . prolog-mode)
-;;          ("\\.m$"    . mercury-mode))
-
-;;   )
-
-;; https://eshelyaron.com/sweep.html
-;; (use-package prolog
-;;   :ensure nil
-;;   :load-path "prolog"
-;;   :defer
-;;   ;; Have <file>.(P|pl), be recognized as prolog source files.
-;;   ;; Have <file>.m be recognized as mercury source file.
-;;   :mode (("\\.P\\'"  . prolog-mode)
-;;          ("\\.pl\\'" . prolog-mode)
-;;          ("\\.m$"    . mercury-mode))
-;;   :init
-;;   (let ((pl-dir (concat user-emacs-directory "prolog/")))
-;;     (unless (file-exists-p pl-dir)
-;;       (make-directory pl-dir)
-;;       (url-copy-file "https://bruda.ca/_media/emacs/prolog.el"
-;;                      (concat pl-dir "prolog.el"))))
-;;   :config
-;;   (setq prolog-system 'swi)
-;;   ;; Custom code to allow for switching between prolog implementations.
-;;   (let* ((custom-prologs '((trealla "tpl")
-;;                            (scryer "scryer-prolog")))
-;;          (new-prolog-program-name
-;;           (seq-remove
-;;            (lambda (p)
-;;              (or (equal (car p) t)
-;;                  (equal (cadr p) nil)))
-;;            (seq-filter (lambda (p) (symbolp (car p)))
-;;                        (append prolog-program-name custom-prologs)))))
-;;     (dolist (prolog-pair new-prolog-program-name)
-;;       (if (executable-find (cadr prolog-pair))
-;;           (let* ((prolog-sys (car prolog-pair))
-;;                  (prolog-exe (cadr prolog-pair))
-;;                  (prolog-sym-str (symbol-name prolog-sys))
-;;                  (func-name
-;;                   (intern
-;;                    (seq-concatenate
-;;                     'string
-;;                     "run-" prolog-sym-str "-prolog"))))
-;;             (eval
-;;              `(defun ,func-name ()
-;;                 (interactive)
-;;                 (let ((prolog-system ',prolog-sys)
-;;                       (prolog-program-name ,prolog-exe))
-;;                   (run-prolog t)))))))))
-
-;; Custom snobol mode.
-;; (use-package snobol-mode
-;;   :ensure nil
-;;   :init
-;;   (unless (package-installed-p (intern "snobol-mode"))
-;;     (package-vc-install "https://github.com/echawk/snobol-mode"
-;;                         :last-release))
-;;   :mode ("\\.sno" . snobol-mode))
-
-;; Better scheme editing.
-;; (use-package geiser :defer
-;;   :defer
-;;   :custom
-;;   (geiser-active-implementations '(guile3 racket)))
-;; (use-package geiser-guile
-;;   :after geiser
-;;   :custom (geiser-guile-binary "guile3"))
-
-;; (use-package macrostep-geiser
-;;   :after geiser-mode
-;;   :hook ((geiser-mode . macrostep-geiser-setup)))
-
-;; https://scripter.co/emacs-lisp-advice-combinators/
-
-
-;; (use-package agda
-;;   :ensure nil
-;;   :defer
-;;   :if (executable-find "agda-mode")
-;;   :commands (agda2-mode)
-;;   :init
-;;   (load-file (shell-command-to-string "agda-mode locate")))
-;; (setq completion-at-point-functions
-;;       (append
-;;        completion-at-point-functions
-;;        (mapcar #'cape-company-to-capf
-;;                (list #'dante-company))))
-
-
-;; https://github.com/phantomics/april/tree/master
-;; anaphora is a dependency of jpt-apl-mode.
-;; (me/emacs-N-progn
-;;  30
-;;  (use-package anaphora :defer)
-;;  (use-package jpt-apl-mode
-;;    :vc (:url "https://github.com/jthing/apl-mode"
-;;              :rev :newest)
-;;    :defer))
-
-
-;; Relational programming for Emacs (miniKanren).
-;;(use-package reazon )
-
-;; Speed reading in Emacs.
-(me/emacs-N-progn
- 30
- (me/eval-form-on-first-command-run
-  spray-mode
-  (use-package spray
-    :vc (:url "https://github.com/emacsmirror/spray"
-              :rev :newest)
-    :commands (spray-mode))))
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
@@ -516,6 +312,7 @@ command has been ran before.
         org-src-preserve-indentation t)
   :config
   (require 'org-tempo)
+  ;; https://scripter.co/emacs-lisp-advice-combinators/
   (advice-add
    #'org-babel-execute-src-block
    :around
@@ -533,166 +330,47 @@ command has been ran before.
 ;;   :defer
 ;;   :after org)
 
-;; Speech-to-text in Emacs.
-;; (me/emacs-N-progn
-;;  30
-;;  (me/eval-form-on-first-command-run
-;;   whisper-run
-;;   (use-package whisper
-;;     :vc (:url "https://github.com/natrys/whisper.el"
-;;               :rev :newest)
-;;     :bind ("C-c w" . whisper-run) ;; FIXME: move this out of here?
-;;     :config
-;;     (setq
-;;      whisper-install-directory (concat user-emacs-directory "whisper-el/")
-;;      whisper-model "base"
-;;      whisper-language "en"
-;;      whisper-translate nil
-;;      whisper-recording-timeout 600
-;;      whisper--ffmpeg-input-format "alsa"
-;;      whisper--ffmpeg-input-device "hw:5,0"))))
-
-;; Read EPUBs in Emacs!
-(me/setup-auto-mode
- "\\.epub"
- nov-mode
- :package nov
- (add-hook 'nov-mode-hook #'visual-line-mode))
-
-(me/eval-form-on-first-command-run
- vterm
- (use-package vterm
-   :hook (vterm-mode . (lambda () (display-line-numbers-mode 0)))))
-
-(me/setup-auto-mode
- "\\.pdf"
- pdf-view-mode
- :package pdf-tools
- (pdf-loader-install :no-query)
- (add-hook 'pdf-view-mode-hook #'(lambda () (display-line-numbers-mode 0)))
- (add-hook 'pdf-view-mode-hook #'(lambda () (if (me/is-night-p) (pdf-view-midnight-minor-mode)))))
-
-(me/eval-form-on-first-command-run
- eradio-play
- (use-package eradio
-   :custom
-   (eradio-player '("mpv" "--no-video" "--no-terminal"))
-   (eradio-channels '(("def con - soma fm"      . "https://somafm.com/defcon256.pls")
-                      ("the trip - soma fm"     . "https://somafm.com/thetrip.pls")
-                      ("dubstep - soma fm"      . "https://somafm.com/dubstep.pls")
-                      ("doomed - soma fm"       . "https://somafm.com/doomed.pls")
-                      ("darkzone - soma fm"     . "https://somafm.com/darkzone.pls")
-                      ("groove salad - soma fm" . "https://somafm.com/groovesalad.pls")
-                      ("bossa - soma fm"        . "https://somafm.com/bossa.pls")
-                      ("isl - soma fm "         . "https://somafm.com/illstreet.pls")))))
-
-;; NOTE: They keys get bound, but they are captured by evil-mode.
-;; (use-package yeetube
-;;   :defer
-;;   :config
-;;   (defun me/open-yt-under-point ()
-;;     (interactive)
-;;     (let ((url (thing-at-point 'url)))
-;;       (if (string-match "youtube.com" url)
-;;           (yeetube-search url))))
-
-;;   ;; Simple bit of advice to allow for youtube links to be automatically
-;;   ;; searched for via yeetube.
-;;   (advice-add
-;;    #'browse-url
-;;    :around
-;;    (lambda (orig &rest args)
-;;      (if (string-match "youtube.com" (car args))
-;;          (yeetube-search (car args))
-;;        (apply orig args))))
-
-;;   :bind
-;;   (:map yeetube-mode-map
-;;         ("RET"     . yeetube-play)
-;;         ("d"       . yeetube-download-video)
-;;         ("/"       . yeetube-search)))
-
-
-(use-package eww
-  ;; Uncomment below for emacs to behave as the default web browser.
-  ;; :init
-  ;; (setq browse-url-browser-function 'eww-browse-url)
-  :hook (eww-mode . visual-line-mode))
-
-(me/eval-form-on-first-command-run
- elpher
- (use-package elpher
-   :hook (elpher-mode . visual-line-mode)))
-
-;;(use-package ement :defer)
-
-;; Better LaTeX editing.
-
-;; (use-package auctex-cluttex
-;;   :after auctex)
-;;(add-hook 'LaTeX-mode-hook #'auctex-cluttex-mode)
-
-
-
-;; http://yummymelon.com/devnull/announcing-casual-an-opinionated-porcelain-for-emacs-calc.html
-;; https://legends2k.github.io/note/emacs_calc/
-;; (use-package casual-calc
-;;   :after calc
-;;   :config
-;;   (define-key calc-mode-map (kbd "C-c o") #'casual-calc-tmenu))
-
-
-;; (use-package exwm-setup :ensure nil)
-
-
-;; (me/emacs-N-progn
-;;  30
-;;  (use-package tsort)
-;;  (use-package kiss
-;;    :ensure nil
-;;    :init
-;;    (unless (package-installed-p (intern "kiss"))
-;;      (package-vc-install
-;;       '(kiss :vc-backend Git
-;;              :url "https://github.com/echawk/kiss.el")))))
-
-;; (use-package ffi
-;;   :unless noninteractive
-;;   (package-vc-install
-;;    '(ffi :url "https://github.com/emacs-ffi/emacs-ffi"
-;;          :branch "master"
-;;          :rev :newest
-;;          :make "vc-install"
-;;          :lisp-dir "./src"
-;;          :doc "./src/emacs-ffi.texi"))
-;;   )
-
-
-;; (use-package xjupyter
+(use-package ux-setup
+  :ensure nil
+  :defer nil)
+(use-package ui-setup
+  :ensure nil
+  :defer nil)
+(use-package pl-setup
+  :ensure nil
+  :defer nil)
+(use-package pg-setup
+  :ensure nil
+  :defer nil)
+;; (use-package llm-setup
 ;;   :ensure nil
-;;   :init
-;;   (unless (package-installed-p (intern "xjupyter"))
-;;     (package-vc-install
-;;      '(xjupyter :vc-backend Git
-;;                 :url "https://github.com/commercial-emacs/xjupyter"))))
+;;   :defer nil)
+;; (use-package mail-setup
+;;   :ensure nil
+;;   :defer nil)
+;; (use-package exwm-setup
+;;   :ensure nil
+;;   :defer nil)
 
-;; Package shannon-max is new.
 
-;;      Status: New from melpa -- Install
-;;     Archive: melpa
-;;     Version: 20260505.1426
-;;      Commit: 539bd5f771b798973734696b3b0ae10f56d3966d
-;;     Summary: Analyze your keybindings with information theory
-;;    Requires: emacs-29.1
-;;     Website: https://github.com/sstraust/shannonmax
-;;  Maintainer: Sam Straus <sam_straus@alumni.brown.edu>
-;;      Author: Sam Straus <sam_straus@alumni.brown.edu>
+;;https://github.com/jdtsmith/comint-fold
 
-;; Uses information theory to analyze your Emacs usage
-;; and suggest better keybindings.
+;; (use-package doom-themes :defer)
 
-;; Add (shannon-max-start-logger) to your .emacs
-;; configuration file to start collecting logs.
-;; Once you have enough data, call M-x shannon-max-analyze to see the results.
+;; TODO: Break this out into a package.
+;; TODO: also make a macro to help simplify the creation of
+;; the functions - it should suffice to simply provide the quoted
+;; code and to have that automagically be inserted into an anonymous function.
+;; Semi-Configurable modeline.
 
-;; See the project readme for more detailed instructions.
+
+;;(make-variable-buffer-local
+;;(setq me/apheleia-preferred-backend (me/get-formatter-backend))
+
+;; annotated-completing-read      20260817.235   new          melpa    Ergonomic completing-read wrapper/helper
+;; auto-side-windows              20260817.1434  new          melpa    Simplified buffer management for side windows
+;; card-games                     20260816.1451  new          melpa    Play card games (console UNICODE and graphical SVG)
+;; ob-janet                       20260803.608   new          melpa    Org-Babel support for the Janet language
+;; pgsql                          20260817.136   new          melpa    Native PostgreSQL protocol client
+;; project-store                  0.9.0          new          nongnu   Project backend for Nix store
+;; vice-mode                      20260810.1820  new          melpa    VIm-like Commands Extension

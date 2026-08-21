@@ -133,4 +133,10 @@
  google-translate-buffer
  (use-package google-translate))
 
+;; (use-package mqr :defer)
+
+;; Some packages worth looking into.
+;; automoji  (discord style emoji completion)
+
+
 
