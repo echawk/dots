@@ -28,6 +28,10 @@
 
 (me/package-bootstrap)
 
+(defun me/delete-package-user-dir ()
+  "Helpfpul when Emacs inevitably breaks something somewhere."
+  (dired-delete-file package-user-dir 'always nil))
+
 (setq me/delete-trailing-whitespace nil)
 
 (defmacro me/emacs-N-progn (N &rest body)
@@ -201,7 +205,6 @@ command has been ran before.
   ;; Don't wrap lines
   (truncate-lines t)
 
-
   ;; Make minibuffer less stuttery.
   (read-minibuffer-restore-windows nil)
 
@@ -286,22 +289,6 @@ command has been ran before.
   (setq-default indent-tabs-mode nil
                 tab-width 4))
 
-;; Elisp programming libraries
-(use-package for     :defer)
-(use-package eprolog :defer)
-(use-package reazon  :defer)
-(use-package async :defer)
-;; (use-package ffi
-;;   :unless noninteractive
-;;   (package-vc-install
-;;    '(ffi :url "https://github.com/emacs-ffi/emacs-ffi"
-;;          :branch "master"
-;;          :rev :newest
-;;          :make "vc-install"
-;;          :lisp-dir "./src"
-;;          :doc "./src/emacs-ffi.texi")))
-
-
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :hook
@@ -325,52 +312,36 @@ command has been ran before.
                                       org-babel-load-languages)))
      (apply orig args))))
 
-;; Fix weird tab behavior in default org-mode. Preferable to "C-c '".
-;; (use-package poly-org
-;;   :defer
-;;   :after org)
 
-(use-package ux-setup
-  :ensure nil
-  :defer nil)
-(use-package ui-setup
-  :ensure nil
-  :defer nil)
-(use-package pl-setup
-  :ensure nil
-  :defer nil)
-(use-package pg-setup
-  :ensure nil
-  :defer nil)
-;; (use-package llm-setup
-;;   :ensure nil
-;;   :defer nil)
-;; (use-package mail-setup
-;;   :ensure nil
-;;   :defer nil)
-;; (use-package exwm-setup
-;;   :ensure nil
-;;   :defer nil)
+;; (use-package ffi
+;;   :unless noninteractive
+;;   (package-vc-install
+;;    '(ffi :url "https://github.com/emacs-ffi/emacs-ffi"
+;;          :branch "master"
+;;          :rev :newest
+;;          :make "vc-install"
+;;          :lisp-dir "./src"
+;;          :doc "./src/emacs-ffi.texi")))
 
+
+;; Elisp programming libraries
+(defmacro me/bulk-use-package (ensure-p defer-p &rest args)
+  `(progn ,@(cl-mapcar (lambda (arg) `(use-package ,arg :ensure ,ensure-p :defer ,defer-p)) args)))
+
+(me/bulk-use-package
+ t nil
+ peg for eprolog reazon async)
+
+(me/bulk-use-package
+ nil nil 
+ ux-setup ui-setup pl-setup pg-setup
+ ;; llm-setup
+ ;; mail-setup
+ ;; exwm-setup
+ )
 
 ;;https://github.com/jdtsmith/comint-fold
-
-;; (use-package doom-themes :defer)
-
-;; TODO: Break this out into a package.
-;; TODO: also make a macro to help simplify the creation of
-;; the functions - it should suffice to simply provide the quoted
-;; code and to have that automagically be inserted into an anonymous function.
-;; Semi-Configurable modeline.
-
 
 ;;(make-variable-buffer-local
 ;;(setq me/apheleia-preferred-backend (me/get-formatter-backend))
 
-;; annotated-completing-read      20260817.235   new          melpa    Ergonomic completing-read wrapper/helper
-;; auto-side-windows              20260817.1434  new          melpa    Simplified buffer management for side windows
-;; card-games                     20260816.1451  new          melpa    Play card games (console UNICODE and graphical SVG)
-;; ob-janet                       20260803.608   new          melpa    Org-Babel support for the Janet language
-;; pgsql                          20260817.136   new          melpa    Native PostgreSQL protocol client
-;; project-store                  0.9.0          new          nongnu   Project backend for Nix store
-;; vice-mode                      20260810.1820  new          melpa    VIm-like Commands Extension

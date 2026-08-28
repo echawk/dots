@@ -216,6 +216,7 @@ the file.
 ;; (use-package flymake-x)
 
 (use-package symbol-overlay
+  :defer
   :hook (prog-mode . symbol-overlay-mode))
 
 (use-package casual-symbol-overlay
@@ -231,11 +232,13 @@ the file.
 (use-package paredit
   :defer
   :hook
-  ((emacs-lisp-mode       . enable-paredit-mode)
-   (geiser-mode           . enable-paredit-mode)
-   (racket-mode           . enable-paredit-mode)
-   (racket-hash-lang-mode . enable-paredit-mode)
-   (lisp-mode             . enable-paredit-mode)))
+  ((emacs-lisp-mode
+    scheme-mode
+    geiser-mode
+    racket-mode
+    racket-hash-lang-mode
+    lisp-mode)
+   . enable-paredit-mode))
 
 (use-package lisp-docstring-toggle
   :ensure nil
