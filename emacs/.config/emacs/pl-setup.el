@@ -1,9 +1,5 @@
 ;;; setup for editing code
 
-(use-package scratch-plus
-  :hook (prog-mode . scratch-plus-minor-mode)
-  :config (scratch-plus-mode))
-
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
   `(dolist (modes-cmd ,modes-lsp-cmd)
