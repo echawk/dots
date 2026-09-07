@@ -18,7 +18,7 @@ if command -v guix > /dev/null 2>&1; then
     -p $HOME/.config/guix-home/profile \
     -p $HOME/.guix-profile \
     /run/current-system/profile
-    )"
+    )" 2 > /dev/null
 fi
 
 # Ensure my ssh identities get added to my environment.
