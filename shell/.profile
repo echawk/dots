@@ -8,6 +8,19 @@ sys="$(uname)"
 # source my environment shell script
 [ -f "$HOME"/.config/shell/env.sh ]        && . "$HOME"/.config/shell/env.sh
 
+# GNU Guix setup
+if command -v guix > /dev/null 2>&1; then
+    [ -e "$HOME/.guix-home" ] && . "$HOME/.guix-home/setup-environment"
+    "$HOME/.guix-home/on-first-login"
+
+    eval "$(guix package --search-paths \
+    -p $HOME/.config/guix/current \
+    -p $HOME/.config/guix-home/profile \
+    -p $HOME/.guix-profile \
+    /run/current-system/profile
+    )"
+fi
+
 # Ensure my ssh identities get added to my environment.
 if [ -e "$HOME/.ssh/" ]; then
     export SSH_AUTH_SOCK="${XDG_CACHE_HOME}/ssh/agent"
