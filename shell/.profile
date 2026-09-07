@@ -11,14 +11,14 @@ sys="$(uname)"
 # GNU Guix setup
 if command -v guix > /dev/null 2>&1; then
     [ -e "$HOME/.guix-home" ] && . "$HOME/.guix-home/setup-environment"
-    "$HOME/.guix-home/on-first-login"
+    "$HOME/.guix-home/on-first-login" 2> /dev/null
 
     eval "$(guix package --search-paths \
     -p $HOME/.config/guix/current \
     -p $HOME/.config/guix-home/profile \
     -p $HOME/.guix-profile \
     /run/current-system/profile
-    )" 2 > /dev/null
+    )" 2> /dev/null
 fi
 
 # Ensure my ssh identities get added to my environment.
