@@ -22,36 +22,36 @@
 
 (require 'eieio)
 
-(defcustom mu4e-setup-use-msmtp-p
-  (if (boundp 'mu4e-setup-use-msmtp-p)
-      mu4e-setup-use-msmtp-p
+(defcustom mu4e-wizard-use-msmtp-p
+  (if (boundp 'mu4e-wizard-use-msmtp-p)
+      mu4e-wizard-use-msmtp-p
     nil)
   "Set to `t' if you would like to use msmtp instead of `smtpmail-send-it'.")
 
-(defcustom mu4e-setup-mbsync-use-master-slave-p
-  (if (boundp 'mu4e-setup-mbsync-use-master-slave-p)
-      mu4e-setup-mbsync-use-master-slave-p
+(defcustom mu4e-wizard-mbsync-use-master-slave-p
+  (if (boundp 'mu4e-wizard-mbsync-use-master-slave-p)
+      mu4e-wizard-mbsync-use-master-slave-p
     nil)
   "Set to `t' if mbsync uses the Master/Slave terminology.")
 
-(setq mu4e-setup-maildir      (concat (getenv "HOME") "/.local/share/mail"))
-(setq mu4e-setup-dir          (concat user-emacs-directory "mu4e-setup/"))
+(setq mu4e-wizard-maildir      (concat (getenv "HOME") "/.local/share/mail"))
+(setq mu4e-wizard-dir          (concat user-emacs-directory "mu4e-wizard/"))
 
-(setq mu4e-setup-config-file  (concat mu4e-setup-dir "mu4e-config.el"))
-(setq mu4e-setup-mbsync-file  (concat mu4e-setup-dir "mbsyncrc"))
+(setq mu4e-wizard-config-file  (concat mu4e-wizard-dir "mu4e-config.el"))
+(setq mu4e-wizard-mbsync-file  (concat mu4e-wizard-dir "mbsyncrc"))
 ;; msmtp doesn't play nice, hence the reason it is disabled by default.
-(setq mu4e-setup-msmtp-file   (concat (getenv "HOME") "/.config/msmtp/config"))
+(setq mu4e-wizard-msmtp-file   (concat (getenv "HOME") "/.config/msmtp/config"))
 
-(setq mu4e-setup-auth-sources-file (concat mu4e-setup-dir "authinfo"))
+(setq mu4e-wizard-auth-sources-file (concat mu4e-wizard-dir "authinfo"))
 
-(setq mu4e-setup-mutt-wizard-repo "https://github.com/LukeSmithxyz/mutt-wizard")
+(setq mu4e-wizard-mutt-wizard-repo "https://github.com/LukeSmithxyz/mutt-wizard")
 
-(setq mu4e-setup-mbsync-cmd
-      (concat "mbsync -c " mu4e-setup-mbsync-file " -a"))
+(setq mu4e-wizard-mbsync-cmd
+      (concat "mbsync -c " mu4e-wizard-mbsync-file " -a"))
 
-(setq mu4e-setup-msmtp-cmd "msmtp")
+(setq mu4e-wizard-msmtp-cmd "msmtp")
 
-(setq mu4e-setup-cert-file
+(setq mu4e-wizard-cert-file
       (car
        (seq-filter
         #'file-exists-p
@@ -63,19 +63,19 @@
           "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
           "/usr/local/share/ca-certificates/"))))
 
-(setq mu4e-setup-default-process-environment
+(setq mu4e-wizard-default-process-environment
       (append
        process-environment
        (list
-        (concat "maildir="  mu4e-setup-maildir)
-        (concat "msmtplog=" mu4e-setup-dir "msmtp.log")
-        (concat "master="   (if mu4e-setup-mbsync-use-master-slave-p
+        (concat "maildir="  mu4e-wizard-maildir)
+        (concat "msmtplog=" mu4e-wizard-dir "msmtp.log")
+        (concat "master="   (if mu4e-wizard-mbsync-use-master-slave-p
                                 "Master"
                               "Far"))
-        (concat "slave="    (if mu4e-setup-mbsync-use-master-slave-p
+        (concat "slave="    (if mu4e-wizard-mbsync-use-master-slave-p
                                 "Slave"
                               "Near"))
-        (concat "sslcert=" mu4e-setup-cert-file)
+        (concat "sslcert=" mu4e-wizard-cert-file)
         ;; FIXME: have this be detected
         ;; FIXME: need to integrate the :smtp-mail-type into this
         ;; -or- have our own variable fr setting the imapssl type.
@@ -84,30 +84,30 @@
         "imapssl=IMAPS"
         "maxmes=0")))
 
-(defun mu4e-setup--append-to-file (str filename)
+(defun mu4e-wizard--append-to-file (str filename)
   (with-temp-buffer
     (insert str)
     (write-region (point-min) (point-max) filename t)))
 
-(defun mu4e-setup-download-mutt-wizard ()
-  "Clone mutt-wizard to ~/.config/emacs/mu4e-setup/mutt-wizard."
+(defun mu4e-wizard-download-mutt-wizard ()
+  "Clone mutt-wizard to ~/.config/emacs/mu4e-wizard/mutt-wizard."
   (interactive)
 
   ;; Ensure dir exists.
-  (unless (file-exists-p mu4e-setup-dir)
-    (make-directory      mu4e-setup-dir))
+  (unless (file-exists-p mu4e-wizard-dir)
+    (make-directory      mu4e-wizard-dir))
 
   ;; Clone mutt-wizard repo (contains useful crowd sourced info)
-  (let ((default-directory mu4e-setup-dir))
-    (if (not (file-exists-p (concat mu4e-setup-dir "mutt-wizard")))
+  (let ((default-directory mu4e-wizard-dir))
+    (if (not (file-exists-p (concat mu4e-wizard-dir "mutt-wizard")))
         (shell-command
-         (concat "git clone " mu4e-setup-mutt-wizard-repo))
+         (concat "git clone " mu4e-wizard-mutt-wizard-repo))
       (shell-command "cd mutt-wizard; git pull"))))
 
 ;; TODO: add in support for specifying whether the connection should use
 ;; 'none', 'ssl', or 'starttls' - If you were to use davmail, you don't need
 ;; to use the ssl code, and can just use the plain stuff.
-(defclass mu4e-setup-email-profile ()
+(defclass mu4e-wizard-email-profile ()
   ((email-address
     :initarg :email-address :initform "" :type string
     :documentation "The email address.")
@@ -130,7 +130,7 @@
     :initarg :password-command :initform "" :type string
     :documentation "A command that when ran returns the account's passowrd.")))
 
-(defun mu4e-setup--email-profile-setup (obj)
+(defun mu4e-wizard--email-profile-setup (obj)
   (with-slots
       ((email-address :email-address)
        (imap-address  :imap-address)
@@ -154,7 +154,7 @@
 
     (let ((process-environment
            (append
-            mu4e-setup-default-process-environment
+            mu4e-wizard-default-process-environment
             ;; append this list to process-environment, and execute my commands
             ;; in there.
             (list
@@ -170,7 +170,7 @@
       ;; such as double quotes and whatnot this current method will not
       ;; work. May need to investigate using `princ'?
       ;; authinfo config
-      (mu4e-setup--append-to-file
+      (mu4e-wizard--append-to-file
        (string-join
         (list
          "machine"
@@ -188,42 +188,42 @@
            (string-trim (shell-command-to-string password-command)))
           "\"")
          "cert"
-         mu4e-setup-cert-file
+         mu4e-wizard-cert-file
          "\n")
         " ")
-       mu4e-setup-auth-sources-file)
+       mu4e-wizard-auth-sources-file)
 
       ;; mbsync config
-      (mu4e-setup--append-to-file
+      (mu4e-wizard--append-to-file
        (shell-command-to-string
         (concat
          "sed '/PassCmd/s;.*;PassCmd \"" password-command "\";'"
-         " < " mu4e-setup-dir "/mutt-wizard/share/mbsync-temp"
+         " < " mu4e-wizard-dir "/mutt-wizard/share/mbsync-temp"
          " | "
          "envsubst"))
-       mu4e-setup-mbsync-file)
+       mu4e-wizard-mbsync-file)
 
       ;; This is so stupid, but mbsycnc *REFUSES* to be smart.
-      (mu4e-setup--append-to-file
+      (mu4e-wizard--append-to-file
 	   "
 
 "
-       mu4e-setup-mbsync-file)
+       mu4e-wizard-mbsync-file)
 
       ;; msmtp config
-      (mu4e-setup--append-to-file
+      (mu4e-wizard--append-to-file
        (shell-command-to-string
         (concat
          "sed '/passwordeval/s;.*;passwordeval \"" password-command "\";'"
-         " < " mu4e-setup-dir "/mutt-wizard/share/msmtp-temp"
+         " < " mu4e-wizard-dir "/mutt-wizard/share/msmtp-temp"
          " | "
          "envsubst"))
-       mu4e-setup-msmtp-file)
+       mu4e-wizard-msmtp-file)
 
       ;; Ensure this directory exists before we run mbsync.
-      (shell-command (concat "mkdir -p " mu4e-setup-maildir "/" email-address)))))
+      (shell-command (concat "mkdir -p " mu4e-wizard-maildir "/" email-address)))))
 
-(defun mu4e-setup--email-profile-add-to-mu4e-contexts (obj)
+(defun mu4e-wizard--email-profile-add-to-mu4e-contexts (obj)
   (with-slots
       ((email-address    :email-address)
        (smtp-address     :smtp-address)
@@ -276,7 +276,7 @@
           (mu4e-drafts-folder    . ,drafts-folder)))))))
 
 
-(defun mu4e-setup--configure-email-profiles (email-profiles-list)
+(defun mu4e-wizard--configure-email-profiles (email-profiles-list)
   ;; Check for required commands.
   (dolist (cmd '("envsubst" "mu"))
     (unless (executable-find cmd)
@@ -285,17 +285,17 @@
 
   ;; Remove our old msmtp, mbsync, and auth-sources file
   (dolist (file (list
-                 mu4e-setup-msmtp-file
-                 mu4e-setup-mbsync-file
-                 mu4e-setup-auth-sources-file))
+                 mu4e-wizard-msmtp-file
+                 mu4e-wizard-mbsync-file
+                 mu4e-wizard-auth-sources-file))
     (when (file-exists-p file)
       (shell-command (concat "rm " file))))
 
   (dolist (email-profile email-profiles-list)
-    (mu4e-setup--email-profile-setup email-profile))
+    (mu4e-wizard--email-profile-setup email-profile))
 
   ;; Sync w/ mbsync
-  ;;(shell-command mu4e-setup-mbsync-cmd)
+  ;;(shell-command mu4e-wizard-mbsync-cmd)
 
   ;; Remove old mu cache.
   (let ((mu-cache-dir (concat (getenv "HOME") "/.cache/mu/")))
@@ -308,7 +308,7 @@
     (append
      (list
       "mu" "init"
-      (concat "--maildir=" mu4e-setup-maildir))
+      (concat "--maildir=" mu4e-wizard-maildir))
 
      ;; Will need to add --my-address for *every* configured email address
      (mapcar
@@ -317,69 +317,69 @@
       email-profiles-list))
     " ")))
 
-(defun mu4e-setup--setup-config-file (email-profiles-list)
-  (shell-command (concat "rm " mu4e-setup-config-file))
-  (shell-command (concat "touch " mu4e-setup-config-file))
-  (with-temp-file mu4e-setup-config-file
+(defun mu4e-wizard--setup-config-file (email-profiles-list)
+  (shell-command (concat "rm " mu4e-wizard-config-file))
+  (shell-command (concat "touch " mu4e-wizard-config-file))
+  (with-temp-file mu4e-wizard-config-file
     (prin1
      `(progn
         ;; Default configuration for mu4e here - can be overridden by
         ;; your own config - just set the variables to a different value.
-        (if mu4e-setup-use-msmtp-p
-            (setq sendmail-program           mu4e-setup-msmtp-cmd
+        (if mu4e-wizard-use-msmtp-p
+            (setq sendmail-program           mu4e-wizard-msmtp-cmd
                   send-mail-function         #'sendmail-send-it
                   message-sendmail-extra-arguments '("--read-envelope-from")
                   message-sendmail-f-is-evil        t)
           (setq message-send-mail-function #'smtpmail-send-it))
 
         (setq mu4e-change-filenames-when-moving 't
-              mu4e-get-mail-command             ,mu4e-setup-mbsync-cmd
-              mu4e-maildir                      ,mu4e-setup-maildir)
+              mu4e-get-mail-command             ,mu4e-wizard-mbsync-cmd
+              mu4e-maildir                      ,mu4e-wizard-maildir)
 
         ;; This is important to save (as a different symbol), since we can
         ;; compare the two lists to see if we have any new email profiles to
         ;; setup.
-        (setq mu4e-setup-current-email-profiles-list
+        (setq mu4e-wizard-current-email-profiles-list
               ',email-profiles-list)
 
         ;; Add our custom auth sources file to the auth-sources variable.
-        (add-to-list 'auth-sources ,mu4e-setup-auth-sources-file)
+        (add-to-list 'auth-sources ,mu4e-wizard-auth-sources-file)
 
         ;; Ensure that each of the email profiles is a context in mu4e.
-        (mapcar #'mu4e-setup--email-profile-add-to-mu4e-contexts
-                mu4e-setup-current-email-profiles-list))
+        (mapcar #'mu4e-wizard--email-profile-add-to-mu4e-contexts
+                mu4e-wizard-current-email-profiles-list))
      (current-buffer))))
 
-(defun mu4e-setup-configure ()
-  "Configure mu4e to use the emails listed in `mu4e-setup-email-profiles-list'."
-  (unless (boundp 'mu4e-setup-email-profiles-list)
-    (error "mu4e-setup-email-profiles-list isn't bound!"))
-  (if (file-exists-p mu4e-setup-config-file)
+(defun mu4e-wizard-configure ()
+  "Configure mu4e to use the emails listed in `mu4e-wizard-email-profiles-list'."
+  (unless (boundp 'mu4e-wizard-email-profiles-list)
+    (error "mu4e-wizard-email-profiles-list isn't bound!"))
+  (if (file-exists-p mu4e-wizard-config-file)
       (progn
-        (load-file mu4e-setup-config-file)
+        (load-file mu4e-wizard-config-file)
         (unless
             ;; Ensure that the user hasn't added/removed any email configurations.
-            (equal mu4e-setup-current-email-profiles-list
-                   mu4e-setup-email-profiles-list)
+            (equal mu4e-wizard-current-email-profiles-list
+                   mu4e-wizard-email-profiles-list)
 
-          ;; Remove our configuration file and re-setup mu4e-setup
-          (shell-command (concat "rm " mu4e-setup-config-file))
-          (mu4e-setup-configure)))
+          ;; Remove our configuration file and re-setup mu4e-wizard
+          (shell-command (concat "rm " mu4e-wizard-config-file))
+          (mu4e-wizard-configure)))
     (progn
-      (mu4e-setup--configure-email-profiles mu4e-setup-email-profiles-list)
-      (mu4e-setup--setup-config-file        mu4e-setup-email-profiles-list)
+      (mu4e-wizard--configure-email-profiles mu4e-wizard-email-profiles-list)
+      (mu4e-wizard--setup-config-file        mu4e-wizard-email-profiles-list)
 
       ;; Load our just generated config file.
-      (load-file mu4e-setup-config-file))))
+      (load-file mu4e-wizard-config-file))))
 
-(provide 'mu4e-setup)
+(provide 'mu4e-wizard)
 
 ;; Final usage should look like below:
-;; (require 'mu4e-setup)
+;; (require 'mu4e-wizard)
 
-;; (setq mu4e-setup-email-profiles-list
+;; (setq mu4e-wizard-email-profiles-list
 ;;       (list
-;;        (mu4e-setup-email-profile
+;;        (mu4e-wizard-email-profile
 ;;         :email-address "john.doe@hotmail.com"
 ;;         :imap-address "outlook.office365.com"
 ;;         :imap-port    "993"
@@ -387,7 +387,7 @@
 ;;         :smtp-port "587"
 ;;         :password-command "cat /some/file/path")
 
-;;        (mu4e-setup-email-profile
+;;        (mu4e-wizard-email-profile
 ;;         :email-address "someemail@gmail.com"
 ;;         :imap-address "imap.gmail.com"
 ;;         :smtp-address "smtp.gmail.com"
@@ -395,4 +395,4 @@
 ;;         :smtp-port "587"
 ;;         :password-command "echo hi")))
 
-;; (mu4e-setup-configure)
+;; (mu4e-wizard-configure)
