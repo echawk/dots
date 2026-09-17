@@ -15,10 +15,20 @@
 (load (merge-pathnames (user-homedir-pathname) ".sbclrc"))
 
 ;; Libraries needed only for the ssh key generation.
-(ql:quickload '(:ironclad :lesspass :cl-ssh-keys) :silent t)
+(ql:quickload '(:ironclad :cl-ppcre :lesspass :cl-ssh-keys) :silent t)
 
 ;; For the gui portion.
 (ql:quickload :ltk :silent t)
+
+(defun lesspass-prof-to-keyname (lesspass-prof)
+  (format nil "~{~A~^~}"
+          (list "site.-"
+                (cl-ppcre:regex-replace-all
+                 " " (lesspass:site-of lesspass-prof) "_")
+                "-.login.-"
+                (cl-ppcre:regex-replace-all
+                 " " (lesspass:login-of lesspass-prof) "_")
+                "-.detkey")))
 
 (defun get-lesspass-prof-gui ()
   (let ((password-prof
@@ -92,55 +102,9 @@
     (assert (not (string= "" master-pass)))
     master-pass))
 
-(defun get-key-filename-gui ()
-  (let ((filename ""))
-    (ltk:with-ltk ()
-      (let* ((filename-entry (make-instance 'ltk:entry :width 30))
-             (confirm-button
-               (make-instance
-                'ltk:button
-                :text "confirm"
-                :command
-                (lambda ()
-                  (setf filename (ltk:text filename-entry))
-                  (ltk:exit-wish)))))
-        (ltk:grid
-         (make-instance 'ltk:label :text "FILENAME:") 0 0)
-        (ltk:grid filename-entry 0 1)
-        (ltk:grid confirm-button 0 2)))
-
-    (assert (not (string= "" filename)))
-    filename))
-
-(defun get-step-size-from-string (str n)
-  "Return a pseudo random number for a given STR.
-
-Sums the squares of all of the 'char-int' values for each char in STR,
-then floor divides by N."
-
-  (let* ((entropy (reduce
-                   #'+
-                   (mapcar
-                    (lambda (ch)
-                      (expt (char-int ch) 2))
-                    (coerce str 'list)))))
-    ;; Divide entropy by N, coercing to a float so we
-    ;; can then floor divide by 1.
-    (floor (coerce (/ entropy n) 'float) 1)))
-
-(defun get-seed-string ()
+(defun get-seed-string (password-prof)
   "Return a string that is 'good enough' to seed ironclad with."
-  (declare (optimize (safety 3)))
-  (let* ((iters 32)
-         (master-pass   (get-master-pass-gui))
-         (password-prof (get-lesspass-prof-gui))
-
-         ;; Get the step value from the master password since that information
-         ;; is also secret, thus making it more secure against brute forcing.
-         ;; FIXME: maybe make the counter hard coded?
-         (counter (get-step-size-from-string
-                   master-pass iters)))
-    (setf (lesspass:counter-of password-prof) counter)
+  (let ((master-pass (get-master-pass-gui)))
     (lesspass:generate-password password-prof master-pass)))
 
 (defun generate-deterministic-keys (seed-string)
@@ -174,10 +138,16 @@ and the public key being second."
     (list priv-key pub-key)))
 
 (defun main ()
-  (let* ((keyname  (get-key-filename-gui))
-         (ssh-dir  (concatenate 'string (namestring (user-homedir-pathname)) ".ssh/"))
-         (seed-str (get-seed-string))
-         (keys-lst (generate-deterministic-keys seed-str)))
+  (let* ((password-prof
+           (get-lesspass-prof-gui))
+         (keyname
+           (lesspass-prof-to-keyname password-prof))
+         (ssh-dir
+           (concatenate 'string (namestring (user-homedir-pathname)) ".ssh/"))
+         (seed-str
+           (get-seed-string password-prof))
+         (keys-lst
+           (generate-deterministic-keys seed-str)))
 
     (let ((priv-key-path (concatenate 'string ssh-dir keyname))
           (pub-key-path  (concatenate 'string ssh-dir keyname ".pub")))
