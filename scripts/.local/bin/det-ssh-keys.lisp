@@ -12,6 +12,12 @@
 
 (require :uiop)
 
+(defconstant +ssh-dir+ (concatenate 'string (namestring (user-homedir-pathname)) ".ssh/"))
+
+(defconstant +det-config-fp+ (merge-pathnames
+                              ".config/det-ssh/keys.lisp"
+                              (user-homedir-pathname)))
+
 (load (merge-pathnames (user-homedir-pathname) ".sbclrc"))
 
 ;; Libraries needed only for the ssh key generation.
@@ -30,29 +36,34 @@
                  " " (lesspass:login-of lesspass-prof) "_")
                 "-.detkey")))
 
-(defun get-lesspass-prof-gui ()
-  (let ((password-prof
-          ;; Only allow the user to change the site and login.
-          ;; The rest of the defaults here should be sufficient.
+(defun lesspass-prof-ssh-key-exists-p (lesspass-prof)
+  (let* ((keyname (lesspass-prof-to-keyname lesspass-prof))
+         (priv-key-path (concatenate 'string +ssh-dir+ keyname))
+         (pub-key-path  (concatenate 'string +ssh-dir+ keyname ".pub")))
+    (and (uiop:file-exists-p priv-key-path)
+         (uiop:file-exists-p pub-key-path))))
 
-          (make-instance
-           'lesspass:password-profile
-           :site ""
-           :login ""
-           ;; Ensure that the rules are as complex as they can be.
-           :rules
-           '(lesspass:lowercase
-             lesspass:uppercase
-             lesspass:digits
-             lesspass:symbols)
-           ;; 32 is the proper length for us to get a valid openssh key
-           ;; as output - if we make the string too long, we will get
-           ;; ssh keys which are too large for openssh to appropriately use.
-           :length 32
-           ;; The counter here is just set to 1 to make the constructor happy :)
-           ;; It is eventually set to a different value below using
-           ;; `get-step-size-from-string`.
-           :counter 1)))
+(defun make-lesspass-prof (site login)
+  ;; Only allow the user to change the site and login.
+  ;; The rest of the defaults here should be sufficient.
+  (make-instance
+   'lesspass:password-profile
+   :site site
+   :login login
+   ;; Ensure that the rules are as complex as they can be.
+   :rules
+   '(lesspass:lowercase
+     lesspass:uppercase
+     lesspass:digits
+     lesspass:symbols)
+   ;; 32 is the proper length for us to get a valid openssh key
+   ;; as output - if we make the string too long, we will get
+   ;; ssh keys which are too large for openssh to appropriately use.
+   :length 32
+   :counter 1))
+
+(defun get-lesspass-prof-gui ()
+  (let ((password-prof (make-lesspass-prof "" "")))
     (ltk:with-ltk ()
       (let* ((site-entry  (make-instance 'ltk:entry :width 30))
              (login-entry (make-instance 'ltk:entry :width 30))
@@ -102,10 +113,9 @@
     (assert (not (string= "" master-pass)))
     master-pass))
 
-(defun get-seed-string (password-prof)
+(defun get-seed-string (password-prof master-pass)
   "Return a string that is 'good enough' to seed ironclad with."
-  (let ((master-pass (get-master-pass-gui)))
-    (lesspass:generate-password password-prof master-pass)))
+  (lesspass:generate-password password-prof master-pass))
 
 (defun generate-deterministic-keys (seed-string)
   "Will deterministically generate a ssh key pair from SEED-STRING.
@@ -137,31 +147,54 @@ and the public key being second."
                           :x (ironclad:ed25519-key-x ironclad-priv-key))))
     (list priv-key pub-key)))
 
+(defun make-ssh-key-for-password-prof-mpw (password-prof mpw)
+  (let* ((keyname       (lesspass-prof-to-keyname password-prof))
+         (seed-str      (get-seed-string password-prof mpw))
+         (keys-lst      (generate-deterministic-keys seed-str))
+
+         (priv-key-path (concatenate 'string +ssh-dir+ keyname))
+         (pub-key-path  (concatenate 'string +ssh-dir+ keyname ".pub")))
+
+    (uiop:delete-file-if-exists priv-key-path)
+    (uiop:delete-file-if-exists pub-key-path)
+
+    (ssh-keys:write-key-to-path (first  keys-lst) priv-key-path)
+    (ssh-keys:write-key-to-path (second keys-lst) pub-key-path)
+
+    (uiop:run-program (concatenate 'string "chmod 0600 " priv-key-path))
+    (uiop:run-program (concatenate 'string "chmod 0600 " pub-key-path))))
+
+(defun make-ssh-key-gui ()
+  (make-ssh-key-for-password-prof-mpw
+   (get-lesspass-prof-gui)
+   (get-master-pass-gui)))
+
+(defun make-ssh-key-auto ()
+  (when (uiop:file-exists-p +det-config-fp+)
+    (load +det-config-fp+)
+    (print "Loaded user config..."))
+
+  (when (boundp 'det-ssh-keys-plist)
+    (let ((password-prof-lst
+            (mapcar
+             (lambda (pl)
+               (make-lesspass-prof
+                  (getf pl :site)
+                  (getf pl :login)))
+             (loop for (key value) on (symbol-value 'det-ssh-keys-plist) by #'cddr
+                   collect value))))
+
+      (when (member
+             nil
+             (mapcar #'lesspass-prof-ssh-key-exists-p password-prof-lst))
+        (let ((mpw (get-master-pass-gui)))
+          (mapcar
+           (lambda (pass-prof)
+             (make-ssh-key-for-password-prof-mpw pass-prof mpw))
+           password-prof-lst))))))
+
 (defun main ()
-  (let* ((password-prof
-           (get-lesspass-prof-gui))
-         (keyname
-           (lesspass-prof-to-keyname password-prof))
-         (ssh-dir
-           (concatenate 'string (namestring (user-homedir-pathname)) ".ssh/"))
-         (seed-str
-           (get-seed-string password-prof))
-         (keys-lst
-           (generate-deterministic-keys seed-str)))
-
-    (let ((priv-key-path (concatenate 'string ssh-dir keyname))
-          (pub-key-path  (concatenate 'string ssh-dir keyname ".pub")))
-
-
-      (uiop:delete-file-if-exists priv-key-path)
-      (uiop:delete-file-if-exists pub-key-path)
-
-      (ssh-keys:write-key-to-path (first  keys-lst) priv-key-path)
-      (ssh-keys:write-key-to-path (second keys-lst) pub-key-path)
-
-      ;; TODO: see if there is a library to perform the chmod, since this
-      ;; restricts this program to only running on *nix.
-      (uiop:run-program (concatenate 'string "chmod 0600 " priv-key-path))
-      (uiop:run-program (concatenate 'string "chmod 0600 " pub-key-path)))))
+  (make-ssh-key-auto)
+  (make-ssh-key-gui))
 
 (main)
