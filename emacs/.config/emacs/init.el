@@ -222,8 +222,26 @@ command has been ran before.
   (cond
    ((eq system-type 'darwin)
     (progn
-      ;;(setq mac-command-modifier 'control)
-      (setq mac-option-modifier 'meta) ;; This is for the gui version of emacs
+      (setq mac-command-modifier 'control)
+      ;;(setq mac-option-modifier 'meta) ;; This is for the gui version of emacs
+
+      ;; Automatically add all homebrew site emacs lisp into the load path.
+      (let ((brew-emacs-site-lisp-dir
+             (when (executable-find "brew")
+               (expand-file-name
+                "share/emacs/site-lisp/"
+                (string-trim (shell-command-to-string "brew --prefix"))))))
+
+        (let ((dirs (directory-files-recursively
+                     brew-emacs-site-lisp-dir
+                     "\\`.*\\'"
+                     t
+                     nil
+                     t)))
+          (mapcar
+           (lambda (dir)
+             (add-to-list 'load-path dir))
+           (seq-filter #'file-directory-p dirs))))
 
       ;; Emacs on macOS has now crash too many times with no reason for me to
       ;; feel comfortable disabling this.
@@ -324,24 +342,41 @@ command has been ran before.
 ;;          :doc "./src/emacs-ffi.texi")))
 
 
-;; Elisp programming libraries
 (defmacro me/bulk-use-package (ensure-p defer-p &rest args)
-  `(progn ,@(cl-mapcar (lambda (arg) `(use-package ,arg :ensure ,ensure-p :defer ,defer-p)) args)))
+  `(progn
+     ,@(cl-mapcar
+        (lambda (arg)
+          `(use-package ,arg :ensure ,ensure-p :defer ,defer-p))
+        args)))
 
-(me/bulk-use-package
- t nil
- peg for eprolog reazon async)
+;; Could now make the macro unhygeinic?
+(let ((defer-p nil)
+      (ensure-p t))
+  ;; Elisp programming libraries
+  (me/bulk-use-package
+   t nil
+   peg for eprolog reazon async)
 
-(me/bulk-use-package
- nil nil 
- ux-setup ui-setup pl-setup pg-setup
- ;; llm-setup
- ;; mail-setup
- ;; exwm-setup
- )
+  (let ((ensure-p nil))
+    (me/bulk-use-package
+     nil nil
+     ux-setup ui-setup pl-setup pg-setup
+     ;; llm-setup
+     ;; mail-setup
+     ;; exwm-setup
+     )))
 
 ;;https://github.com/jdtsmith/comint-fold
 
 ;;(make-variable-buffer-local
 ;;(setq me/apheleia-preferred-backend (me/get-formatter-backend))
 
+(use-package claude-code-ide
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup))
+
+;; (use-package codex-ide
+;;   :vc (:url "https://github.com/dgillis/emacs-codex-ide" :rev :newest)
+;;   :bind ("C-c C-;" . codex-ide-menu))
