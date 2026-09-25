@@ -11,6 +11,9 @@
 ;; location than ".config/msmtp/config" for whatever reason, at least on linux
 ;; it is driving me nuts.
 
+;; FIXME: remove dependency on mutt-wizard; add our own config generator here.
+;; keep mutt-wizard strictly for the csv file which contains the lookup info.
+
 ;; I want to investigate using the built in smtp client for emacs, sincce
 ;; that is would hopefully be less likey to break compared to msmtp.
 
@@ -49,7 +52,10 @@
 (setq mu4e-wizard-mbsync-cmd
       (concat "mbsync -c " mu4e-wizard-mbsync-file " -a"))
 
-(setq mu4e-wizard-msmtp-cmd "msmtp")
+(setq mu4e-wizard-msmtp-cmd (executable-find "msmtp"))
+
+(setq mu4e-wizard-mu-cmd (executable-find "mu"))
+
 
 (setq mu4e-wizard-cert-file
       (car
