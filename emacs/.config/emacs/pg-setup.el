@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (me/eval-form-on-first-command-run
  vterm
  (use-package vterm
@@ -33,11 +34,11 @@
 
 
 (me/eval-form-on-first-command-run
-  spray-mode
-  (use-package spray
-    :vc (:url "https://github.com/emacsmirror/spray"
-              :rev :newest)
-    :commands (spray-mode)))
+ spray-mode
+ (use-package spray
+   :vc (:url "https://github.com/emacsmirror/spray"
+             :rev :newest)
+   :commands (spray-mode)))
 
 
 ;; it should be possible to have this be a keyword, similar to :defer,
@@ -52,6 +53,7 @@
                           (use-package magit-prime
                             :config
                             (magit-prime-mode)))))
+  (use-package remoto :defer)
   (use-package forge)
   (use-package magit-filenotify
     :hook
@@ -59,7 +61,7 @@
   (use-package magit-gh)
   (use-package magit-gh-pulls))
 
-;;(use-package ement :defer)
+(use-package ement :defer)
 
 (me/eval-form-on-first-command-run
  elpher

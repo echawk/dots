@@ -1,4 +1,4 @@
-;;; ui-setup --- packages for ui changes in emacs.
+;;; ui-setup --- packages for ui changes in emacs.  -*- lexical-binding: t; -*-
 
 (use-package page-break-lines
   :config

@@ -1,4 +1,4 @@
-;;; config for exwm
+;;; config for exwm  -*- lexical-binding: t; -*-
 
 (defun me/make-exwm-script ()
   "Create `exwm` script in `HOME/.local/bin/`."

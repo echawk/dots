@@ -1,4 +1,4 @@
-;;; packages concerning AI/llm development.
+;;; packages concerning AI/llm development.  -*- lexical-binding: t; -*-
 
 (use-package ragmacs
   :ensure (:host github :repo "positron-solutions/ragmacs")

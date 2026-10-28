@@ -1,4 +1,4 @@
-;;; setup for editing code
+;;; setup for editing code  -*- lexical-binding: t; -*-
 
 (defmacro me/add-to-eglot-server-programs (modes-lsp-cmd)
   "Add modes in MODES-LSP-CMD to eglot-server-programs if the LSP-CMD exists."
@@ -473,6 +473,10 @@ the file.
 ;;     (package-vc-install "https://github.com/echawk/snobol-mode"
 ;;                         :last-release))
 ;;   :mode ("\\.sno" . snobol-mode))
+
+(use-package sql-indent
+  :defer
+  :hook ((sql-mode . sqlind-minor-mode)))
 
 ;; Better scheme editing.
 ;; (use-package geiser :defer

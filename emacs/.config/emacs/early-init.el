@@ -1,4 +1,4 @@
-;;; early-init --- early init stuff
+;;; early-init --- early init stuff  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;; My early-init.el file, this section is here just to get
 ;; Emacs to stop labelling this as an issue in flymake.

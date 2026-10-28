@@ -1,4 +1,4 @@
-;;; init --- my Emacs init file
+;;; init --- my Emacs init file  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

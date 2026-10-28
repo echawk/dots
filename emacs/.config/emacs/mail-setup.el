@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defun me/mu4e-have-dependencies ()
   "Return t if all dependencies for mu4e are installed, nil otherwise."
   (and
@@ -20,37 +21,37 @@
 
   (setq mu4e-setup-use-msmtp-p t)
   (setq mu4e-setup-mbsync-use-master-slave-p t)
-  (load-file (concat user-emacs-directory "mu4e-setup.el"))
+  (load-file (concat user-emacs-directory "mu4e-wizard.el"))
 
   (setq mu4e-setup-email-profiles-list
         (list
 
-         (mu4e-setup-email-profile
-          :email-address "ethan.hawk@valpo.edu"
-          :imap-address "imap.gmail.com"
-          :imap-port "993"
-          :smtp-address "smtp.gmail.com"
-          :smtp-port "587"
-          :password-command "cat /home/ethan/.config/lsps/gmail")
+         ;; (mu4e-setup-email-profile
+         ;;  :email-address "ethan.hawk@valpo.edu"
+         ;;  :imap-address "imap.gmail.com"
+         ;;  :imap-port "993"
+         ;;  :smtp-address "smtp.gmail.com"
+         ;;  :smtp-port "587"
+         ;;  :password-command "cat /home/ethan/.config/lsps/gmail")
 
-         (mu4e-setup-email-profile
-          :email-address "masterdragoon17@hotmail.com"
-          :imap-address "outlook.office365.com"
-          :imap-port    "993"
-          :smtp-address "smtp-mail.outlook.com"
-          :smtp-port "587"
-          :password-command "cat /home/ethan/.config/lsps/masterdragoon17")
+         ;; (mu4e-setup-email-profile
+         ;;  :email-address "masterdragoon17@hotmail.com"
+         ;;  :imap-address "outlook.office365.com"
+         ;;  :imap-port    "993"
+         ;;  :smtp-address "smtp-mail.outlook.com"
+         ;;  :smtp-port "587"
+         ;;  :password-command "cat /home/ethan/.config/lsps/masterdragoon17")
 
          ;; Potential davmail setup below - if i ever get around to setting
          ;; it up. Maybe over winter break 2024???
          ;; (mu4e-setup-email-profile
          ;;  :email-address "ethhawk@iu.edu"
          ;;  :imap-address "127.0.0.1"
-         ;;  :imap-port "1143"
+         ;;  :imap-port "5001"
          ;;  :smtp-address "127.0.0.1"
-         ;;  :smtp-port "1025"
+         ;;  :smtp-port "5003"
          ;;  :smtp-type "plain"
-         ;;  :password-commadn "cat /home/ethan/.config/lsps/gradoutlook")
+         ;;  :password-command "cat /home/ethan/.config/lsps/gradoutlook")
          ))
 
   (mu4e-setup-configure)

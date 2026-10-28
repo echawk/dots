@@ -1,5 +1,17 @@
-;;; packages to enhance the user experience in emacs
+;;; packages to enhance the user experience in emacs  -*- lexical-binding: t; -*-
 
+(use-package kkp
+  :hook (tty-setup . global-kkp-mode))
+
+(use-package kitty-graphics
+  :init
+  (unless (package-installed-p (intern "kitty-graphics"))
+    (package-vc-install
+     '(kitty-graphics :vc-backend Git
+                      :url "https://github.com/cashmeredev/kitty-graphics.el")))
+  :config
+  (setq kitty-graphics-enable-video t)   ; optional: inline mpv playback
+  (kitty-graphics-setup))
 
 ;; https://github.com/meedstrom/el-job
 ;; https://github.com/tarsius/emacs-ffi/
