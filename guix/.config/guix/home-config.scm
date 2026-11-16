@@ -34,6 +34,9 @@
  (services
   (append
    (list
+    (service home-bash-service-type
+             (home-bash-configuration
+              (guix-defaults? #t)))
     (simple-service 'inject-local-profile
 		            home-shell-profile-service-type
 		            (list
@@ -51,7 +54,6 @@ fi
     ;; 		      ("WLR_RENDERER" . "vulkan")
     ;; 		      ("XDG_SESSION_TYPE" . "wayland")))
 
-    (service home-bash-service-type)
     (service home-dbus-service-type)
     (service home-pipewire-service-type))
    %base-home-services))
@@ -60,28 +62,28 @@ fi
 		         dbus
 		         pipewire
 
-                 ;;		         flatpak
+                 ;; flatpak
 
-                 ;;                st
-		         ;;     alacritty
-		         ;;       labwc
-                 ;;                 cage
+                 ;; st
+		         ;; alacritty
+		         ;; labwc
+                 ;; cage
 
                  ;; quickshell
 
-                 ;;               niri foot fuzzel mako wl-clipboard
+                 ;; niri foot fuzzel mako wl-clipboard
 
 
-                 ;;             xorg-server sx picom xclip xset hsetroot setxkbmap sxhkd
+                 ;; xorg-server sx picom xclip xset hsetroot setxkbmap sxhkd
 
 		         ;; ungoogled-chromium
 
 		         emacs
 
-                 ;;gcc
-                 ;;clang
+                 ;; gcc clang
 		         sbcl
-		         ;;racket
+		         ;; racket
 
-                 ;;tectonic
-		         )))
+                 ;; tectonic
+		         ))
+)
