@@ -1,7 +1,16 @@
 #!/bin/sh
 set -eu
 
-cat <<'EOF'
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Error: This script must be run as root (try: sudo $0)" >&2
+    exit 1
+fi
+
+OUT_FILE="${1:-/mnt/etc/guix/filesystems.scm}"
+mkdir -p "$(dirname "$OUT_FILE")"
+
+{
+    cat <<'EOF'
 (define-module (filesystems)
   #:use-module (gnu system file-systems)
   #:export (%the-file-systems))
@@ -11,41 +20,44 @@ cat <<'EOF'
    (list
 EOF
 
-# Parse /proc/mounts for /mnt and any submounts
-awk '$2 ~ /^\/mnt(\/|$)/ {print $1, $2, $3}' /proc/mounts | sort -k2 | while read -r dev mnt fstype; do
-    # Strip /mnt prefix to get the real target mount-point
-    target_mnt="${mnt#/mnt}"
-    [ -z "$target_mnt" ] && target_mnt="/"
+    # Parse /proc/mounts for /mnt and any submounts
+    awk '$2 ~ /^\/mnt(\/|$)/ {print $1, $2, $3}' /proc/mounts | sort -k2 | while read -r dev mnt fstype; do
+        # Strip /mnt prefix to get the real target mount-point
+        target_mnt="${mnt#/mnt}"
+        [ -z "$target_mnt" ] && target_mnt="/"
 
-    # Skip virtual or pseudo filesystems
-    case "$fstype" in
-        proc|sysfs|devtmpfs|devpts|tmpfs|cgroup*|pstore|efivarfs|autofs|fuse*|overlay) continue ;;
-    esac
+        # Skip virtual or pseudo filesystems
+        case "$fstype" in
+            proc|sysfs|devtmpfs|devpts|tmpfs|cgroup*|pstore|efivarfs|autofs|fuse*|overlay) continue ;;
+        esac
 
-    # Query UUID and LABEL safely (|| true prevents set -e from aborting)
-    uuid=$(blkid -s UUID -o value "$dev" 2>/dev/null || true)
-    label=$(blkid -s LABEL -o value "$dev" 2>/dev/null || true)
+        # Query UUID and LABEL safely (|| true prevents set -e from aborting)
+        uuid=$(blkid -s UUID -o value "$dev" 2>/dev/null || true)
+        label=$(blkid -s LABEL -o value "$dev" 2>/dev/null || true)
 
-    echo "    (file-system"
+        echo "    (file-system"
 
-    # Format device identifier properly for Guix Scheme
-    if [ -n "$uuid" ]; then
-        if [ "$fstype" = "vfat" ]; then
-            echo "     (device (uuid \"$uuid\" 'fat32))"
+        # Format device identifier properly for Guix Scheme
+        if [ -n "$uuid" ]; then
+            if [ "$fstype" = "vfat" ]; then
+                echo "     (device (uuid \"$uuid\" 'fat32))"
+            else
+                echo "     (device (uuid \"$uuid\"))"
+            fi
+        elif [ -n "$label" ]; then
+            echo "     (device (file-system-label \"$label\"))"
         else
-            echo "     (device (uuid \"$uuid\"))"
+            echo "     (device \"$dev\")"
         fi
-    elif [ -n "$label" ]; then
-        echo "     (device (file-system-label \"$label\"))"
-    else
-        echo "     (device \"$dev\")"
-    fi
 
-    echo "     (mount-point \"$target_mnt\")"
-    echo "     (type \"$fstype\"))"
-done
+        echo "     (mount-point \"$target_mnt\")"
+        echo "     (type \"$fstype\"))"
+    done
 
-cat <<'EOF'
+    cat <<'EOF'
    )
    %base-file-systems))
 EOF
+} | tee "$OUT_FILE"
+
+echo "Wrote output to $OUT_FILE" >&2
