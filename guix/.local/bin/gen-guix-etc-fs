@@ -1,0 +1,43 @@
+#!/bin/sh -e
+# Generates a Guix (file-systems ...) block from everything currently mounted under /mnt
+
+echo "(file-systems"
+echo " (append"
+echo "  (list"
+
+# Parse /proc/mounts for /mnt and any submounts
+awk '$2 ~ /^\/mnt(\/|$)/ {print $1, $2, $3}' /proc/mounts | sort -k2 | while read -r dev mnt fstype; do
+    # Strip /mnt prefix to get the real target mount-point
+    target_mnt="${mnt#/mnt}"
+    [ -z "$target_mnt" ] && target_mnt="/"
+
+    # Skip virtual or pseudo filesystems
+    case "$fstype" in
+        proc|sysfs|devtmpfs|devpts|tmpfs|cgroup*|pstore|efivarfs|autofs|fuse*) continue ;;
+    esac
+
+    # Query UUID and LABEL from blkid
+    uuid=$(blkid -s UUID -o value "$dev" 2>/dev/null)
+    label=$(blkid -s LABEL -o value "$dev" 2>/dev/null)
+
+    echo "   (file-system"
+
+    # Format device identifier properly for Guix Scheme
+    if [ -n "$uuid" ]; then
+        if [ "$fstype" = "vfat" ]; then
+            echo "    (device (uuid \"$uuid\" 'fat))"
+        else
+            echo "    (device (uuid \"$uuid\"))"
+        fi
+    elif [ -n "$label" ]; then
+        echo "    (device (file-system-label \"$label\"))"
+    else
+        echo "    (device \"$dev\")"
+    fi
+
+    echo "    (mount-point \"$target_mnt\")"
+    echo "    (type \"$fstype\"))"
+done
+
+echo "  )"
+echo "  %base-file-systems))"
