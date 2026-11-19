@@ -284,8 +284,6 @@ the file.
 (me/setup-auto-mode "\\.4th" forth-mode (setq forth-executable "gforth"))
 (me/setup-auto-mode "\\.idr" idris-mode (setq idris-interpreter-path "idris2"))
 (me/setup-auto-mode
- "\\.shen" shen-mode (setq inferior-shen-program "shen-sbcl"))
-(me/setup-auto-mode
  "\\.ij[rstp]$" j-mode (setq j-console-cmd "/usr/lib/j9/bin/jconsole"))
 (me/setup-auto-mode
  "\\.rb" ruby-mode
@@ -682,6 +680,16 @@ the file.
                `((racket-mode racket-hash-lang-mode)
                  ,(lambda () (me/racket-pkg-is-installed-p "racket-langserver"))
                  ,(lambda () (me/racket-install-package "racket-langserver")))))
+
+(use-package shen-ts-mode
+  :ensure nil
+  :vc (:url "https://github.com/luizdemilon/tree-sitter-shen"
+            :rev :newest
+            :lisp-dir "editors/")
+  :init
+  (add-to-list 'treesit-language-source-alist
+               '(shen "https://github.com/luizdemilon/tree-sitter-shen" nil "grammar/src"))
+  (treesit-install-language-grammar 'shen))
 
 ;; --- end lisp setup ---
 
