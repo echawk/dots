@@ -693,10 +693,9 @@ the file.
      :around
      (lambda (orig &rest args)
        (let ((maj-mode (car args)))
-         (if (or (eq maj-mode 'shen-mode)
-                 (eq maj-mode 'shen-ts-mode))
-             "神"
-           (apply orig args)))))))
+         (pcase maj-mode
+           ((or 'shen-mode 'shen-ts-mode) "神")
+           (_ (apply orig args))))))))
 
 (use-package shen-ts-mode
   :ensure nil
