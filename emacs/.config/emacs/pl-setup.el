@@ -458,7 +458,7 @@ the file.
 ;; elpy
 ;; auto-virtualenv                20250608.1633  available    melpa    Automatically activate Python virtualenvs based on project directory
 ;; auto-virtualenvwrapper         20230317.1313  available    melpa    Lightweight auto activate python virtualenvs
-(use-package auto-virtualenv
+(use-package auto-virtualenv :after python-ts-mode
   :hook (python-ts-mode . (lambda ()
                             (setq auto-virtualenv-verbose t)
                             (auto-virtualenv-setup))))
@@ -472,8 +472,7 @@ the file.
 ;;                         :last-release))
 ;;   :mode ("\\.sno" . snobol-mode))
 
-(use-package sql-indent
-  :defer
+(use-package sql-indent :after sql-mode
   :hook ((sql-mode . sqlind-minor-mode)))
 
 ;; Better scheme editing.
@@ -681,12 +680,36 @@ the file.
                  ,(lambda () (me/racket-pkg-is-installed-p "racket-langserver"))
                  ,(lambda () (me/racket-install-package "racket-langserver")))))
 
+(use-package shen-el
+  :ensure nil
+  :vc (:url "https://github.com/echawk/shen-el"
+            :rev :newest
+            :lisp-dir "src/"
+            :make "translate")
+  :init
+  (when (fboundp #'all-the-icons-icon-for-mode)
+    (advice-add
+     #'all-the-icons-icon-for-mode
+     :around
+     (lambda (orig &rest args)
+       (let ((maj-mode (car args)))
+         (if (or (eq maj-mode 'shen-mode)
+                 (eq maj-mode 'shen-ts-mode))
+             "神"
+           (apply orig args)))))))
+
 (use-package shen-ts-mode
   :ensure nil
   :vc (:url "https://github.com/luizdemilon/tree-sitter-shen"
             :rev :newest
             :lisp-dir "editors/")
+  ;; :hook ((shen-ts-mode
+  ;;         . (lambda ()
+  ;;             (add-hook 'completion-at-point-functions
+  ;;                       #'shen-completion-at-point
+  ;;                       nil 'local))))
   :init
+  ;;(require 'shen-mode)
   (add-to-list 'treesit-language-source-alist
                '(shen "https://github.com/luizdemilon/tree-sitter-shen" nil "grammar/src"))
   (treesit-install-language-grammar 'shen))
